@@ -72,3 +72,11 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+*.rsp
+GC_UE4CPP.code-workspace
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/compileCommands_GC_UE4CPP.json
+.vscode/compileCommands_Default.json
+.vscode/c_cpp_properties.json
+.idea/.idea.GC_UE4CPP/.idea/encodings.xml
