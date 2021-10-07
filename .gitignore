@@ -1,6 +1,7 @@
 # Visual Studio 2015 user specific files
 .vs/
 .idea\
+Source\GC_UE4CPP\.idea
 
 # Compiled Object files
 *.slo
@@ -84,3 +85,7 @@ GC_UE4CPP.code-workspace
 .idea/.idea.GC_UE4CPP/.idea/.name
 .idea/.idea.GC_UE4CPP/.idea/indexLayout.xml
 .idea/.idea.GC_UE4CPP/.idea/vcs.xml
+Source/GC_UE4CPP/.idea/.idea.GC_UE4CPP.dir/.idea/indexLayout.xml
+Source/GC_UE4CPP/.idea/.idea.GC_UE4CPP.dir/.idea/projectSettingsUpdater.xml
+Source/GC_UE4CPP/.idea/.idea.GC_UE4CPP.dir/.idea/vcs.xml
+Source/GC_UE4CPP/.idea/.idea.GC_UE4CPP.dir/.idea/workspace.xml
