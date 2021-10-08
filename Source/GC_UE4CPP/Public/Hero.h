@@ -29,6 +29,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Takes food and carry it
+	void CarryFood(AFood* FoodToCarry);
+
 private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
@@ -66,10 +69,6 @@ protected:
 	void MoveForward(float Value);
 	// Called for right/left input
 	void MoveRight(float Value);
-	// Called for right/left camera movement in deg/sec (Normalized = 0->1)
-	void TurnRate(float Value);
-	// Called for up/down camera movement in deg/sec (Normalized = 0->1)
-	void LookUpRate(float Value);
 	
 	void ZoomIn();
 	
@@ -77,7 +76,7 @@ protected:
 
 	void SmoothZoom(float DeltaTime);
 
-	// Takes food and carry it
-	void CarryFood(AFood* FoodToCarry);
+	// Drop food on the ground
+	void DropFood();
 
 };

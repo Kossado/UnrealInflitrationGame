@@ -83,6 +83,7 @@ void AHero::CarryFood(AFood* FoodToCarry)
 {
 	if(FoodToCarry)
 	{
+		FoodToCarry->SetFoodState(EFoodState::EFS_PickedUp);
 		FoodToCarry->GetAreaSphere()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		//Get the Hand Socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
@@ -92,7 +93,15 @@ void AHero::CarryFood(AFood* FoodToCarry)
 			HandSocket->AttachActor(FoodToCarry,GetMesh());
 		}
 		CarriedFood = FoodToCarry;
-		FoodToCarry->SetFoodState(EFoodState::EFS_PickedUp);
+	}
+}
+
+void AHero::DropFood()
+{
+	if(CarriedFood)
+	{
+		FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
 	}
 }
 
@@ -119,18 +128,6 @@ void AHero::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
-
-/*void AHero::TurnRate(float Value)
-{
-	//CameraStick->SetRelativeRotation(CameraStick->GetRelativeRotation() + FRotator(0.f,Value,0.f));
-	AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds()); // deg/sec * sec/frame = deg/frame
-}
-
-void AHero::LookUpRate(float Value)
-{
-	//CameraStick->SetRelativeRotation(CameraStick->GetRelativeRotation() - FRotator(Value,0.f,0.f));
-	AddControllerPitchInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds()); // deg/sec * sec/frame = deg/frame
-}*/
 
 void AHero::ZoomIn()
 {

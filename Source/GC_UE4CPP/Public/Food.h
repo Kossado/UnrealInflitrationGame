@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+
 #include "Food.generated.h"
 
 UENUM()
@@ -29,9 +30,14 @@ protected:
 	// Setting up item properties for each states
 	void SetFoodProperties(EFoodState State);
 	// Setting up overlapping events
+	UFUNCTION()
 	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	UFUNCTION()
+	void InteractKeyPressed();
+	
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -40,7 +46,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(VisibleAnywhere, Category=Collision, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 	USphereComponent* AreaSphere;
 	
 	EFoodState FoodState;
@@ -48,6 +54,7 @@ private:
 public:
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere;}
 	FORCEINLINE EFoodState GetFoodState() const { return FoodState;}
-	FORCEINLINE void SetFoodState(EFoodState State) { FoodState = State;}
+	void SetFoodState(EFoodState State);
+	FORCEINLINE UStaticMeshComponent* GetFoodMesh() const {return StaticMesh;}
 	
 };
