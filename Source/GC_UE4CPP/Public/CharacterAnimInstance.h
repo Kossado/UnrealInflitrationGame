@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Hero.h"
+#include "GameCharacter.h"
 #include "Animation/AnimInstance.h"
+
 #include "CharacterAnimInstance.generated.h"
 
 /**
@@ -21,13 +22,17 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 private:
+	// Character's ref
 	UPROPERTY(VisibleAnywhere, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	ACharacter* Character;
+	AGameCharacter* Character;
+	// Character speed for the walk animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float Speed;
+	// Condition for the Win/Defeat dance
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bVictory;
+	// Condition for the carry animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
-	bool bDefeat;
+	bool bIsCarryingFood;
 	
 };

@@ -38,9 +38,7 @@ CameraZoomSteps(45.f)
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character rotate in the direction of input ...
-	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	
+	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate	
 }
 
 // Called when the game starts or when spawned
@@ -77,32 +75,6 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	//Setting up Zoom In/Out
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AHero::ZoomIn);
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AHero::ZoomOut);
-}
-
-void AHero::CarryFood(AFood* FoodToCarry)
-{
-	if(FoodToCarry)
-	{
-		FoodToCarry->SetFoodState(EFoodState::EFS_PickedUp);
-		FoodToCarry->GetAreaSphere()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		//Get the Hand Socket
-		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
-		if(HandSocket)
-		{
-			// Attach food to the hand socket
-			HandSocket->AttachActor(FoodToCarry,GetMesh());
-		}
-		CarriedFood = FoodToCarry;
-	}
-}
-
-void AHero::DropFood()
-{
-	if(CarriedFood)
-	{
-		FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
-		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
-	}
 }
 
 void AHero::MoveForward(float Value)

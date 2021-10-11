@@ -103,12 +103,17 @@ void AFood::InteractKeyPressed()
 {
 	AHero* Hero = Cast<AHero>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,"Interact Key Pressed");
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,"Interact Key Pressed");
 	if(Hero)
 	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Carry Food"));
-		Hero->CarryFood(this);
+		if(Hero->GetCarriedFood() == nullptr)
+		{
+			Hero->CarryFood(this);
+		}
+		else
+		{
+			Hero->DropFood();
+		}
 	}
 }
 

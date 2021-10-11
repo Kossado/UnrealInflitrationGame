@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Food.h"
+#include "GameCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Hero.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AHero : public ACharacter
+class GC_UE4CPP_API AHero : public AGameCharacter
 {
 	GENERATED_BODY()
 
@@ -28,9 +28,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// Takes food and carry it
-	void CarryFood(AFood* FoodToCarry);
 
 private:
 	// Camera stick positioning the camera behind the character
@@ -59,24 +56,16 @@ private:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
 	float CamZoomDestination;
-	// Carried food (might be null)
-	AFood* CarriedFood;
-
 
 protected:
-
 	// Called for forward/backward input
 	void MoveForward(float Value);
 	// Called for right/left input
 	void MoveRight(float Value);
-	
-	void ZoomIn();
-	
+	// Called to setup the zoom's destination
+	void ZoomIn();	
 	void ZoomOut();
-
+	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
 	void SmoothZoom(float DeltaTime);
-
-	// Drop food on the ground
-	void DropFood();
 
 };
