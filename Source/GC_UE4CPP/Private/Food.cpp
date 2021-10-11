@@ -19,7 +19,7 @@ AFood::AFood()
 	//Set up AreaSphere
 	AreaSphere = CreateDefaultSubobject<USphereComponent>(FName(TEXT("AreaSphere")));
 	AreaSphere->SetupAttachment(StaticMesh);
-	AreaSphere->SetSphereRadius(100.f);
+	AreaSphere->SetSphereRadius(150.f);
 	//Set up food state
 	SetFoodState(EFS_Dropped);
 }
@@ -109,6 +109,7 @@ void AFood::InteractKeyPressed()
 		if(Hero->GetCarriedFood() == nullptr)
 		{
 			Hero->CarryFood(this);
+			EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
 		}
 		else
 		{

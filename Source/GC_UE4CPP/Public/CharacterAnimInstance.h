@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameCharacter.h"
+#include "MainGameMode.h"
 #include "Animation/AnimInstance.h"
 
 #include "CharacterAnimInstance.generated.h"
@@ -23,16 +24,20 @@ public:
 
 private:
 	// Character's ref
-	UPROPERTY(VisibleAnywhere, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
 	AGameCharacter* Character;
 	// Character speed for the walk animation
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	float Speed;
 	// Condition for the Win/Defeat dance
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bVictory;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
+	bool bGameInProgress;
 	// Condition for the carry animation
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bIsCarryingFood;
+	
+	AMainGameMode* MainGameMode;
 	
 };

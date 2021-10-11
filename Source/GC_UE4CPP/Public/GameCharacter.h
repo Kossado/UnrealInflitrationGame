@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Food.h"
 #include "GameFramework/Character.h"
+#include "MainGameMode.h"
 
 #include "GameCharacter.generated.h"
 
@@ -44,6 +45,8 @@ private:
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food
 	float CarryWalkSpeedMultiplicator;
+
+	AMainGameMode* MainGameMode;
 
 public:
 	FORCEINLINE AFood* GetCarriedFood() const {return CarriedFood;}

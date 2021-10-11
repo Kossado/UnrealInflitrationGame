@@ -5,6 +5,7 @@
 
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter():
@@ -72,6 +73,9 @@ void AGameCharacter::DropFood()
 		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+		MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(MainGameMode)
+			MainGameMode->IncrementStoredFood();
 	}
 }
 

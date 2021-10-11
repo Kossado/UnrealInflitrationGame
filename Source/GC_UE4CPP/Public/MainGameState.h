@@ -12,14 +12,14 @@
 UENUM()
 enum EGameState
 {
-	VICTORY,
-	DEFEAT,
-	PAUSE,
-	PLAYING
+	EGS_VICTORY,
+	EGS_DEFEAT,
+	EGS_PAUSE,
+	EGS_PLAYING
 };
 
 UCLASS()
-class GC_UE4CPP_API AMainGameState : public AGameState
+class GC_UE4CPP_API AMainGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
@@ -27,10 +27,11 @@ private:
 	bool bVictory;
 
 public:
-	EGameState GameState;
-	// if NourritureDansCachette >= QtéDef : GameState = VICTORY
-	// if Hit by IA : GameState = DEFEAT
-	// if Menu Open : GameState = PAUSE
-	// DEFAULT : GameState = PLAYING 
-	
+	EGameState CurrentGameState;
+	UPROPERTY(VisibleAnywhere)
+	int StoredFood;
+	UPROPERTY(VisibleAnywhere)
+	int PickableFood;
+	UPROPERTY(VisibleAnywhere)
+	int StoredFoodToWin;	
 };
