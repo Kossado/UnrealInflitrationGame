@@ -20,7 +20,7 @@ void AIAPawnManager::BeginPlay()
 
 void AIAPawnManager::UnSpawnIA(AActor* UnSpawnIA)
 {
-	GLog->Log("UnSpawned  " + UnSpawnIA->GetName());
+	GLog->Log("Pawn UnSpawned  " + UnSpawnIA->GetName());
 
 }
 

@@ -29,6 +29,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void UnSpawnIA(AActor* UnSpawnIA); 
+	void UnSpawnIA(AActor* UnSpawnIA); 
 
 };

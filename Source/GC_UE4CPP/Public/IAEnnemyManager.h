@@ -36,7 +36,11 @@ private:
 		TSubclassOf<AIACharacter> BP_CharacterIA;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AIAEnnemyCharacterController> BP_ControllerIA;
+		unsigned int NbRetriesSpotBeforeBack=0;
+	
+	//
+	// UPROPERTY(EditAnywhere)
+	// TSubclassOf<AIAEnnemyCharacterController> BP_ControllerIA;
 	
 	virtual void SpawnPawn();
 public:	

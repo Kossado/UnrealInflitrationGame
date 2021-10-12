@@ -12,7 +12,7 @@
 
 AIAPawnController::AIAPawnController (const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
 {
-	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
+	Blackboard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
 	BehaviorComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviourTree");
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("Perception");
 	
@@ -20,18 +20,36 @@ AIAPawnController::AIAPawnController (const FObjectInitializer & ObjectInitializ
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, APawn* InPawn, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint)
+bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint)
 {
-	if(InPawn == nullptr ||IAPawnerManagerSpawner == nullptr)
+	if(IAPawnerManagerSpawner == nullptr)
 	{
+		UE_LOG(LogTemp, Error, TEXT("Manager is Null"));
 		return false;
 	}
 
 	IAPawnerManager = IAPawnerManagerSpawner;
+	UE_LOG(LogTemp, Warning, TEXT("List is %d"), ListPatrolPoints.Num());
+
 	PatrolPoints = ListPatrolPoints;
 	UnSpawnPatrolPoint = SetUnSpawnPatrolPoint;
+	Blackboard->SetValueAsVector("LocationUnSpawn", SetUnSpawnPatrolPoint->GetActorLocation());
 
-	Possess(InPawn);
+	AIACharacter * AICharacter = Cast<AIACharacter>(GetCharacter());
+
+	if(AICharacter)
+	{
+		if(AICharacter->BehaviourTree->BlackboardAsset)
+		{
+			Blackboard->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
+			Blackboard->SetValueAsBool("NeedNewSpot", true);
+		}
+	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
+
+	
+	BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
 	
 	return true;
 }
@@ -40,21 +58,21 @@ void AIAPawnController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	IAPawnerManager->UnSpawnIA(this);
-	AIACharacter * AICharacter = Cast<AIACharacter>(InPawn);
-
-	if(AICharacter)
-	{
-		if(AICharacter->BehaviourTree->BlackboardAsset)
-		{
-			BlackboardComponent->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
-		}
-	}
-	
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
-
-	
-	BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
+	// IAPawnerManager->UnSpawnIA(this);
+	// AIACharacter * AICharacter = Cast<AIACharacter>(InPawn);
+	//
+	// if(AICharacter)
+	// {
+	// 	if(AICharacter->BehaviourTree->BlackboardAsset)
+	// 	{
+	// 		BlackboardComponent->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
+	// 	}
+	// }
+	//
+	// GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
+	//
+	//
+	// BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
 
 }
 
@@ -62,6 +80,32 @@ void AIAPawnController::OnUnPossess()
 {
 	Super::OnUnPossess();
 	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Red, "On UnPossess");
+}
+
+AIAPatrolPoint * AIAPawnController::GetCurrentAIPatrolPoint()
+{
+	if(PatrolPoints.Num() <= 0)
+	{
+		return nullptr;
+	}
+	
+	int indexNextAIPatrolPoints = 0;
+	if(CurrentTargetPatrolPoints < 0)
+	{
+		indexNextAIPatrolPoints = 0;
+	}
+
+	else
+	{
+		indexNextAIPatrolPoints = CurrentTargetPatrolPoints+1;
+	}
+
+	if(indexNextAIPatrolPoints >= PatrolPoints.Num())
+	{
+		indexNextAIPatrolPoints = 0;
+	}
+
+	return PatrolPoints[indexNextAIPatrolPoints];
 }
 
 AIAPatrolPoint * AIAPawnController::GetNextAIPatrolPoint()
@@ -96,9 +140,7 @@ void AIAPawnController::SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAI
 	if(PatrolPoints.Contains(NextTargetAIPatrolPoint))
 	{
 		CurrentTargetPatrolPoints = PatrolPoints.Find(NextTargetAIPatrolPoint);
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, *(FString::Printf(TEXT("Current patrol point %d"), CurrentTargetPatrolPoints)));
-
-		BlackboardComponent->SetValueAsVector("PatrolLocation", NextTargetAIPatrolPoint->GetActorLocation());
+		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, *(FString::Printf(TEXT("Current patrol point %d"), CurrentTargetPatrolPoints)));		
 	}
 
 	else

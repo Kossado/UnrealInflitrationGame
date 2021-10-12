@@ -3,19 +3,14 @@
 
 #include "BTT_FindRandomPatrol.h"
 
-#include "AIController.h"
-#include "IAPatrolPoint.h"
-#include "IAPawnController.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Math/UnrealMathUtility.h"
-
+#include "IAEnnemyCharacterController.h"
 #include "BehaviorTree/BlackboardData.h"
 
 EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
-	if(AIAPawnController * IAController = Cast<AIAPawnController>(OwnerComp.GetAIOwner()))
+	if(AIAEnnemyCharacterController * IAController = Cast<AIAEnnemyCharacterController>(OwnerComp.GetAIOwner()))
 	{
-		AIAPatrolPoint * NextAIPatrolPoint = IAController->GetRandomAIPatrolPoint(true);
+		AIASpotFoodPoint * NextAIPatrolPoint = dynamic_cast<AIASpotFoodPoint*>(IAController->GetRandomAIPatrolPoint(true));
 
 		if(NextAIPatrolPoint == nullptr)
 		{

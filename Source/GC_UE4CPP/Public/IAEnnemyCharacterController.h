@@ -19,5 +19,9 @@ class GC_UE4CPP_API AIAEnnemyCharacterController : public AIAPawnController
 	GENERATED_BODY()
 
 public:
-	bool Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, AIACharacter* CharacterToControl,  TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint);
+	bool Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn);
+	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
+	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
+private:
+	unsigned int NbRetriesBeforeBack;
 };

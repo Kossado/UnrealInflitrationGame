@@ -22,13 +22,13 @@ class GC_UE4CPP_API AIAPawnController : public AAIController
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-		AIACharacter * CharacterControlled;
+	AIACharacter * CharacterControlled;
 
 	UPROPERTY(EditAnywhere)
 	UBehaviorTreeComponent * BehaviorComponent;
 
-	UPROPERTY(EditAnywhere)
-	UBlackboardComponent * BlackboardComponent;
+	// UPROPERTY(EditAnywhere)
+	// UBlackboardComponent * BlackboardComponent;
 
 
 	// Blackboard keys
@@ -41,28 +41,26 @@ class GC_UE4CPP_API AIAPawnController : public AAIController
 	public:
 	AIAPawnController (const FObjectInitializer & ObjectInitializer);
 
-	FORCEINLINE UBlackboardComponent* GetBlackboardComponent() const { return BlackboardComponent; }
+	// FORCEINLINE UBlackboardComponent* GetBlackboardComponent() const { return BlackboardComponent; }
 	FORCEINLINE TArray<AIAPatrolPoint*> GetPatrolPoints() const { return PatrolPoints; }
 
 	
-	void SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint);
-	
+	AIAPatrolPoint * GetCurrentAIPatrolPoint();
 	AIAPatrolPoint * GetNextAIPatrolPoint();
 	AIAPatrolPoint * GetRandomAIPatrolPoint(bool ExcludeCurrentPosition);
 	AIAPatrolPoint * GetUnSpawnPatrolPoint() const;
 
-	protected:
-		bool Initialize(AIAPawnManager* IAPawnManagerSpawner, APawn* InPawn, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * UnSpawnPatrolPoint);
+protected:
+	bool Initialize(AIAPawnManager* IAPawnManagerSpawner, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * UnSpawnPatrolPoint);
+	void SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint);
 
-		virtual void OnPossess(APawn* InPawn) override;
-		virtual void OnUnPossess() override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
 
-	private:
-		TArray<AIAPatrolPoint*> PatrolPoints;
-		AIAPatrolPoint* UnSpawnPatrolPoint;
+private:
+	TArray<AIAPatrolPoint*> PatrolPoints;
+	AIAPatrolPoint* UnSpawnPatrolPoint;
 	
-		int CurrentTargetPatrolPoints=-1;
-		AIAPawnManager * IAPawnerManager;
-
+	int CurrentTargetPatrolPoints=-1;
+	AIAPawnManager * IAPawnerManager;
 };
-

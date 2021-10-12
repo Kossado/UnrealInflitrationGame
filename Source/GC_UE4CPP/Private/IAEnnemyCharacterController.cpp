@@ -3,8 +3,48 @@
 
 #include "IAEnnemyCharacterController.h"
 #include "IAEnnemyManager.h"
+#include "IASpotFoodPoint.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
-bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, AIACharacter* CharacterToControl, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint)
+bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn)
 {
-	return Super::Initialize(IAEnnemyManagerSpawner, CharacterToControl, TArray<AIAPatrolPoint*>(ListSpotFoodsPoints), SetUnSpawnPatrolPoint);
+	if(!Super::Initialize(IAEnnemyManagerSpawner, TArray<AIAPatrolPoint*>(ListSpotFoodsPoints), SetUnSpawnPatrolPoint))
+	{
+		return false;
+	}
+
+	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
+
+	return true;
+}
+
+bool AIAEnnemyCharacterController::IsSpotHasFood(AIASpotFoodPoint * SpotFood)
+{
+	if(SpotFood == nullptr)
+	{
+		return false;
+	}
+	
+	if(SpotFood->GetFoodState())
+	{
+		return true;
+	}
+
+	else
+	{
+		return false;
+	}
+}
+
+void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint)
+{
+	Super::SetNextTargetAIPatrolPoint(NextTargetAIPatrolPoint);
+	Blackboard->SetValueAsObject("SpotFood", NextTargetAIPatrolPoint);
+
+	NbRetriesBeforeBack--;
+
+	if(NbRetriesBeforeBack <= 0)
+	{
+		Blackboard->SetValueAsBool("GoUnSpawn", true);
+	}
 }

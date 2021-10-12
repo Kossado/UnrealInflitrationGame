@@ -29,19 +29,40 @@ void AIAEnnemyManager::BeginPlay()
 
 void AIAEnnemyManager::SpawnPawn()
 {
-	if(BP_CharacterIA && BP_ControllerIA)
+	if(BP_CharacterIA)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		AIAEnnemyCharacterController* ActorControllerRef = GetWorld()->SpawnActor<AIAEnnemyCharacterController>(BP_ControllerIA, SpawnAIPatrolPoint->GetTransform(), SpawnParams);
+		// AIAEnnemyCharacterController* ActorControllerRef = GetWorld()->SpawnActor<AIAEnnemyCharacterController>(BP_ControllerIA, SpawnAIPatrolPoint->GetTransform(), SpawnParams);
 		AIACharacter* ActorRef = GetWorld()->SpawnActor<AIACharacter>(BP_CharacterIA, SpawnAIPatrolPoint->GetTransform(), SpawnParams);
-		ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
+		// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
+		AController * ActorControllerRef =ActorRef->GetController(); 
+		if(ActorControllerRef == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Controller is null"));
+			return;
+		}
+
+		else if(!ActorControllerRef->IsA(AIAEnnemyCharacterController::StaticClass()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Controller isn't in a good type"));
+			return;
+		}
+
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
+
+			AIAEnnemyCharacterController * ControllerIA = dynamic_cast<AIAEnnemyCharacterController*>(ActorControllerRef);
+			ControllerIA->Initialize(this, ListSpotFood, UnSpawnAIPatrolPoint, NbRetriesSpotBeforeBack);
+		}
 	}	
 }
 
 void AIAEnnemyManager::UnSpawnIA(AIAEnnemyCharacterController* UnSpawnIA)
 {
+	Super::UnSpawnIA(UnSpawnIA);
 	GLog->Log("UnSpawned Ennemy " + UnSpawnIA->GetName());
 
 }
