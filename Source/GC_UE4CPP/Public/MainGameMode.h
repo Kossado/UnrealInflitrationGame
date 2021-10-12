@@ -18,20 +18,21 @@ class GC_UE4CPP_API AMainGameMode : public AGameModeBase
 
 public:
 	AMainGameMode();
-
+	
+	virtual void InitGameState() override;
 	virtual void StartPlay() override;
 
 	// Getters
-	virtual EGameState GetCurrentGameState() const;
-	virtual int GetStoredFood() const;
-	virtual int GetPickableFood() const;
-	virtual int GetStoredFoodToWin() const;
+	EGameState GetCurrentGameState() const;
+	int GetStoredFood() const;
+	int GetPickableFood() const;
+	int GetStoredFoodToWin() const;
 	// Setters
-	virtual void SetCurrentGameState(EGameState CurrentGameState);
-	virtual void IncrementStoredFood();
-	virtual void IncrementPickableFood();
+	void SetCurrentGameState(EGameState CurrentGameState) const;
+	void IncrementStoredFood();
+	void IncrementPickableFood();
 	// Checks
-	virtual void CheckGameState();
+	void CheckGameConditions();
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY

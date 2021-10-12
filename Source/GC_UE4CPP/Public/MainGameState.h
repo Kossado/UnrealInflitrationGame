@@ -22,20 +22,18 @@ UCLASS()
 class GC_UE4CPP_API AMainGameState : public AGameStateBase
 {
 	GENERATED_BODY()
-
-private:
-	bool bVictory;
-
+	
 public:
+	AMainGameState();
 	// Current state of the game
 	EGameState CurrentGameState;
 	// Quantity of food stored in the hideout
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameData)
 	int StoredFood;
 	// Quantity of food in the map, excluding those in the hideout
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category=GameData)
 	int PickableFood;
 	// Quantity of food needed to win the game
-	UPROPERTY(VisibleAnywhere)
-	int StoredFoodToWin;	
+	UPROPERTY(VisibleAnywhere, Category=GameData)
+	int StoredFoodToWin;
 };

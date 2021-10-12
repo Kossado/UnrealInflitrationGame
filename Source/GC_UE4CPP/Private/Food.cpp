@@ -16,10 +16,6 @@ AFood::AFood()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static Mesh"));
 	SetRootComponent(StaticMesh);
 	StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,ECollisionResponse::ECR_Ignore);
-	//Set up AreaSphere
-	AreaSphere = CreateDefaultSubobject<USphereComponent>(FName(TEXT("AreaSphere")));
-	AreaSphere->SetupAttachment(StaticMesh);
-	AreaSphere->SetSphereRadius(150.f);
 	//Set up food state
 	SetFoodState(EFS_Dropped);
 }
@@ -28,16 +24,6 @@ AFood::AFood()
 void AFood::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Setup overlap for AreaSphere
-	if(AreaSphere)
-	{
-		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AFood::OnSphereBeginOverlap);
-    	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AFood::OnSphereEndOverlap);
-	}
-	// Setup the interact key for the character to be able to pickup the food
-	if(InputComponent)
-		InputComponent->BindAction("Interact", IE_Pressed,this,&AFood::InteractKeyPressed);
 }
 
 void AFood::SetFoodProperties(EFoodState State)
@@ -49,72 +35,19 @@ void AFood::SetFoodProperties(EFoodState State)
 			StaticMesh->SetSimulatePhysics(false);
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			//Set AreaSphere properties
-			AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-			AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			break;
 		case EFoodState::EFS_Dropped:
 			//Set mesh properties
 			StaticMesh->SetSimulatePhysics(true);
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			//Set AreaSphere properties
-			AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			break;
 		default:
 			//Set mesh properties
 			StaticMesh->SetSimulatePhysics(true);
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			//Set AreaSphere properties
-			AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-			AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			break;
-	}
-}
-
-void AFood::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AHero* Hero = Cast<AHero>(OtherActor);
-	if(Hero)
-	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Enable Input"));
-		EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	}
-	
-}
-
-void AFood::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AHero* Hero = Cast<AHero>(OtherActor);
-	if(Hero)
-	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,TEXT("Disable Input"));
-		DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	}
-}
-
-void AFood::InteractKeyPressed()
-{
-	AHero* Hero = Cast<AHero>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,"Interact Key Pressed");
-	if(Hero)
-	{
-		if(Hero->GetCarriedFood() == nullptr)
-		{
-			Hero->CarryFood(this);
-			EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-		}
-		else
-		{
-			Hero->DropFood();
-		}
 	}
 }
 

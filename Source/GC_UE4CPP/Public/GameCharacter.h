@@ -6,6 +6,7 @@
 #include "Food.h"
 #include "GameFramework/Character.h"
 #include "MainGameMode.h"
+#include "Components/BoxComponent.h"
 
 #include "GameCharacter.generated.h"
 
@@ -37,10 +38,21 @@ public:
 protected:
 	// Change speed according to the parameters
 	void ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator);
+	UFUNCTION()
+	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void Interact();
 	
 private:
+	// Collision detection with items
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* CollisionMesh;
+	// Food to pick = in Overlap
+	AFood* FoodToPick = nullptr;
 	// Carried food (might be null)
-	AFood* CarriedFood;
+	AFood* CarriedFood = nullptr;
 	// Characters Speed handfree
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food

@@ -29,7 +29,7 @@ private:
 	// Character speed for the walk animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	float Speed;
-	// Condition for the Win/Defeat dance
+	// Condition for the Victory/Defeat dance
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bVictory;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))

@@ -3,19 +3,30 @@
 
 #include "MainGameMode.h"
 
+#include "Hero.h"
+
 AMainGameMode::AMainGameMode()
 {
+	// Define default classes
 	GameStateClass = AMainGameState::StaticClass();
+}
+
+void AMainGameMode::InitGameState()
+{
+	Super::InitGameState();
+	GetGameState<AMainGameState>()->StoredFood = 0;
+	GetGameState<AMainGameState>()->PickableFood = 0;
+	GetGameState<AMainGameState>()->StoredFoodToWin = 5;
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"InitGameState");
 }
 
 void AMainGameMode::StartPlay()
 {
-	GetWorld()->GetAuthGameMode()->GetGameState<AMainGameState>()->CurrentGameState = EGS_PLAYING;
-	GetWorld()->GetAuthGameMode()->GetGameState<AMainGameState>()->StoredFood = 0;
-	GetWorld()->GetAuthGameMode()->GetGameState<AMainGameState>()->PickableFood = 0;
-	GetWorld()->GetAuthGameMode()->GetGameState<AMainGameState>()->StoredFoodToWin = 5;
-	
+	GetGameState<AMainGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"StartPlay");
 }
 
 EGameState AMainGameMode::GetCurrentGameState() const
@@ -38,7 +49,7 @@ int AMainGameMode::GetStoredFoodToWin() const
 	return GetGameState<AMainGameState>()->StoredFoodToWin;
 }
 
-void AMainGameMode::SetCurrentGameState(EGameState CurrentGameState)
+void AMainGameMode::SetCurrentGameState(EGameState CurrentGameState) const
 {
 	GetGameState<AMainGameState>()->CurrentGameState = CurrentGameState;
 }
@@ -46,7 +57,7 @@ void AMainGameMode::SetCurrentGameState(EGameState CurrentGameState)
 void AMainGameMode::IncrementStoredFood()
 {
 	GetGameState<AMainGameState>()->StoredFood++;
-	CheckGameState();
+	CheckGameConditions();
 }
 
 void AMainGameMode::IncrementPickableFood()
@@ -54,7 +65,7 @@ void AMainGameMode::IncrementPickableFood()
 	GetGameState<AMainGameState>()->PickableFood++;
 }
 
-void AMainGameMode::CheckGameState()
+void AMainGameMode::CheckGameConditions()
 {
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{

@@ -35,7 +35,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			{
 				bVictory = true;
 				bGameInProgress = false;
-			}else
+			}else if(MainGameMode->GetCurrentGameState() == EGS_DEFEAT)
 			{
 				bVictory = false;
 				bGameInProgress = false;

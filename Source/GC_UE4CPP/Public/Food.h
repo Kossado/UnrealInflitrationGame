@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 
 #include "Food.generated.h"
@@ -28,15 +27,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Setting up item properties for each states
-	void SetFoodProperties(EFoodState State);
-	// Setting up overlapping events
-	UFUNCTION()
-	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	void InteractKeyPressed();
-	
+	void SetFoodProperties(EFoodState State);	
 	
 public:	
 	// Called every frame
@@ -45,14 +36,10 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-	USphereComponent* AreaSphere;
 	
 	EFoodState FoodState;
 
 public:
-	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere;}
 	FORCEINLINE EFoodState GetFoodState() const { return FoodState;}
 	void SetFoodState(EFoodState State);
 	FORCEINLINE UStaticMeshComponent* GetFoodMesh() const {return StaticMesh;}
