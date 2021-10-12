@@ -6,6 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GC_UE4CPP/HUD/InGameInterface.h"
 
 // Sets default values
 AHero::AHero():
@@ -47,7 +48,7 @@ CameraZoomSteps(45.f)
 void AHero::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CurrentFood = 0;
 	CamZoomDestination = CameraStick->TargetArmLength;
 }
 
@@ -56,7 +57,7 @@ void AHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SmoothZoom(DeltaTime);
-
+	UpdateFood();
 }
 
 // Called to bind functionality to input
@@ -155,4 +156,27 @@ void AHero::SmoothZoom(float DeltaTime)
 			);
 	}
 }
+
+float AHero::GetCurrentFood()
+{
+	return CurrentFood;
+}
+
+void AHero::UpdateFood()
+{
+	FVector positionHero = GetActorLocation();
+	//FVector positionHero = GetMesh();
+	if (positionHero.X < -150)
+	{
+		AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		InGameInterface->UpdateCurrentFood(positionHero.X);
+		if (InGameInterface)
+		{
+			CarriedFood = NULL; // On supprime la nourriture
+			CurrentFood += 1; // On ajoute 1 nourriture au compteur
+			//InGameInterface->UpdateCurrentFood(CurrentFood);
+		}
+	}
+}
+
 

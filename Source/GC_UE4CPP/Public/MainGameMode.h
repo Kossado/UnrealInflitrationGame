@@ -15,6 +15,14 @@ class GC_UE4CPP_API AMainGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	//virtual void BeginPlay() override;
+
 public:
-	
+
+protected:
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Food, Meta= (BlueprintProtected = "true"))
+	TSubclassOf<class UUserWidget> HeroHUDClass;
+
+	UPROPERTY()
+	class UUserWidget* CurrentWidget;*/
 };

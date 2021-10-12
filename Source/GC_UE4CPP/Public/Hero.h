@@ -28,7 +28,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	UFUNCTION(BlueprintPure, Category=Food)
+	float GetCurrentFood();
+	UFUNCTION(BlueprintCallable, Category=Food)
+	void UpdateFood();
+	
 private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
@@ -58,7 +63,10 @@ private:
 	float CamZoomDestination;
 	// Carried food (might be null)
 	AFood* CarriedFood;
-
+	
+	// Current Food
+	UPROPERTY(EditAnywhere, Category=Food);
+	int CurrentFood;
 
 protected:
 
