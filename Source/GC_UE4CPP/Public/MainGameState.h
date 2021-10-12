@@ -27,11 +27,15 @@ private:
 	bool bVictory;
 
 public:
+	// Current state of the game
 	EGameState CurrentGameState;
+	// Quantity of food stored in the hideout
 	UPROPERTY(VisibleAnywhere)
 	int StoredFood;
+	// Quantity of food in the map, excluding those in the hideout
 	UPROPERTY(VisibleAnywhere)
 	int PickableFood;
+	// Quantity of food needed to win the game
 	UPROPERTY(VisibleAnywhere)
 	int StoredFoodToWin;	
 };

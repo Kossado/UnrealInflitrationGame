@@ -68,11 +68,14 @@ void AGameCharacter::DropFood()
 {
 	if(CarriedFood)
 	{
+		// Detach food from the hand socket
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
+		// Change food state (Re-enable collisions,...)
 		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+		// ONLY FOR TEST PURPOSE - TO DELETE
 		MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if(MainGameMode)
 			MainGameMode->IncrementStoredFood();
