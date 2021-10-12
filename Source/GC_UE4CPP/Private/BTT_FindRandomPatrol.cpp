@@ -4,9 +4,8 @@
 #include "BTT_FindRandomPatrol.h"
 
 #include "AIController.h"
-#include "AIPatrolPoint.h"
-#include "MyIAController.h"
-#include "PatrolPoints.h"
+#include "IAPatrolPoint.h"
+#include "IAPawnController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Math/UnrealMathUtility.h"
 
@@ -14,9 +13,15 @@
 
 EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
-	if(AMyIAController * IAController = Cast<AMyIAController>(OwnerComp.GetAIOwner()))
+	if(AIAPawnController * IAController = Cast<AIAPawnController>(OwnerComp.GetAIOwner()))
 	{
-		AActor * NextAIPatrolPoint = IAController->GetRandomAIPatrolPoint(true);
+		AIAPatrolPoint * NextAIPatrolPoint = IAController->GetRandomAIPatrolPoint(true);
+
+		if(NextAIPatrolPoint == nullptr)
+		{
+			return EBTNodeResult::Failed;
+		}
+		
 		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "Next position " + NextAIPatrolPoint->GetName());
 
 		IAController->SetNextTargetAIPatrolPoint(NextAIPatrolPoint);

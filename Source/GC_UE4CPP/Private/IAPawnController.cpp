@@ -1,15 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyIAController.h"
+#include "IAPawnController.h"
 
-#include "AIPatrolPoint.h"
+#include "IAEnnemyManager.h"
+#include "IAPatrolPoint.h"
 #include "StaticMeshAttributes.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
 
-AMyIAController::AMyIAController (const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
+AIAPawnController::AIAPawnController (const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
 {
 	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
 	BehaviorComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviourTree");
@@ -19,10 +20,27 @@ AMyIAController::AMyIAController (const FObjectInitializer & ObjectInitializer) 
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMyIAController::OnPossess(APawn* InPawn)
+bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, APawn* InPawn, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint)
+{
+	if(InPawn == nullptr ||IAPawnerManagerSpawner == nullptr)
+	{
+		return false;
+	}
+
+	IAPawnerManager = IAPawnerManagerSpawner;
+	PatrolPoints = ListPatrolPoints;
+	UnSpawnPatrolPoint = SetUnSpawnPatrolPoint;
+
+	Possess(InPawn);
+	
+	return true;
+}
+
+void AIAPawnController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
+	IAPawnerManager->UnSpawnIA(this);
 	AIACharacter * AICharacter = Cast<AIACharacter>(InPawn);
 
 	if(AICharacter)
@@ -32,13 +50,7 @@ void AMyIAController::OnPossess(APawn* InPawn)
 			BlackboardComponent->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
 		}
 	}
-
-	SetGenericTeamId(FGenericTeamId(1));
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "On possess");
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "name " + InPawn->GetHumanReadableName());	
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "key " + BlackboardComponent->GetKeyName(0).ToString());
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIPatrolPoint::StaticClass(), PatrolPoints);
+	
 	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
 
 	
@@ -46,18 +58,45 @@ void AMyIAController::OnPossess(APawn* InPawn)
 
 }
 
-void AMyIAController::OnUnPossess()
+void AIAPawnController::OnUnPossess()
 {
 	Super::OnUnPossess();
 	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Red, "On UnPossess");
 }
 
-void AMyIAController::SetNextTargetAIPatrolPoint(AActor * NextTargetAIPatrolPoint)
+AIAPatrolPoint * AIAPawnController::GetNextAIPatrolPoint()
+{
+	if(PatrolPoints.Num() <= 0)
+	{
+		return nullptr;
+	}
+	
+	int indexNextAIPatrolPoints = 0;
+	if(CurrentTargetPatrolPoints < 0)
+	{
+		indexNextAIPatrolPoints = 0;
+	}
+
+	else
+	{
+		indexNextAIPatrolPoints = CurrentTargetPatrolPoints+1;
+	}
+
+	if(indexNextAIPatrolPoints >= PatrolPoints.Num())
+	{
+		indexNextAIPatrolPoints = 0;
+	}
+
+	return PatrolPoints[indexNextAIPatrolPoints];
+}
+
+
+void AIAPawnController::SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint)
 {
 	if(PatrolPoints.Contains(NextTargetAIPatrolPoint))
 	{
-		CurrentPatrolPoints = PatrolPoints.Find(NextTargetAIPatrolPoint);
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, *(FString::Printf(TEXT("Current patrol point %d"), CurrentPatrolPoints)));
+		CurrentTargetPatrolPoints = PatrolPoints.Find(NextTargetAIPatrolPoint);
+		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, *(FString::Printf(TEXT("Current patrol point %d"), CurrentTargetPatrolPoints)));
 
 		BlackboardComponent->SetValueAsVector("PatrolLocation", NextTargetAIPatrolPoint->GetActorLocation());
 	}
@@ -68,18 +107,24 @@ void AMyIAController::SetNextTargetAIPatrolPoint(AActor * NextTargetAIPatrolPoin
 	}
 }
 
-AActor * AMyIAController::GetRandomAIPatrolPoint(bool ExcludeCurrentPosition)
+AIAPatrolPoint * AIAPawnController::GetRandomAIPatrolPoint(bool ExcludeCurrentPosition)
 {
+	if(PatrolPoints.Num() <= 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("List patrol point is empty") );
+		return nullptr;
+	}
+	
 	int IndexNextPosition;
 	//Si on souhaite une position random autre que celle déjà occupée par l'IA. Il faut également que l'IA est déjà une
 	//position de départ pour pouvoir l'exclure
-	if(ExcludeCurrentPosition && CurrentPatrolPoints>=0)
+	if(ExcludeCurrentPosition && CurrentTargetPatrolPoints>=0)
 	{
 		//On veut compris entre 0 et count-1, mais avec count = count - 1(position occupée à exclure)
 		IndexNextPosition = FMath::RandRange(0, GetPatrolPoints().Num()-2);
 		//Si le nombre obtenu est supérieur ou égal à l'index de la position courante, alors on l'incrémente car l'index
 		//des positions supérieures est faussé par le fait qu'on est random sur "count-2" et non sur "count-1" 
-		if(IndexNextPosition >= CurrentPatrolPoints)
+		if(IndexNextPosition >= CurrentTargetPatrolPoints)
 		{
 			IndexNextPosition++;
 		}		
@@ -94,6 +139,12 @@ AActor * AMyIAController::GetRandomAIPatrolPoint(bool ExcludeCurrentPosition)
 	{
 		IndexNextPosition = GetPatrolPoints().Num();
 	}
+	
 	return  PatrolPoints[IndexNextPosition];
+}
+
+AIAPatrolPoint * AIAPawnController::GetUnSpawnPatrolPoint() const
+{
+	return UnSpawnPatrolPoint;
 }
 

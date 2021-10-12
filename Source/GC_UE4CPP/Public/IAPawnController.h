@@ -4,17 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "AIPatrolPoint.h"
+#include "IAPatrolPoint.h"
 #include "IACharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
-#include "MyIAController.generated.h"
+#include "IAPawnController.generated.h"
 
 /**
  * 
  */
+
+class AIAPawnManager;
+
 UCLASS()
-class GC_UE4CPP_API AMyIAController : public AAIController
+class GC_UE4CPP_API AIAPawnController : public AAIController
 {
 	GENERATED_BODY()
 
@@ -35,22 +38,31 @@ class GC_UE4CPP_API AMyIAController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 	FName PlayerKey; // reference to the players location
 
-	
 	public:
-	AMyIAController (const FObjectInitializer & ObjectInitializer);
+	AIAPawnController (const FObjectInitializer & ObjectInitializer);
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComponent() const { return BlackboardComponent; }
-	FORCEINLINE TArray<AActor*> GetPatrolPoints() const { return PatrolPoints; }
+	FORCEINLINE TArray<AIAPatrolPoint*> GetPatrolPoints() const { return PatrolPoints; }
 
-	void SetNextTargetAIPatrolPoint(AActor * NextTargetAIPatrolPoint);
-	AActor * GetRandomAIPatrolPoint(bool ExcludeCurrentPosition);
 	
+	void SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint);
+	
+	AIAPatrolPoint * GetNextAIPatrolPoint();
+	AIAPatrolPoint * GetRandomAIPatrolPoint(bool ExcludeCurrentPosition);
+	AIAPatrolPoint * GetUnSpawnPatrolPoint() const;
+
 	protected:
+		bool Initialize(AIAPawnManager* IAPawnManagerSpawner, APawn* InPawn, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * UnSpawnPatrolPoint);
+
 		virtual void OnPossess(APawn* InPawn) override;
 		virtual void OnUnPossess() override;
 
 	private:
-		TArray<AActor*> PatrolPoints;
-		int CurrentPatrolPoints=-1;
+		TArray<AIAPatrolPoint*> PatrolPoints;
+		AIAPatrolPoint* UnSpawnPatrolPoint;
+	
+		int CurrentTargetPatrolPoints=-1;
+		AIAPawnManager * IAPawnerManager;
 
 };
+
