@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "IAPawnController.h"
 #include "IASpotFoodPoint.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "IAEnnemyCharacterController.generated.h"
 
 
@@ -19,6 +20,8 @@ class GC_UE4CPP_API AIAEnnemyCharacterController : public AIAPawnController
 	GENERATED_BODY()
 
 public:
+	AIAEnnemyCharacterController(const FObjectInitializer & ObjectInitializer);
+	
 	bool Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn);
 	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
 	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
@@ -26,4 +29,8 @@ public:
 private:
 	unsigned int NbRetriesBeforeBack;
 	AIAEnnemyManager* IAEnnemyManager;
+
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionComponent* AI_PerceptionComponent;
+
 };

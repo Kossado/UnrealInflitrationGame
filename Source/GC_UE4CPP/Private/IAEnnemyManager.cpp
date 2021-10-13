@@ -107,9 +107,16 @@ void AIAEnnemyManager::SpawnIARandomTime(int TimeMin, int TimeMax)
 		
 	int TimeSpawnNewIA = FMath::RandRange(TimeMin, TimeMax);
 
-	GLog->Log("random time is " + TimeSpawnNewIA);
-	FTimerHandle OutHandle;
-	GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyManager::SpawnPawn, TimeSpawnNewIA);
+	if(TimeSpawnNewIA <= 0)
+	{
+		SpawnPawn();
+	}
+
+	else
+	{
+		FTimerHandle OutHandle;
+		GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyManager::SpawnPawn, TimeSpawnNewIA);
+	}
 }
 
 // Called every frame

@@ -8,13 +8,11 @@
 #include "StaticMeshAttributes.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Perception/AIPerceptionComponent.h"
 
 AIAPawnController::AIAPawnController (const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
 {
 	Blackboard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
 	BehaviorComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviourTree");
-	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("Perception");
 	
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;

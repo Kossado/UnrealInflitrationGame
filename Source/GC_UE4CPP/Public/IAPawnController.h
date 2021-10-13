@@ -7,7 +7,6 @@
 #include "IAPatrolPoint.h"
 #include "IACharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
-#include "Perception/AISenseConfig_Sight.h"
 #include "IAPawnController.generated.h"
 
 /**

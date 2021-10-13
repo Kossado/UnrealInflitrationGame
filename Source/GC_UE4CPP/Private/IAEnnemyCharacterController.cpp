@@ -5,6 +5,32 @@
 #include "IAEnnemyManager.h"
 #include "IASpotFoodPoint.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+
+DECLARE_DYNAMIC_DELEGATE() FPerceptionUpdatedDelegate 
+
+AIAEnnemyCharacterController::AIAEnnemyCharacterController(const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
+{
+	AI_PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AiPerceptionComponent");
+	PerceptionComponent=AI_PerceptionComponent;
+	UAISenseConfig_Sight * AI_ConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>("AiConfigSight");
+	
+	if(AI_PerceptionComponent)
+	{
+		AI_ConfigSight->SightRadius = 1000.0f;
+		AI_ConfigSight->LoseSightRadius = 1000.0f;
+		AI_ConfigSight->PeripheralVisionAngleDegrees = 135.f;
+		AI_ConfigSight->DetectionByAffiliation.bDetectFriendlies=false;
+		AI_ConfigSight->DetectionByAffiliation.bDetectNeutrals=false;
+		AI_ConfigSight->DetectionByAffiliation.bDetectEnemies=true;
+	
+		AI_PerceptionComponent->ConfigureSense(*AI_ConfigSight);
+		AI_PerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
+		AI_PerceptionComponent->OnPerceptionUpdated = 
+	}
+}
+
 
 bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn)
 {
