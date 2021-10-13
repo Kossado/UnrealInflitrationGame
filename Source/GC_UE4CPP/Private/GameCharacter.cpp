@@ -86,6 +86,13 @@ void AGameCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	if(Food && FoodToPick == nullptr)
 	{
 		FoodToPick = Food;
+	}else
+	{
+		AChest* Chest = Cast<AChest>(OtherActor);
+		if(Chest)
+		{
+			ChestInFront = Chest;
+		}
 	}
 }
 
@@ -96,23 +103,36 @@ void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	if(FoodToPick == Food)
 	{
 		FoodToPick = nullptr;
+	}else
+	{
+		AChest* Chest = Cast<AChest>(OtherActor);
+		if(Chest == ChestInFront)
+		{
+			ChestInFront = nullptr;
+		}
 	}
 }
 
 void AGameCharacter::Interact()
 {
-	if(FoodToPick != nullptr && CarriedFood == nullptr)
-	{
-		CarryFood(FoodToPick);
-	}else if(FoodToPick == nullptr && CarriedFood != nullptr)
+	// When "E" key is pressed ...
+	//... Drop food in hand if not empty handed ...
+	if(CarriedFood != nullptr)
 	{
 		DropFood();
-	}else if(FoodToPick != nullptr && CarriedFood!=nullptr)
+		// Increment score if chest in front of the character
+		if(ChestInFront != nullptr)
+		{
+			MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			//MainGameMode = Cast<AMainGameMode>(GetWorld()->GetAuthGameMode());
+			if(MainGameMode)
+				MainGameMode->IncrementStoredFood();
+		}
+	}else if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
-		// Swap food with the other one
-		DropFood();
 		CarryFood(FoodToPick);
 	}
+	
 	
 }
 
@@ -127,11 +147,6 @@ void AGameCharacter::DropFood()
 		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
-		// ONLY FOR TEST PURPOSE - TO DELETE
-		//MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		MainGameMode = Cast<AMainGameMode>(GetWorld()->GetAuthGameMode());
-		if(MainGameMode)
-			MainGameMode->IncrementStoredFood();
 	}
 }
 

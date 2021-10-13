@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Chest.h"
 #include "Food.h"
 #include "GameFramework/Character.h"
 #include "MainGameMode.h"
@@ -53,6 +54,8 @@ private:
 	AFood* FoodToPick = nullptr;
 	// Carried food (might be null)
 	AFood* CarriedFood = nullptr;
+	// Chest to detect = in Overlap
+	AChest* ChestInFront = nullptr;
 	// Characters Speed handfree
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food

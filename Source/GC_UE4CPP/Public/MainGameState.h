@@ -19,7 +19,7 @@ enum EGameState
 };
 
 UCLASS()
-class GC_UE4CPP_API AMainGameState : public AGameStateBase
+class GC_UE4CPP_API AMainGameState : public AGameState
 {
 	GENERATED_BODY()
 	
