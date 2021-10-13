@@ -33,7 +33,7 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 
 	PatrolPoints = ListPatrolPoints;
 	UnSpawnPatrolPoint = SetUnSpawnPatrolPoint;
-	Blackboard->SetValueAsVector("LocationUnSpawn", SetUnSpawnPatrolPoint->GetActorLocation());
+
 
 	AIACharacter * AICharacter = Cast<AIACharacter>(GetCharacter());
 
@@ -43,6 +43,7 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 		{
 			Blackboard->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
 			Blackboard->SetValueAsBool("NeedNewSpot", true);
+			Blackboard->SetValueAsVector("LocationUnSpawn", UnSpawnPatrolPoint->GetActorLocation());
 		}
 	}
 	
@@ -81,6 +82,12 @@ void AIAPawnController::OnUnPossess()
 	Super::OnUnPossess();
 	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Red, "On UnPossess");
 }
+
+AIAPawnManager * AIAPawnController::GetIAPawnManager() const
+{
+	return IAPawnerManager;	
+}
+
 
 AIAPatrolPoint * AIAPawnController::GetCurrentAIPatrolPoint()
 {

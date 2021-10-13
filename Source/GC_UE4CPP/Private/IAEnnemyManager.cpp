@@ -5,6 +5,7 @@
 
 #include "IACharacter.h"
 #include "IAEnnemyCharacterController.h"
+#include "Math/UnrealMathUtility.h"
 
 
 // Sets default values
@@ -24,8 +25,18 @@ void AIAEnnemyManager::BeginPlay()
 	GLog->Log("launch timer");
 
 	//Will call SpawnUsefulActor after the specified time
-	GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyManager::SpawnPawn, 2);
+	for(int i = 0; i < NbIAStartingGame; i++)
+	{
+		SpawnPawn();
+	}
+
+
+	if(TimeToPop3rdIA >= 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyManager::SpawnPawn, TimeToPop3rdIA);
+	}
 }
+
 
 void AIAEnnemyManager::SpawnPawn()
 {
@@ -56,17 +67,50 @@ void AIAEnnemyManager::SpawnPawn()
 
 			AIAEnnemyCharacterController * ControllerIA = dynamic_cast<AIAEnnemyCharacterController*>(ActorControllerRef);
 			ControllerIA->Initialize(this, ListSpotFood, UnSpawnAIPatrolPoint, NbRetriesSpotBeforeBack);
+
+			ListIAControllerOnScene.Add(ControllerIA);
 		}
 	}	
 }
 
-void AIAEnnemyManager::UnSpawnIA(AIAEnnemyCharacterController* UnSpawnIA)
+void AIAEnnemyManager::UnSpawnIAAndPrepareRespawn(AIAEnnemyCharacterController* IAToDestroy)
 {
-	Super::UnSpawnIA(UnSpawnIA);
-	GLog->Log("UnSpawned Ennemy " + UnSpawnIA->GetName());
+	UnSpawnIA(IAToDestroy);
 
+	if(ListIAControllerOnScene.Num() <= 0)
+	{
+		GLog->Log("spawn immediately");
+		SpawnPawn();
+	}
+
+	else
+	{
+		GLog->Log("random time");
+		SpawnIARandomTime(TimeMinBetweenRepopIA, TimeMaxBetweenRepopIA);
+	}
 }
 
+void AIAEnnemyManager::UnSpawnIA(AIAEnnemyCharacterController* UnSpawnIA)
+{
+	if(ListIAControllerOnScene.Contains(UnSpawnIA))
+	{
+		ListIAControllerOnScene.Remove(UnSpawnIA);	
+	}
+	
+	Super::UnSpawnIA(UnSpawnIA->GetCharacter());		
+}
+
+void AIAEnnemyManager::SpawnIARandomTime(int TimeMin, int TimeMax)
+{
+	TimeMin=(TimeMin< 0)?0:TimeMin;
+	TimeMax=(TimeMax< 0)?5:TimeMax;
+		
+	int TimeSpawnNewIA = FMath::RandRange(TimeMin, TimeMax);
+
+	GLog->Log("random time is " + TimeSpawnNewIA);
+	FTimerHandle OutHandle;
+	GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyManager::SpawnPawn, TimeSpawnNewIA);
+}
 
 // Called every frame
 void AIAEnnemyManager::Tick(float DeltaTime)

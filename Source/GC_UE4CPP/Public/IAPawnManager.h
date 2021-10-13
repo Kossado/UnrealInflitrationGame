@@ -22,6 +22,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	AIAPatrolPoint* UnSpawnAIPatrolPoint;
+	bool UnSpawnIA(AActor* UnSpawnIA); 
 
 private:
 
@@ -29,6 +30,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void UnSpawnIA(AActor* UnSpawnIA); 
 
 };

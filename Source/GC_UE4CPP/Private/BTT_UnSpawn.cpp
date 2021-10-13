@@ -2,4 +2,31 @@
 
 
 #include "BTT_UnSpawn.h"
+#include "IAEnnemyCharacterController.h"
+#include "IAEnnemyManager.h"
+#include "BehaviorTree/BlackboardData.h"
 
+EBTNodeResult::Type UBTT_UnSpawn::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
+{
+	if(AIAEnnemyCharacterController * IAController = Cast<AIAEnnemyCharacterController>(OwnerComp.GetAIOwner()))
+	{
+		AIAEnnemyManager * EnnemyManager =IAController->GetIAEnnemyManager();
+
+		if(EnnemyManager == nullptr)
+		{
+			return EBTNodeResult::Failed;
+		}
+		
+		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "Unspawn " + IAController->GetCharacter()->GetName());
+
+		EnnemyManager->UnSpawnIAAndPrepareRespawn(IAController);
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get IAController from BehaviorTree"));
+	}
+	
+	return EBTNodeResult::Succeeded;
+
+}

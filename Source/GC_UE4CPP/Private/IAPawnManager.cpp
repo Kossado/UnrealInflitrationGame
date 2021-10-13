@@ -18,10 +18,10 @@ void AIAPawnManager::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AIAPawnManager::UnSpawnIA(AActor* UnSpawnIA)
+bool AIAPawnManager::UnSpawnIA(AActor* UnSpawnIA)
 {
 	GLog->Log("Pawn UnSpawned  " + UnSpawnIA->GetName());
-
+	return UnSpawnIA->Destroy();
 }
 
 

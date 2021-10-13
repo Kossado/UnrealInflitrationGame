@@ -36,17 +36,32 @@ private:
 		TSubclassOf<AIACharacter> BP_CharacterIA;
 
 	UPROPERTY(EditAnywhere)
-		unsigned int NbRetriesSpotBeforeBack=0;
+		unsigned int NbRetriesSpotBeforeBack=2;
+
+	UPROPERTY(EditAnywhere)
+	int NbIAStartingGame=2;
+
+	UPROPERTY(EditAnywhere)
+	int TimeToPop3rdIA=60;
+
+	UPROPERTY(EditAnywhere)
+	unsigned int TimeMinBetweenRepopIA=0;
 	
-	//
-	// UPROPERTY(EditAnywhere)
-	// TSubclassOf<AIAEnnemyCharacterController> BP_ControllerIA;
+	UPROPERTY(EditAnywhere)
+	unsigned int TimeMaxBetweenRepopIA=5;
+
+	TArray<AIAEnnemyCharacterController*> ListIAControllerOnScene;
+
 	
 	virtual void SpawnPawn();
+
+	void SpawnIARandomTime(int TimeMin, int TimeMax);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void UnSpawnIA(AIAEnnemyCharacterController* UnSpawnIA); 
-
+	void UnSpawnIA(AIAEnnemyCharacterController* UnSpawnIA);
+	void UnSpawnIAAndPrepareRespawn(AIAEnnemyCharacterController* UnSpawnIA);
+	
 };

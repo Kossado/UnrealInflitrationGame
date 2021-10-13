@@ -50,6 +50,8 @@ class GC_UE4CPP_API AIAPawnController : public AAIController
 	AIAPatrolPoint * GetRandomAIPatrolPoint(bool ExcludeCurrentPosition);
 	AIAPatrolPoint * GetUnSpawnPatrolPoint() const;
 
+	AIAPawnManager * GetIAPawnManager() const;
+
 protected:
 	bool Initialize(AIAPawnManager* IAPawnManagerSpawner, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * UnSpawnPatrolPoint);
 	void SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint);

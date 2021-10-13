@@ -22,6 +22,8 @@ public:
 	bool Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn);
 	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
 	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
+	AIAEnnemyManager* GetIAEnnemyManager() const;
 private:
 	unsigned int NbRetriesBeforeBack;
+	AIAEnnemyManager* IAEnnemyManager;
 };

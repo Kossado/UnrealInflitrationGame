@@ -13,6 +13,7 @@ bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerS
 		return false;
 	}
 
+	IAEnnemyManager = IAEnnemyManagerSpawner;
 	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
 
 	return true;
@@ -34,6 +35,11 @@ bool AIAEnnemyCharacterController::IsSpotHasFood(AIASpotFoodPoint * SpotFood)
 	{
 		return false;
 	}
+}
+
+AIAEnnemyManager* AIAEnnemyCharacterController::GetIAEnnemyManager() const
+{
+	return IAEnnemyManager;
 }
 
 void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint)
