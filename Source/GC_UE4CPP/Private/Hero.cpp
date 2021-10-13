@@ -39,16 +39,17 @@ CameraZoomSteps(45.f)
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character rotate in the direction of input ...
-	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	
+	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate	
 }
 
 // Called when the game starts or when spawned
 void AHero::BeginPlay()
 {
 	Super::BeginPlay();
-	CurrentFood = 0;
+	
+	AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	InGameInterface->UpdateCurrentFood(2);
+	
 	CamZoomDestination = CameraStick->TargetArmLength;
 }
 
@@ -57,7 +58,7 @@ void AHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SmoothZoom(DeltaTime);
-	UpdateFood();
+
 }
 
 // Called to bind functionality to input
@@ -78,23 +79,6 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	//Setting up Zoom In/Out
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AHero::ZoomIn);
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AHero::ZoomOut);
-}
-
-void AHero::CarryFood(AFood* FoodToCarry)
-{
-	if(FoodToCarry)
-	{
-		FoodToCarry->GetAreaSphere()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		//Get the Hand Socket
-		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
-		if(HandSocket)
-		{
-			// Attach food to the hand socket
-			HandSocket->AttachActor(FoodToCarry,GetMesh());
-		}
-		CarriedFood = FoodToCarry;
-		FoodToCarry->SetFoodState(EFoodState::EFS_PickedUp);
-	}
 }
 
 void AHero::MoveForward(float Value)
@@ -121,18 +105,6 @@ void AHero::MoveRight(float Value)
 	}
 }
 
-/*void AHero::TurnRate(float Value)
-{
-	//CameraStick->SetRelativeRotation(CameraStick->GetRelativeRotation() + FRotator(0.f,Value,0.f));
-	AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds()); // deg/sec * sec/frame = deg/frame
-}
-
-void AHero::LookUpRate(float Value)
-{
-	//CameraStick->SetRelativeRotation(CameraStick->GetRelativeRotation() - FRotator(Value,0.f,0.f));
-	AddControllerPitchInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds()); // deg/sec * sec/frame = deg/frame
-}*/
-
 void AHero::ZoomIn()
 {
 	CamZoomDestination = FMath::Clamp(CameraStick->TargetArmLength - CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
@@ -157,16 +129,11 @@ void AHero::SmoothZoom(float DeltaTime)
 	}
 }
 
-float AHero::GetCurrentFood()
-{
-	return CurrentFood;
-}
-
-void AHero::UpdateFood()
+/*void AHero::UpdateFood()
 {
 	FVector positionHero = GetActorLocation();
 	//FVector positionHero = GetMesh();
-	if (positionHero.X < -150)
+	if (positionHero.X < -1500)
 	{
 		AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		InGameInterface->UpdateCurrentFood(positionHero.X);
@@ -177,6 +144,6 @@ void AHero::UpdateFood()
 			//InGameInterface->UpdateCurrentFood(CurrentFood);
 		}
 	}
-}
+}*/
 
 

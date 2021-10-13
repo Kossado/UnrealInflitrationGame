@@ -15,8 +15,14 @@ void UScoreWidget::NativeConstruct()
 
 void UScoreWidget::UpdateCurrentFood(int32 value)
 {
-	if(TXTCombo)
+	if(UIProgression)
+	{
+		//TXTCombo->SetText(FText::FromString(FString::FromInt(value) + "x Combo"));
+		UIProgression->SetPercent(value * 0.20f);
+	}
+
+	/*if(TXTCombo)
 	{
 		TXTCombo->SetText(FText::FromString(FString::FromInt(value) + "x Combo"));
-	}
+	}*/
 }
