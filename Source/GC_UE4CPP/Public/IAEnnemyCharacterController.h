@@ -27,6 +27,10 @@ public:
 	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
 	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
 	AIAEnnemyManager* GetIAEnnemyManager() const;
+
+	//We override the basic function because the parent function compare this IA controller with actor seen (here it's IA Character)
+	//So we go get the controller of this actor and thus compare the both controllers with have both an TeamID while IACharacter doesn't have one
+	//and return neutral team if we compare with IACharacter
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	UFUNCTION()
