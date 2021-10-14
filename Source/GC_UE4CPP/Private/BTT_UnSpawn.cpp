@@ -1,23 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTT_FindRandomPatrol.h"
-
+#include "BTT_UnSpawn.h"
 #include "IAEnnemyCharacterController.h"
+#include "IAEnnemyManager.h"
 #include "BehaviorTree/BlackboardData.h"
 
-EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
+EBTNodeResult::Type UBTT_UnSpawn::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
 	if(AIAEnnemyCharacterController * IAController = Cast<AIAEnnemyCharacterController>(OwnerComp.GetAIOwner()))
 	{
-		AIASpotFoodPoint * NextAIPatrolPoint = dynamic_cast<AIASpotFoodPoint*>(IAController->GetRandomAIPatrolPoint(true));
+		AIAEnnemyManager * EnnemyManager =IAController->GetIAEnnemyManager();
 
-		if(NextAIPatrolPoint == nullptr)
+		if(EnnemyManager == nullptr)
 		{
 			return EBTNodeResult::Failed;
 		}
 		
-		IAController->SetNextTargetAIPatrolPoint(NextAIPatrolPoint);
+		EnnemyManager->UnSpawnIAAndPrepareRespawn(IAController);
 	}
 
 	else
@@ -28,4 +28,3 @@ EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & 
 	return EBTNodeResult::Succeeded;
 
 }
-
