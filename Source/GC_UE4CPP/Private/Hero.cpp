@@ -76,6 +76,9 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	//Setting up Zoom In/Out
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AHero::ZoomIn);
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AHero::ZoomOut);
+
+	// Setting up Menu Inputs
+	PlayerInputComponent->BindAction("InvokeMenu", IE_Pressed, this, &AHero::InvokeMenu);
 }
 
 void AHero::MoveForward(float Value)
@@ -124,6 +127,13 @@ void AHero::SmoothZoom(float DeltaTime)
 			CameraZoomSpeed//Speed
 			);
 	}
+}
+
+void AHero::InvokeMenu()
+{
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(GameMode)
+		GameMode->RestartGame();
 }
 
 /*void AHero::UpdateFood()

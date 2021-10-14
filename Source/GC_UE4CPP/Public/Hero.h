@@ -67,5 +67,7 @@ protected:
 	void ZoomOut();
 	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
 	void SmoothZoom(float DeltaTime);
+	// Menu Function
+	void InvokeMenu();
 
 };

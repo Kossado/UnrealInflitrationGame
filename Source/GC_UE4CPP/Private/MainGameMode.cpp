@@ -34,6 +34,11 @@ void AMainGameMode::StartPlay()
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
+void AMainGameMode::RestartGame()
+{
+	Super::RestartGame();
+}
+
 EGameState AMainGameMode::GetCurrentGameState() const
 {
 	return GetGameState<AMainGameState>()->CurrentGameState;

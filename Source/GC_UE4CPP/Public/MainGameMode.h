@@ -22,6 +22,7 @@ public:
 	
 	virtual void InitGameState() override;
 	virtual void StartPlay() override;
+	virtual void RestartGame() override;
 
 	// Getters
 	EGameState GetCurrentGameState() const;
