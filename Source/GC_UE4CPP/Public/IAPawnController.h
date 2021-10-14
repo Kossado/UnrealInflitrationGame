@@ -55,7 +55,6 @@ protected:
 	bool Initialize(AIAPawnManager* IAPawnManagerSpawner, const TArray<AIAPatrolPoint *> ListPatrolPoints, AIAPatrolPoint * UnSpawnPatrolPoint);
 	void SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAIPatrolPoint);
 
-	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
 private:

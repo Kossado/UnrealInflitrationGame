@@ -8,14 +8,14 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
-DECLARE_DYNAMIC_DELEGATE() FPerceptionUpdatedDelegate 
 
 AIAEnnemyCharacterController::AIAEnnemyCharacterController(const FObjectInitializer & ObjectInitializer) : Super(ObjectInitializer)
 {
 	AI_PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AiPerceptionComponent");
 	PerceptionComponent=AI_PerceptionComponent;
 	UAISenseConfig_Sight * AI_ConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>("AiConfigSight");
-	
+	SetGenericTeamId(FGenericTeamId(1));
+
 	if(AI_PerceptionComponent)
 	{
 		AI_ConfigSight->SightRadius = 1000.0f;
@@ -27,7 +27,7 @@ AIAEnnemyCharacterController::AIAEnnemyCharacterController(const FObjectInitiali
 	
 		AI_PerceptionComponent->ConfigureSense(*AI_ConfigSight);
 		AI_PerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
-		AI_PerceptionComponent->OnPerceptionUpdated = 
+		AI_PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AIAEnnemyCharacterController::SightPlayer);
 	}
 }
 
@@ -39,8 +39,11 @@ bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerS
 		return false;
 	}
 
+	
+
 	IAEnnemyManager = IAEnnemyManagerSpawner;
 	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("TeamId %d"), GetGenericTeamId().GetId()));
 
 	return true;
 }
@@ -66,6 +69,13 @@ bool AIAEnnemyCharacterController::IsSpotHasFood(AIASpotFoodPoint * SpotFood)
 AIAEnnemyManager* AIAEnnemyCharacterController::GetIAEnnemyManager() const
 {
 	return IAEnnemyManager;
+}
+
+void AIAEnnemyCharacterController::SightPlayer(const TArray<AActor*>& UpdateActors)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, "Player seen " +  GetGenericTeamId());
+
+	
 }
 
 void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint)

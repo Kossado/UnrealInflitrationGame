@@ -53,28 +53,6 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 	return true;
 }
 
-void AIAPawnController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	// IAPawnerManager->UnSpawnIA(this);
-	// AIACharacter * AICharacter = Cast<AIACharacter>(InPawn);
-	//
-	// if(AICharacter)
-	// {
-	// 	if(AICharacter->BehaviourTree->BlackboardAsset)
-	// 	{
-	// 		BlackboardComponent->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
-	// 	}
-	// }
-	//
-	// GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
-	//
-	//
-	// BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
-
-}
-
 void AIAPawnController::OnUnPossess()
 {
 	Super::OnUnPossess();
