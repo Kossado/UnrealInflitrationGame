@@ -17,8 +17,6 @@ EBTNodeResult::Type UBTT_UnSpawn::ExecuteTask(UBehaviorTreeComponent & OwnerComp
 			return EBTNodeResult::Failed;
 		}
 		
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "Unspawn " + IAController->GetCharacter()->GetName());
-
 		EnnemyManager->UnSpawnIAAndPrepareRespawn(IAController);
 	}
 

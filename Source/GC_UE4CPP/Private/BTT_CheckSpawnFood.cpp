@@ -17,8 +17,6 @@ EBTNodeResult::Type UBTT_CheckSpawnFood::ExecuteTask(UBehaviorTreeComponent & Ow
 			return EBTNodeResult::Failed;
 		}
 		
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "Current position " + CurrentAIPatrolPoint->GetName());
-
 		IAController->GetBlackboardComponent()->SetValueAsBool("NeedNewSpot", !IAController->IsSpotHasFood(CurrentAIPatrolPoint));
 	}
 

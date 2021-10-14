@@ -17,8 +17,6 @@ EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & 
 			return EBTNodeResult::Failed;
 		}
 		
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, "Next position " + NextAIPatrolPoint->GetName());
-
 		IAController->SetNextTargetAIPatrolPoint(NextAIPatrolPoint);
 	}
 

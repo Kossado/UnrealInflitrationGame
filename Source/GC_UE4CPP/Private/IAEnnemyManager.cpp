@@ -68,7 +68,11 @@ void AIAEnnemyManager::SpawnPawn()
 			AIAEnnemyCharacterController * ControllerIA = dynamic_cast<AIAEnnemyCharacterController*>(ActorControllerRef);
 			ControllerIA->Initialize(this, ListSpotFood, UnSpawnAIPatrolPoint, NbRetriesSpotBeforeBack);
 
-			ListIAControllerOnScene.Add(ControllerIA);
+			if(ListIAControllerOnScene.Num() > 0 )
+			{
+				GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListIAControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerIA)));
+			}
+			ListIAControllerOnScene.Add(ControllerIA);			
 		}
 	}	
 }

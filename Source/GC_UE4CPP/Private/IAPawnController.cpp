@@ -27,7 +27,6 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 	}
 
 	IAPawnerManager = IAPawnerManagerSpawner;
-	UE_LOG(LogTemp, Warning, TEXT("List is %d"), ListPatrolPoints.Num());
 
 	PatrolPoints = ListPatrolPoints;
 	UnSpawnPatrolPoint = SetUnSpawnPatrolPoint;
@@ -44,10 +43,7 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 			Blackboard->SetValueAsVector("LocationUnSpawn", UnSpawnPatrolPoint->GetActorLocation());
 		}
 	}
-	
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, FString::Printf(TEXT("Size patrol %d"), PatrolPoints.Num()));
-
-	
+		
 	BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
 	
 	return true;
@@ -56,7 +52,6 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 void AIAPawnController::OnUnPossess()
 {
 	Super::OnUnPossess();
-	GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Red, "On UnPossess");
 }
 
 AIAPawnManager * AIAPawnController::GetIAPawnManager() const
@@ -123,7 +118,6 @@ void AIAPawnController::SetNextTargetAIPatrolPoint(AIAPatrolPoint * NextTargetAI
 	if(PatrolPoints.Contains(NextTargetAIPatrolPoint))
 	{
 		CurrentTargetPatrolPoints = PatrolPoints.Find(NextTargetAIPatrolPoint);
-		GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green, *(FString::Printf(TEXT("Current patrol point %d"), CurrentTargetPatrolPoints)));		
 	}
 
 	else

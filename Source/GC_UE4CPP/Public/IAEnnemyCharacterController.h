@@ -27,6 +27,7 @@ public:
 	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
 	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
 	AIAEnnemyManager* GetIAEnnemyManager() const;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	UFUNCTION()
 	void SightPlayer(const TArray<AActor*>& UpdateActors);
