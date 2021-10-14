@@ -22,9 +22,6 @@ public:
 	
 	void UpdateCurrentFood(int32 value);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UProgressBar* UIProgression;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* TXTCombo;*/
 };

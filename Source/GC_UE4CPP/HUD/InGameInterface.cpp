@@ -11,9 +11,9 @@ AInGameInterface::AInGameInterface()
 void AInGameInterface::BeginPlay()
 {
 	Super::BeginPlay();
-	if (ComboWidgetClass)
+	if (ScoreWidgetClass)
 	{
-		ScoreWidget = CreateWidget<UScoreWidget>(GetWorld(), ComboWidgetClass);
+		ScoreWidget = CreateWidget<UScoreWidget>(GetWorld(), ScoreWidgetClass);
 		if (ScoreWidget)
 		{
 			ScoreWidget->AddToViewport();

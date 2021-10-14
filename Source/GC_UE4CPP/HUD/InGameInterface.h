@@ -29,7 +29,7 @@ public:
 		void UpdateCurrentFood(int32 value);
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
-		TSubclassOf<UUserWidget> ComboWidgetClass;
+		TSubclassOf<UUserWidget> ScoreWidgetClass;
 
 private:
 	UScoreWidget* ScoreWidget;
