@@ -116,11 +116,6 @@ void AGameCharacter::Interact()
 	if(CarriedFood != nullptr)
 	{
 		DropFood();
-		// Increment score if chest in front of the character
-		if(ChestInFront != nullptr)
-		{
-			StoreFood();
-		}
 	}else if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
 		CarryFood(FoodToPick);
@@ -131,8 +126,9 @@ void AGameCharacter::Interact()
 
 void AGameCharacter::StoreFood()
 {
+	CarriedFood->SetActorLocation(ChestInFront->GetValidStoredPosition());
+	CarriedFood->SetActorRotation(FRotator(90.f,90.f,0.f));
 	MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	//MainGameMode = Cast<AMainGameMode>(GetWorld()->GetAuthGameMode());
 	if(MainGameMode)
 		MainGameMode->IncrementStoredFood();
 }
@@ -146,8 +142,11 @@ void AGameCharacter::DropFood()
 		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
 		// Change food state (Re-enable collisions,...)
 		if(ChestInFront)
+		{
 			CarriedFood->SetFoodState(EFS_Stored);
-		else	
+			StoreFood();
+		}
+		else
 			CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
