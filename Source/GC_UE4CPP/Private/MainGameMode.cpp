@@ -87,7 +87,9 @@ void AMainGameMode::CheckGameConditions()
 
 void AMainGameMode::DisableCharacterInput()
 {
+	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
+
 	// method to pause the game -> Will be useful for the menu, TO DELETE HERE
 	//UGameplayStatics::SetGamePaused(GetWorld(),true);
 	

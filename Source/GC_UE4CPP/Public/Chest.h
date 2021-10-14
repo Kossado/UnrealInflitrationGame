@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
 #include "GameFramework/Actor.h"
 #include "Chest.generated.h"
 
@@ -26,7 +27,8 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ChestMesh;
-	
-	TArray<UChildActorComponent*> FoodPosition;
+
+	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* FoodPlaceholder;
 
 };

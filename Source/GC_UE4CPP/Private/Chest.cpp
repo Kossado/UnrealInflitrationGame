@@ -13,10 +13,8 @@ AChest::AChest()
 	ChestMesh->SetupAttachment(RootComponent);
 	ChestMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	// Setup food position in chest
-	for(int i = 5; i < FoodPosition.Num();i++)
-	{
-		
-	}
+	FoodPlaceholder = CreateDefaultSubobject<USceneComponent>(FName("Food Placeholder"));
+	
 }
 
 // Called when the game starts or when spawned
