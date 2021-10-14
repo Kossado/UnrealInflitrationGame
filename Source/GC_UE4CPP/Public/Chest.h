@@ -26,5 +26,7 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ChestMesh;
+	
+	TArray<UChildActorComponent*> FoodPosition;
 
 };

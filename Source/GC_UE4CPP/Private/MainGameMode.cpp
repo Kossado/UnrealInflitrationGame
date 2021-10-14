@@ -4,12 +4,14 @@
 #include "MainGameMode.h"
 
 #include "Hero.h"
+#include "PlayerControllerTeam.h"
 #include "Kismet/GameplayStatics.h"
 
 AMainGameMode::AMainGameMode()
 {
 	// Define default classes
 	GameStateClass = AMainGameState::StaticClass();
+	PlayerControllerClass = APlayerControllerTeam::StaticClass();
 }
 
 void AMainGameMode::InitGameState()

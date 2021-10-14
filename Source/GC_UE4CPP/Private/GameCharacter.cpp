@@ -144,7 +144,10 @@ void AGameCharacter::DropFood()
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
 		// Change food state (Re-enable collisions,...)
-		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
+		if(ChestInFront)
+			CarriedFood->SetFoodState(EFS_Stored);
+		else	
+			CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 	}

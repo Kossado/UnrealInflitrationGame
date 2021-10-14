@@ -11,7 +11,8 @@ UENUM()
 enum EFoodState
 {
 	EFS_PickedUp,
-	EFS_Dropped
+	EFS_Dropped,
+	EFS_Stored
 };
 
 UCLASS()
