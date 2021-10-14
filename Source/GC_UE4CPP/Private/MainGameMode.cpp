@@ -31,8 +31,7 @@ void AMainGameMode::StartPlay()
 {
 	GetGameState<AMainGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"StartPlay");
+	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 EGameState AMainGameMode::GetCurrentGameState() const
@@ -63,6 +62,8 @@ void AMainGameMode::SetCurrentGameState(EGameState CurrentGameState) const
 void AMainGameMode::IncrementStoredFood()
 {
 	GetGameState<AMainGameState>()->StoredFood++;
+	if(InGameInterface)
+		InGameInterface->UpdateCurrentFood(GetStoredFood());
 	CheckGameConditions();
 }
 

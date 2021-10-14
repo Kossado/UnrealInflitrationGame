@@ -86,13 +86,11 @@ void AGameCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	if(Food && FoodToPick == nullptr)
 	{
 		FoodToPick = Food;
-	}else
+	}
+	AChest* Chest = Cast<AChest>(OtherActor);
+	if(Chest)
 	{
-		AChest* Chest = Cast<AChest>(OtherActor);
-		if(Chest)
-		{
-			ChestInFront = Chest;
-		}
+		ChestInFront = Chest;
 	}
 }
 
@@ -103,13 +101,11 @@ void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	if(FoodToPick == Food)
 	{
 		FoodToPick = nullptr;
-	}else
+	}
+	AChest* Chest = Cast<AChest>(OtherActor);
+	if(Chest == ChestInFront)
 	{
-		AChest* Chest = Cast<AChest>(OtherActor);
-		if(Chest == ChestInFront)
-		{
-			ChestInFront = nullptr;
-		}
+		ChestInFront = nullptr;
 	}
 }
 
@@ -123,10 +119,7 @@ void AGameCharacter::Interact()
 		// Increment score if chest in front of the character
 		if(ChestInFront != nullptr)
 		{
-			MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-			//MainGameMode = Cast<AMainGameMode>(GetWorld()->GetAuthGameMode());
-			if(MainGameMode)
-				MainGameMode->IncrementStoredFood();
+			StoreFood();
 		}
 	}else if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
@@ -134,6 +127,14 @@ void AGameCharacter::Interact()
 	}
 	
 	
+}
+
+void AGameCharacter::StoreFood()
+{
+	MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	//MainGameMode = Cast<AMainGameMode>(GetWorld()->GetAuthGameMode());
+	if(MainGameMode)
+		MainGameMode->IncrementStoredFood();
 }
 
 void AGameCharacter::DropFood()

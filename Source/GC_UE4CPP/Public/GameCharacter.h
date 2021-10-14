@@ -45,6 +45,8 @@ protected:
 	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void Interact();
+
+	void StoreFood();
 	
 private:
 	// Collision detection with items

@@ -12,8 +12,8 @@
 AHero::AHero():
 BaseTurnRate(45.f),
 BaseLookUpRate(45.f),
-MinCameraDistance(200.f),
-MaxCameraDistance(600.f),
+MinCameraDistance(100.f),
+MaxCameraDistance(900.f),
 CameraZoomSpeed(10.f),
 CameraZoomSteps(45.f)
 {
@@ -46,9 +46,6 @@ CameraZoomSteps(45.f)
 void AHero::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	InGameInterface->UpdateCurrentFood(2);
 	
 	CamZoomDestination = CameraStick->TargetArmLength;
 }

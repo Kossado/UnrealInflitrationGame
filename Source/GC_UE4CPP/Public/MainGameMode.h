@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MainGameState.h"
 #include "GameFramework/GameMode.h"
+#include "GC_UE4CPP/HUD/InGameInterface.h"
 #include "MainGameMode.generated.h"
 
 /**
@@ -34,6 +35,8 @@ public:
 	// Checks
 	void CheckGameConditions();
 	void DisableCharacterInput();
+	// UI
+	AInGameInterface* InGameInterface;
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY
