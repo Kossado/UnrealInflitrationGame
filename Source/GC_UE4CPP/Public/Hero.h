@@ -6,7 +6,6 @@
 #include "Food.h"
 #include "GameCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Hero.generated.h"
 
@@ -29,11 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	//UFUNCTION(BlueprintCallable, Category=Food)
-	//void UpdateFood();
-	
-	private:
+
+private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraStick;
@@ -60,22 +56,16 @@ public:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
 	float CamZoomDestination;
-	
-	// Current Food
-	//UPROPERTY(EditAnywhere, Category=Food);
-	//int CurrentFood;
 
 protected:
-
 	// Called for forward/backward input
 	void MoveForward(float Value);
 	// Called for right/left input
 	void MoveRight(float Value);
-	
-	void ZoomIn();
-	
+	// Called to setup the zoom's destination
+	void ZoomIn();	
 	void ZoomOut();
-
+	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
 	void SmoothZoom(float DeltaTime);
 
 };

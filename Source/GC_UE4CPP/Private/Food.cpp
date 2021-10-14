@@ -42,6 +42,11 @@ void AFood::SetFoodProperties(EFoodState State)
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			break;
+		case EFoodState::EFS_Stored:
+			StaticMesh->SetSimulatePhysics(false);
+			StaticMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+			StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			break;
 		default:
 			//Set mesh properties
 			StaticMesh->SetSimulatePhysics(true);

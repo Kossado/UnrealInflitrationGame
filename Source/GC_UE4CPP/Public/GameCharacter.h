@@ -35,8 +35,6 @@ public:
 	void CarryFood(AFood* FoodToCarry);
 	// Drop food on the ground
 	void DropFood();
-	// Drop food in the chest
-	void DropInChest();
 
 protected:
 	// Change speed according to the parameters
@@ -56,9 +54,8 @@ private:
 	AFood* FoodToPick = nullptr;
 	// Carried food (might be null)
 	AFood* CarriedFood = nullptr;
-	//
+	// Chest to detect = in Overlap
 	AChest* ChestInFront = nullptr;
-
 	// Characters Speed handfree
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food

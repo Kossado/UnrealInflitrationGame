@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MainGameState.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "MainGameMode.generated.h"
 
 /**
@@ -12,7 +12,7 @@
  */
 
 UCLASS()
-class GC_UE4CPP_API AMainGameMode : public AGameModeBase
+class GC_UE4CPP_API AMainGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
@@ -33,6 +33,7 @@ public:
 	void IncrementPickableFood();
 	// Checks
 	void CheckGameConditions();
+	void DisableCharacterInput();
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY

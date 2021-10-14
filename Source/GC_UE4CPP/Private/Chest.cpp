@@ -8,10 +8,13 @@ AChest::AChest()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	//Set up Mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static Mesh"));
-	SetRootComponent(StaticMesh);
+	// Setup Mesh Component
+	ChestMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Chest Mesh"));
+	ChestMesh->SetupAttachment(RootComponent);
+	ChestMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	// Setup food position in chest
+	FoodPlaceholder = CreateDefaultSubobject<USceneComponent>(FName("Food Placeholder"));
+	
 }
 
 // Called when the game starts or when spawned
