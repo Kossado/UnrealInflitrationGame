@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Food.h"
+#include "GameCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Hero.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AHero : public ACharacter
+class GC_UE4CPP_API AHero : public AGameCharacter
 {
 	GENERATED_BODY()
 
@@ -28,8 +29,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-private:
+	
+	//UFUNCTION(BlueprintCallable, Category=Food)
+	//void UpdateFood();
+	
+	private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraStick;
@@ -56,9 +60,10 @@ private:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
 	float CamZoomDestination;
-	// Carried food (might be null)
-	AFood* CarriedFood;
-
+	
+	// Current Food
+	//UPROPERTY(EditAnywhere, Category=Food);
+	//int CurrentFood;
 
 protected:
 
@@ -66,18 +71,11 @@ protected:
 	void MoveForward(float Value);
 	// Called for right/left input
 	void MoveRight(float Value);
-	// Called for right/left camera movement in deg/sec (Normalized = 0->1)
-	void TurnRate(float Value);
-	// Called for up/down camera movement in deg/sec (Normalized = 0->1)
-	void LookUpRate(float Value);
 	
 	void ZoomIn();
 	
 	void ZoomOut();
 
 	void SmoothZoom(float DeltaTime);
-
-	// Takes food and carry it
-	void CarryFood(AFood* FoodToCarry);
 
 };

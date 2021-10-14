@@ -40,7 +40,6 @@ void AActor_GeneratorWall::CreateWall(FVector positionDepart)
 	// On vérifie que le développeur à rentrée des informations correct
 	if(UnWallPrefab == nullptr || UnWallPrefab->GetStaticMesh() == nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,"Veuillez sélectionné le mesh souhaitez");
 		return;
 	}
 
