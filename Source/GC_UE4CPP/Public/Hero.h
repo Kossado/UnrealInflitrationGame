@@ -70,4 +70,6 @@ protected:
 	// Menu Function
 	void InvokeMenu();
 
+	void SeeThroughComponent();
+
 };

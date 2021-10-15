@@ -55,7 +55,8 @@ void AHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SmoothZoom(DeltaTime);
-
+	
+	//SeeThroughComponent();
 }
 
 // Called to bind functionality to input
@@ -136,20 +137,24 @@ void AHero::InvokeMenu()
 		GameMode->RestartGame();
 }
 
-/*void AHero::UpdateFood()
+/*void AHero::SeeThroughComponent()
 {
-	FVector positionHero = GetActorLocation();
-	//FVector positionHero = GetMesh();
-	if (positionHero.X < -1500)
+	TArray<FHitResult> HitResults;
+	FVector Start = CameraComponent->GetComponentLocation();
+	FVector End = GetActorLocation();
+	FCollisionObjectQueryParams ObjectTypes = ECC_WorldDynamic;
+	GetWorld()->LineTraceMultiByObjectType(HitResults, Start, End, ObjectTypes);
+	TArray<UMaterialInterface*> MaterialInterfaces;
+	
+	for(int i = 0; i<HitResults.Num();i++)
 	{
-		AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		InGameInterface->UpdateCurrentFood(positionHero.X);
-		if (InGameInterface)
+		if(GEngine)
 		{
-			CarriedFood = NULL; // On supprime la nourriture
-			CurrentFood += 1; // On ajoute 1 nourriture au compteur
-			//InGameInterface->UpdateCurrentFood(CurrentFood);
+			if(HitResults[i].GetComponent()->GetMaterial(0))
+				GEngine->AddOnScreenDebugMessage(-1, 2.f,FColor::White,HitResults[i].GetComponent()->GetMaterial(0)->GetName());
 		}
+		HitResults[i].GetComponent()->GetUsedMaterials(MaterialInterfaces);
+		MaterialInterfaces[0]
 	}
 }*/
 
