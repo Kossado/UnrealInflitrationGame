@@ -4,6 +4,7 @@
 #include "MenuWidget.h"
 
 #include "MainGameMode.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 UMenuWidget::UMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -13,14 +14,31 @@ UMenuWidget::UMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(Ob
 void UMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	if(UIResume)
+	{
+		UIResume->OnClicked.AddDynamic(this,&UMenuWidget::Resume);
+	}
+	if(UIRestart)
+	{
+		UIRestart->OnClicked.AddDynamic(this,&UMenuWidget::Restart);
+	}
+	if(UIQuit)
+	{
+		UIQuit->OnClicked.AddDynamic(this,&UMenuWidget::Quit);
+	}
 }
 
 void UMenuWidget::Resume()
 {
 	if(UIResume)
 	{
+		this->SetVisibility(ESlateVisibility::Hidden);
 		UGameplayStatics::SetGamePaused(GetWorld(),false);
-		Destruct();
+		
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		FInputModeGameOnly InputMode;
+		Player->SetInputMode(InputMode);
+		Player->bShowMouseCursor = false;
 	}
 }
 
@@ -28,6 +46,10 @@ void UMenuWidget::Restart()
 {
 	if(UIRestart)
 	{
+		FInputModeGameOnly InputMode;
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		Player->SetInputMode(InputMode);
+		
 		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->RestartGame();
 	}
@@ -37,7 +59,6 @@ void UMenuWidget::Quit()
 {
 	if(UIQuit)
 	{
-		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		UKismetSystemLibrary::QuitGame(GetWorld(),Player,EQuitPreference::Quit,true);
+		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
 	}
 }

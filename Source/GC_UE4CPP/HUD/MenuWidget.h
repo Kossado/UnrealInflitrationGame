@@ -19,11 +19,14 @@ public:
 	UMenuWidget(const FObjectInitializer& ObjectInitializer);
 
 	virtual void NativeConstruct() override;
-	
+
+	UFUNCTION()
 	void Resume();
 
+	UFUNCTION()
 	void Restart();
 
+	UFUNCTION()
 	void Quit();
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
