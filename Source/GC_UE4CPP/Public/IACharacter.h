@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameCharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "GameFramework/Character.h"
 #include "IACharacter.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AIACharacter : public ACharacter
+class GC_UE4CPP_API AIACharacter : public AGameCharacter
 {
 	GENERATED_BODY()
 
