@@ -20,6 +20,7 @@ void AInGameInterface::BeginPlay()
 		if (ScoreWidget)
 		{
 			ScoreWidget->AddToViewport();
+			ScoreWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	if (MenuWidgetClass)
@@ -31,6 +32,30 @@ void AInGameInterface::BeginPlay()
 			MenuWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+	if (MainMenuWidgetClass)
+	{
+		MainMenuWidget = CreateWidget<UGC_MainMenuWidget>(GetWorld(), MainMenuWidgetClass);
+		if (MainMenuWidget)
+		{
+			MainMenuWidget->AddToViewport();
+			//UGameplayStatics::SetGamePaused(GetWorld(),true);
+
+			/*APlayerController* Player = GetWorld()->GetFirstPlayerController();
+			FInputModeUIOnly InputMode;
+			Player->SetInputMode(InputMode);
+			Player->bShowMouseCursor = true;*/
+		}
+	}
+}
+
+void AInGameInterface::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void AInGameInterface::DrawHUD()
+{
+	Super::DrawHUD();
 }
 
 void AInGameInterface::Pause()
@@ -45,16 +70,6 @@ void AInGameInterface::Pause()
 		Player->SetInputMode(InputMode);
 		Player->bShowMouseCursor = true;
 	}
-}
-
-void AInGameInterface::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AInGameInterface::DrawHUD()
-{
-	Super::DrawHUD();
 }
 
 void AInGameInterface::UpdateCurrentFood(int32 value)

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GC_MainMenuWidget.h"
 #include "MenuWidget.h"
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
@@ -28,7 +29,7 @@ public:
 
 	UFUNCTION()
 		void Pause();
-
+	
 	UFUNCTION()
 		void UpdateCurrentFood(int32 value);
 
@@ -37,8 +38,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 		TSubclassOf<UUserWidget> MenuWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category=Widgets)
+		TSubclassOf<UUserWidget> MainMenuWidgetClass;
 	
 private:
 	UScoreWidget* ScoreWidget;
 	UMenuWidget* MenuWidget;
+	UGC_MainMenuWidget* MainMenuWidget;
 };
