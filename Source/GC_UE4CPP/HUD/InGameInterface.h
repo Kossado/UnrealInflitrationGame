@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MenuWidget.h"
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
 #include "ScoreWidget.h"
@@ -26,11 +27,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
+		void Pause();
+
+	UFUNCTION()
 		void UpdateCurrentFood(int32 value);
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 		TSubclassOf<UUserWidget> ScoreWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category=Widgets)
+		TSubclassOf<UUserWidget> MenuWidgetClass;
+	
 private:
 	UScoreWidget* ScoreWidget;
+	UMenuWidget* MenuWidget;
 };

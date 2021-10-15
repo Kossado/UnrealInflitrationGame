@@ -67,6 +67,12 @@ void AMainGameMode::IncrementStoredFood()
 	CheckGameConditions();
 }
 
+void AMainGameMode::LaunchMenuPause()
+{
+	if(InGameInterface)
+		InGameInterface->Pause();
+}
+
 void AMainGameMode::IncrementPickableFood()
 {
 	GetGameState<AMainGameState>()->PickableFood++;

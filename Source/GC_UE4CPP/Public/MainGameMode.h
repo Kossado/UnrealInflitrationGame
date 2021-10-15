@@ -35,6 +35,8 @@ public:
 	// Checks
 	void CheckGameConditions();
 	void DisableCharacterInput();
+	// Pause
+	void LaunchMenuPause();
 	// UI
 	AInGameInterface* InGameInterface;
 	
