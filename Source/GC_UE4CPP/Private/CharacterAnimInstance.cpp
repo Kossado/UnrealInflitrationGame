@@ -44,9 +44,17 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			// if GameState = Defeat Then bVictory = false;
 			// if GameState = InProgress Then bGameFinished = false
 		}
-		if(Character->IsA(AIACharacter::StaticClass()))
+		if(Character->IsA(AIACharacter::StaticClass()) && MainGameMode)
 		{
-			// Check Victory and Defeat condition for IA
+			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
+			{
+				bVictory = false;
+				bGameInProgress = false;
+			}else if(MainGameMode->GetCurrentGameState() == EGS_DEFEAT)
+			{
+				bVictory = true;
+				bGameInProgress = false;
+			}
 		}
 		if(Character->GetCarriedFood() != nullptr)
 		{
