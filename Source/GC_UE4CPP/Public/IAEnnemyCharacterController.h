@@ -34,7 +34,8 @@ public:
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	UFUNCTION()
-	void SightPlayer(const TArray<AActor*>& UpdateActors);
+	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
+	// void SightPlayer(const TArray<AActor*>& UpdateActors);
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -42,6 +43,10 @@ private:
 	
 	unsigned int NbRetriesBeforeBack;
 	AIAEnnemyManager* IAEnnemyManager;
+
+	AActor* TargetChased;
+	FVector LastLocationSeenTarget;
+	FVector LastDirectionSeenTarget;
 
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionComponent* AI_PerceptionComponent;
