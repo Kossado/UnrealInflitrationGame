@@ -4,6 +4,7 @@
 #include "BTT_FindRandomPatrol.h"
 
 #include "IAEnnemyCharacterController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BlackboardData.h"
 
 EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
@@ -18,11 +19,13 @@ EBTNodeResult::Type UBTT_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent & 
 		}
 		
 		IAController->SetNextTargetAIPatrolPoint(NextAIPatrolPoint);
+		IAController->GetBlackboardComponent()->SetValueAsBool("NeedNewSpot", false);
 	}
 
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to get IAController from BehaviorTree"));
+		return EBTNodeResult::Failed;
 	}
 	
 	return EBTNodeResult::Succeeded;

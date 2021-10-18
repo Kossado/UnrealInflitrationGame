@@ -3,10 +3,13 @@
 
 #include "IACharacter.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
 AIACharacter::AIACharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	PrimaryActorTick.bCanEverTick = true;
 }
 

@@ -26,6 +26,8 @@ public:
 	bool Initialize(AIAEnnemyManager* IAEnnemyManagerSpawner, TArray<AIASpotFoodPoint *> ListSpotFoodsPoints, AIAPatrolPoint * SetUnSpawnPatrolPoint, unsigned int NbRetriesBeforeBackUnSpawn);
 	void SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint);
 	bool IsSpotHasFood(AIASpotFoodPoint * SpotFood);
+	void WillNeedNewDestination();
+
 	AIAEnnemyManager* GetIAEnnemyManager() const;
 
 	//We override the basic function because the parent function compare this IA controller with actor seen (here it's IA Character)
@@ -33,6 +35,8 @@ public:
 	//and return neutral team if we compare with IACharacter
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
+	void ForgetTarget();
+	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
 	// void SightPlayer(const TArray<AActor*>& UpdateActors);
