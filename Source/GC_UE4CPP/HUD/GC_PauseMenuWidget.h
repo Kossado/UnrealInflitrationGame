@@ -27,6 +27,12 @@ public:
 	UFUNCTION()
 	void Quit();
 
+	UFUNCTION()
+	void QuitDesktop();
+
+	UFUNCTION()
+	void QuitMainMenu();
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIResume;
 
@@ -35,4 +41,10 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuit;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* UIQuitDesktop;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* UIQuitMainMenu;
 };
