@@ -14,6 +14,11 @@ void AGC_MenuPrincipalInterface::BeginPlay()
 		if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
+		
+			APlayerController* Player = GetWorld()->GetFirstPlayerController();
+			FInputModeUIOnly InputMode;
+			Player->SetInputMode(InputMode);
+			Player->bShowMouseCursor = true;
 		}
 	}
 }

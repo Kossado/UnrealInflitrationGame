@@ -27,6 +27,10 @@ void UGC_MainMenuWidget::Play()
 {
 	if(UIPlay)
 	{
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		FInputModeGameOnly InputMode;
+		Player->SetInputMode(InputMode);
+		Player->bShowMouseCursor = false;
 		UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
 	}
 }
