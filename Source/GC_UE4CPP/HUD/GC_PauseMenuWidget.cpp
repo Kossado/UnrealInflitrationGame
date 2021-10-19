@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GC_PauseMenuWidget.h"
-
 #include "MainGameMode.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
