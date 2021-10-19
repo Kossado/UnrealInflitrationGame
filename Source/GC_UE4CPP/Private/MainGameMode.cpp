@@ -31,7 +31,7 @@ void AMainGameMode::StartPlay()
 {
 	GetGameState<AMainGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
-	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	InGameInterface = Cast<AGC_InGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 EGameState AMainGameMode::GetCurrentGameState() const

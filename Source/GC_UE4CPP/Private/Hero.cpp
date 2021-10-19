@@ -6,7 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GC_UE4CPP/HUD/InGameInterface.h"
+#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 // Sets default values
 AHero::AHero():

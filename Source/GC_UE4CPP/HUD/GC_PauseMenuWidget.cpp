@@ -1,34 +1,34 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MenuWidget.h"
+#include "GC_PauseMenuWidget.h"
 
 #include "MainGameMode.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
-UMenuWidget::UMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UGC_PauseMenuWidget::UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	
 }
 
-void UMenuWidget::NativeConstruct()
+void UGC_PauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	if(UIResume)
 	{
-		UIResume->OnClicked.AddDynamic(this,&UMenuWidget::Resume);
+		UIResume->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Resume);
 	}
 	if(UIRestart)
 	{
-		UIRestart->OnClicked.AddDynamic(this,&UMenuWidget::Restart);
+		UIRestart->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Restart);
 	}
 	if(UIQuit)
 	{
-		UIQuit->OnClicked.AddDynamic(this,&UMenuWidget::Quit);
+		UIQuit->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Quit);
 	}
 }
 
-void UMenuWidget::Resume()
+void UGC_PauseMenuWidget::Resume()
 {
 	if(UIResume)
 	{
@@ -42,7 +42,7 @@ void UMenuWidget::Resume()
 	}
 }
 
-void UMenuWidget::Restart()
+void UGC_PauseMenuWidget::Restart()
 {
 	if(UIRestart)
 	{
@@ -51,13 +51,11 @@ void UMenuWidget::Restart()
 		Player->SetInputMode(InputMode);
 		
 		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		GameMode->SetLaunchGame();
 		GameMode->RestartGame();
-		GameMode->SetLaunchGame();
 	}
 }
 
-void UMenuWidget::Quit()
+void UGC_PauseMenuWidget::Quit()
 {
 	if(UIQuit)
 	{

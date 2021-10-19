@@ -1,22 +1,20 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/UMG/Public/UMG.h"
-#include "MenuWidget.generated.h"
+#include "GC_PauseMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GC_UE4CPP_API UMenuWidget : public UUserWidget
+class GC_UE4CPP_API UGC_PauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
-	UMenuWidget(const FObjectInitializer& ObjectInitializer);
+	UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer);
 
 	virtual void NativeConstruct() override;
 

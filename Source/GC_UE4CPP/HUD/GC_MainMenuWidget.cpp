@@ -27,15 +27,7 @@ void UGC_MainMenuWidget::Play()
 {
 	if(UIPlay)
 	{
-		this->SetVisibility(ESlateVisibility::Hidden);
-		//FLatentActionInfo LatentInfo;
-		//UGameplayStatics::LoadStreamLevel(this, FName(FString("Level1Map")), true, true, LatentInfo);
-		UGameplayStatics::SetGamePaused(GetWorld(),false);
-		
-		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeGameOnly InputMode;
-		Player->SetInputMode(InputMode);
-		Player->bShowMouseCursor = false;
+		UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
 	}
 }
 
