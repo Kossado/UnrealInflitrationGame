@@ -92,6 +92,11 @@ void AGameCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		ChestInFront = Chest;
 	}
+	AChair* Chair = Cast<AChair>(OtherActor);
+	if(Chair == ChairInFront)
+	{
+		ChairInFront = Chair;
+	}
 }
 
 void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -107,6 +112,11 @@ void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		ChestInFront = nullptr;
 	}
+	AChair* Chair = Cast<AChair>(OtherActor);
+	if(Chair == ChairInFront)
+	{
+		ChairInFront = nullptr;
+	}
 }
 
 void AGameCharacter::Interact()
@@ -116,12 +126,33 @@ void AGameCharacter::Interact()
 	if(CarriedFood != nullptr)
 	{
 		DropFood();
-	}else if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
+		return;
+	}
+	if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
 		CarryFood(FoodToPick);
+		return;
 	}
-	
-	
+	if(ChairInFront != nullptr)
+	{
+		SitDown();
+		return;
+	}
+	if(bIsSitting)
+	{
+		StandUp();
+	}
+}
+
+void AGameCharacter::SitDown()
+{
+	bIsSitting = true;
+	//SetActorLocation(ChairInFront.SittingLocation);
+}
+
+void AGameCharacter::StandUp()
+{
+	bIsSitting = false;
 }
 
 void AGameCharacter::StoreFood()

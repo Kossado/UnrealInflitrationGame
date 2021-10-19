@@ -40,9 +40,6 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 				bVictory = false;
 				bGameInProgress = false;
 			}
-			// if GameState = Victory Then bVictory = true;
-			// if GameState = Defeat Then bVictory = false;
-			// if GameState = InProgress Then bGameFinished = false
 		}
 		if(Character->IsA(AIACharacter::StaticClass()) && MainGameMode)
 		{
@@ -63,6 +60,13 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		else
 		{
 			bIsCarryingFood = false;
+		}
+		if(Character->IsSitting())
+		{
+			bSit = true;
+		}else
+		{
+			bSit = false;
 		}
 		
 	}
