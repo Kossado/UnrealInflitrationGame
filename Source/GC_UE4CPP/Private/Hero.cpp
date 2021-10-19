@@ -160,41 +160,42 @@ bool AHero::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
 	FHitResult HitResult;
 
 	auto sockets = NameSocketDetectionByIA;
-
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor);
+	CollisionQueryParams.AddIgnoredActor(this);
+	
 	for (int i = 0; i < sockets.Num(); i++)
 	{		
-		FVector socketLocation = GetMesh()->GetSocketLocation(sockets[i]);
+		FVector SocketLocation = GetMesh()->GetSocketLocation(sockets[i]);
 
-		const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, socketLocation
+		const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, SocketLocation
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
-			, FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
+			, CollisionQueryParams);
 
 		NumberOfLoSChecksPerformed++;
 
-		if (bHitSocket == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this))) {
-			DrawDebugLine(GetWorld(), ObserverLocation, socketLocation, FColor::Green, false, 1);
-
-			OutSeenLocation = socketLocation;
+		if (bHitSocket == false) {
+			DrawDebugLine(GetWorld(), ObserverLocation, SocketLocation, FColor::Green, false, 1);
+			
+			OutSeenLocation = SocketLocation;
 			OutSightStrength = 1;
 
 			return true;
 		}
 	}
 
-	// const bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, GetActorLocation()
-	// 	, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
-	// 	, FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
-	//
-	// NumberOfLoSChecksPerformed++;
-	//
-	// if (bHit == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "obstacle but still saw");
-	// 	OutSeenLocation = GetActorLocation();
-	// 	OutSightStrength = 1;
-	//
-	// 	return true;
-	// }
+	const bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, GetActorLocation()
+		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
+		, CollisionQueryParams);
+	
+	NumberOfLoSChecksPerformed++;
+	
+	if (bHit == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+	{
+		OutSeenLocation = GetActorLocation();
+		OutSightStrength = 1;
+	
+		return true;
+	}
 
 	OutSightStrength = 0;
 	return false;

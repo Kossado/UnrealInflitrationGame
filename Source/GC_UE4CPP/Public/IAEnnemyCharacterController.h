@@ -36,12 +36,15 @@ public:
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	void ForgetTarget();
+	void RotateLookAround();
+
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
 	// void SightPlayer(const TArray<AActor*>& UpdateActors);
 private:
-
+	void IterationLookAround();
+	
 	UPROPERTY(EditAnywhere)
 	FGenericTeamId TeamID;
 	
@@ -51,6 +54,11 @@ private:
 	AActor* TargetChased;
 	FVector LastLocationSeenTarget;
 	FVector LastDirectionSeenTarget;
+
+	FTimerHandle OutHandle;
+	float CurrentAngle;
+	UPROPERTY(EditAnywhere)
+	float DifferenceAngleIterationLookAround=45; 
 
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionComponent* AI_PerceptionComponent;

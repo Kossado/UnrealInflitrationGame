@@ -2,9 +2,12 @@
 
 
 #include "IAEnnemyCharacterController.h"
+
+#include "ChaosInterfaceWrapperCore.h"
 #include "IAEnnemyManager.h"
 #include "IASpotFoodPoint.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Chaos/CollisionResolutionUtil.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -109,14 +112,18 @@ void AIAEnnemyCharacterController::SightPlayer(AActor* UpdateActor, FAIStimulus 
 		Blackboard->SetValueAsBool("HaveSeenPlayer", true);
 		Blackboard->SetValueAsBool("HasLineOfSight", true);
 		Blackboard->SetValueAsObject("TargetChase", UpdateActor);
+		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Lost of %s"), ToCStr(UpdateActor->GetName())));
 		Blackboard->SetValueAsBool("HasLineOfSight", false);
 		Blackboard->SetValueAsObject("TargetChase", nullptr);
+		const FVector PreviousLocationTarget = Blackboard->GetValueAsVector("LastLocationSawPlayer");
+
+		Blackboard->SetValueAsVector("DirectionTakenByTarget", UpdateActor->GetActorLocation() + (UpdateActor->GetActorLocation() - PreviousLocationTarget) * 500000);
+
 		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
-		Blackboard->SetValueAsVector("LocationSearchPlayer", UpdateActor->GetActorLocation() + UpdateActor->GetActorForwardVector() * 30);
 
 	}
 }
@@ -127,6 +134,21 @@ void AIAEnnemyCharacterController::ForgetTarget()
 	Blackboard->SetValueAsBool("HaveSeenPlayer", false);
 	Blackboard->SetValueAsBool("HasLineOfSight", false);	
 	Blackboard->SetValueAsObject("TargetChase", nullptr);	
+}
+
+void AIAEnnemyCharacterController::LookAround()
+{	
+	float CurrentAngle=0;
+	if(OutHand)
+
+	GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyCharacterController::IterationLookAround, 0.5f);
+
+}
+
+void AIAEnnemyCharacterController::IterationLookAround()
+{
+	GetCharacter()->AddActorLocalRotation(FRotator(0,0,DifferenceAngleIterationLookAround), true);
+	
 }
 
 // void AIAEnnemyCharacterController::SightPlayer(const TArray<AActor*>& UpdateActors)
