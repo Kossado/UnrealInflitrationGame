@@ -12,52 +12,52 @@ struct FFadeObjStruct
 	GENERATED_USTRUCT_BODY()
 
 		UPROPERTY()
-	UPrimitiveComponent* primitiveComp;
+	UPrimitiveComponent* PrimitiveComp;
 
 	UPROPERTY()
-	TArray<UMaterialInterface*> baseMatInterface;
+	TArray<UMaterialInterface*> BaseMatInterface;
 
 	UPROPERTY()
-	TArray<UMaterialInstanceDynamic*> fadeMID;
+	TArray<UMaterialInstanceDynamic*> FadeMID;
 
 	UPROPERTY()
-	float fadeCurrent;
+	float FadeCurrent;
 
 	UPROPERTY()
 	bool bToHide;
 
-	void NewElement(UPrimitiveComponent* newComponent, TArray<UMaterialInterface*> newBaseMat,
-		TArray<UMaterialInstanceDynamic*> newMID, float currentFade, bool bHide)
+	void NewFadingObject(UPrimitiveComponent* NewComponent, TArray<UMaterialInterface*> NewBaseMat,
+		TArray<UMaterialInstanceDynamic*> NewMID, float CurrentFade, bool bHide)
 	{
-		primitiveComp = newComponent;
-		baseMatInterface = newBaseMat;
-		fadeMID = newMID;
-		fadeCurrent = currentFade;
+		PrimitiveComp = NewComponent;
+		BaseMatInterface = NewBaseMat;
+		FadeMID = NewMID;
+		FadeCurrent = CurrentFade;
 		bToHide = bHide;
 	}
 
-	void SetHideOnly(bool hide)
+	void SetHideOnly(bool bHide)
 	{
-		bToHide = hide;
+		bToHide = bHide;
 	}
 
-	void SetFadeAndHide(float newFade, bool newHide)
+	void SetFadeAndHide(float NewFade, bool bNewHide)
 	{
-		fadeCurrent = newFade;
-		bToHide = newHide;
+		FadeCurrent = NewFade;
+		bToHide = bNewHide;
 	}
 
 	//For Destroy
 	void Destroy()
 	{
-		primitiveComp = nullptr;
+		PrimitiveComp = nullptr;
 	}
 
 	//Constructor
 	FFadeObjStruct()
 	{
-		primitiveComp = nullptr;
-		fadeCurrent = 0;
+		PrimitiveComp = nullptr;
+		FadeCurrent = 0;
 		bToHide = true;
 	}
 };
@@ -76,108 +76,77 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
-	// Check objects between camera manager and character and add to array for fade
-	void AddObjectsToHideTimer();
+	void FadeObject();
 
-	// Fade worker.
-	void FadeObjWorkerTimer();
+	void UnFadeObject();
 
 	// Enable or disable fade object worker
 	UFUNCTION(BlueprintCallable, Category = "Fade Objects")
-		void SetEnable(bool setEnable);
+		void SetEnable(bool bEnable);
 
 	// Pause or unpause fade object worker
 	UFUNCTION(BlueprintCallable, Category = "Fade Objects")
-		void SetActivate(bool setActivate);
-
-	TEnumAsByte<ETraceTypeQuery> myTraceType;
+		void SetActivate(bool bActivate);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade Objects")
-		TArray<AActor*> actorsIgnore;
+		TArray<AActor*> ActorsIgnore;
 
 
 private:
 
-	TArray<FFadeObjStruct> fadeObjects;
+	TArray<FFadeObjStruct> FadeObjects;
 
 	// Some worker timer
-	FTimerHandle timerHandle_ObjectComputeTimer;
-	FTimerHandle timerHandle_AddObjectsTimer;
-	FTimerHandle timerHandle_AddPlayersTimer;
+	FTimerHandle ObjectComputeTimer;
+	FTimerHandle AddFadeObjectsTimer;
 
 	// Temp variable
-	float currentFade;
-
-	// Now ID
-	int32 fadeNowID;
+	float CurrentFade;
+	
+	// Primitive components temp variable
+	UPROPERTY()
+	TArray<UPrimitiveComponent*> FadeObjectsTemp;
 
 	// Primitive components temp variable
 	UPROPERTY()
-		TArray<UPrimitiveComponent*> fadeObjectsTemp;
-
-	// Primitive components temp variable
-	UPROPERTY()
-		TArray<UPrimitiveComponent*> fadeObjectsHit;
+	TArray<UPrimitiveComponent*> FadeObjectsHit;
 
 	// Translucent material for fade object
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		UMaterialInstance* fadeMaterial;
+	UMaterialInstance* FadeMaterial;
 
 	// Enable or disable fade object worker
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		bool bIsEnabled = true;
+	bool bIsEnabled = true;
 
 	// Pause or unpause fade object worker
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		bool bIsActivate = true;
-
-	// This can reduce performance.
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		bool bIsTraceComplex = false;
+	bool bIsActivate = true;
 
 	// Timer interval
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float addObjectInterval = 0.1f;
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float calcFadeInterval = 0.05f;
+	float FadeInterval = 0.1f;
 
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float workDistance = 5000.0f;
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float nearCameraRadius = 300.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		TSubclassOf<AActor> playerClass;
+	float WorkDistance = 5000.0f;
 
 	// Check trace block by this
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		TArray<TEnumAsByte<ECollisionChannel>> objectTypes;
-
-	// Rate fade increment
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float fadeRate = 10.0f;
+	TArray<TEnumAsByte<ECollisionChannel>> ObjectTypes;
 
 	// Trace object size
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float capsuleHalfHeight = 88.0f;
+	float CapsuleHalfHeight = 88.0f;
 	// Trace object size
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float capsuleRadius = 34.0f;
-
-	// All characters array (maybe you control ( > 1 ) characters)
+	float CapsuleRadius = 34.0f;
+	
 	UPROPERTY()
-		TArray<AActor*> characterArray;
-
-	// Fade near and close parameters
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float nearObjectFade = 0.3;
-	// Fade near and close parameters
-	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float farObjectFade = 0.1;
-
+	ACharacter* Character;
+	
 	// Instance fade
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-		float immediatelyFade = 0.5f;
+	float FadeValue = 0.5f;
 	
 
 public:	

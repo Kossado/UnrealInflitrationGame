@@ -3,6 +3,7 @@
 
 #include "FadeObjectsComponent.h"
 
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -14,7 +15,7 @@ UFadeObjectsComponent::UFadeObjectsComponent()
 
 	// ...
 	// Add first collision type
-	objectTypes.Add(ECC_WorldStatic);
+	ObjectTypes.Add(ECC_WorldStatic);
 }
 
 
@@ -23,11 +24,13 @@ void UFadeObjectsComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetOwner()->GetWorld()->GetTimerManager().SetTimer(timerHandle_AddObjectsTimer, this, &UFadeObjectsComponent::AddObjectsToHideTimer, addObjectInterval, true);
-	GetOwner()->GetWorld()->GetTimerManager().SetTimer(timerHandle_ObjectComputeTimer, this, &UFadeObjectsComponent::FadeObjWorkerTimer, calcFadeInterval, true);
+	Character = UGameplayStatics::GetPlayerCharacter(GetWorld(),0);
+	
+	GetOwner()->GetWorld()->GetTimerManager().SetTimer(AddFadeObjectsTimer, this, &UFadeObjectsComponent::FadeObject, FadeInterval, true);
+	GetOwner()->GetWorld()->GetTimerManager().SetTimer(ObjectComputeTimer, this, &UFadeObjectsComponent::UnFadeObject, FadeInterval, true);
 
-	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(timerHandle_ObjectComputeTimer);
-	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(timerHandle_AddObjectsTimer);
+	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(ObjectComputeTimer);
+	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(AddFadeObjectsTimer);
 
 	SetActivate(bIsActivate);
 }
@@ -37,178 +40,148 @@ void UFadeObjectsComponent::BeginPlay()
 void UFadeObjectsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
-void UFadeObjectsComponent::AddObjectsToHideTimer()
+void UFadeObjectsComponent::FadeObject()
 {
-	UGameplayStatics::GetAllActorsOfClass(this, playerClass, characterArray);
+	// Setting up Parameters for the trace
+	const FVector TraceStart = UGameplayStatics::GetPlayerController(GetWorld(),0)->PlayerCameraManager->GetCameraLocation();
+	const FVector TraceEnd = Character->GetActorLocation();
+	FVector TraceLength = TraceStart - TraceEnd;
+	const FQuat ActorQuat = Character->GetActorQuat();
 
-	for (AActor* currentActor_ : characterArray)
+	if (TraceLength.Size() < WorkDistance)
 	{
-		const FVector traceStart_ = GEngine->GetFirstLocalPlayerController(GetOwner()->GetWorld())->PlayerCameraManager->GetCameraLocation();
-		const FVector traceEnd_ = currentActor_->GetActorLocation();
-		FVector traceLength_ = traceStart_ - traceEnd_;
-		const FQuat acQuat_ = currentActor_->GetActorQuat();
+		// Params for the trace collision
+		FCollisionQueryParams TraceParams(TEXT("FadeObjectsTrace"), false, GetOwner());
 
-		if (traceLength_.Size() < workDistance)
+		TraceParams.AddIgnoredActors(ActorsIgnore);
+		TraceParams.bReturnPhysicalMaterial = false;
+
+		TArray<FHitResult> HitArray;
+		TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+
+		// Convert ECollisionChannel to ObjectType
+		for (int i = 0; i < ObjectTypes.Num(); ++i)
 		{
-			FCollisionQueryParams traceParams_(TEXT("FadeObjectsTrace"), bIsTraceComplex, GetOwner());
+			TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ObjectTypes[i].GetValue()));
+		}
+		// Check distance between camera and player for new object to fade, and add this in array
+		GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
+				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);
 
-			traceParams_.AddIgnoredActors(actorsIgnore);
-			traceParams_.bReturnPhysicalMaterial = false;
-			// Not tracing complex uses the rough collision instead making tiny objects easier to select.
-			traceParams_.bTraceComplex = bIsTraceComplex;
-
-			TArray<FHitResult> hitArray_;
-			TArray<TEnumAsByte<EObjectTypeQuery>> traceObjectTypes_;
-
-			// Convert ECollisionChannel to ObjectType
-			for (int i = 0; i < objectTypes.Num(); ++i)
+		for (int HitArrayIndex = 0; HitArrayIndex < HitArray.Num(); ++HitArrayIndex)
+		{
+			if (HitArray[HitArrayIndex].bBlockingHit && IsValid(HitArray[HitArrayIndex].GetComponent()) && !FadeObjectsHit.Contains(HitArray[HitArrayIndex].GetComponent()))
 			{
-				traceObjectTypes_.Add(UEngineTypes::ConvertToObjectType(objectTypes[i].GetValue()));
-			}
-
-			// Check distance between camera and player for new object to fade, and add this in array
-			GetOwner()->GetWorld()->SweepMultiByObjectType(hitArray_, traceStart_, traceEnd_, acQuat_, traceObjectTypes_,
-				FCollisionShape::MakeCapsule(capsuleRadius, capsuleHalfHeight), traceParams_);
-
-			for (int hA = 0; hA < hitArray_.Num(); ++hA)
-			{
-				if (hitArray_[hA].bBlockingHit && IsValid(hitArray_[hA].GetComponent()) && !fadeObjectsHit.Contains(hitArray_[hA].GetComponent()))
-				{
-					fadeObjectsHit.AddUnique(hitArray_[hA].GetComponent());
-				}
+				FadeObjectsHit.AddUnique(HitArray[HitArrayIndex].GetComponent());
 			}
 		}
 	}
 
-	// Make fade array after complete GetAllActorsOfClass loop
-	for (int fO = 0; fO < fadeObjectsHit.Num(); ++fO)
+	// Add FadeObjects in a temporary Array
+	for (int FadeObjIndex = 0; FadeObjIndex < FadeObjectsHit.Num(); ++FadeObjIndex)
 	{
 		// If not contains this component in fadeObjectsTemp
-		if (!fadeObjectsTemp.Contains(fadeObjectsHit[fO]))
+		if (!FadeObjectsTemp.Contains(FadeObjectsHit[FadeObjIndex]))
 		{
-			TArray<UMaterialInterface*> lBaseMaterials_;
-			TArray<UMaterialInstanceDynamic*> lMidMaterials_;
+			TArray<UMaterialInterface*> BaseMaterialsArray;
+			TArray<UMaterialInstanceDynamic*> MidMaterialsArray;
 
-			lBaseMaterials_.Empty();
-			lMidMaterials_.Empty();
+			BaseMaterialsArray.Empty();
+			MidMaterialsArray.Empty();
 
-			fadeObjectsTemp.AddUnique(fadeObjectsHit[fO]);
+			FadeObjectsTemp.AddUnique(FadeObjectsHit[FadeObjIndex]);
 
 			// For loop all materials ID in object
-			for (int nM = 0; nM < fadeObjectsHit[fO]->GetNumMaterials(); ++nM)
+			for (int MatIndex = 0; MatIndex < FadeObjectsHit[FadeObjIndex]->GetNumMaterials(); ++MatIndex)
 			{
-				lMidMaterials_.Add(UMaterialInstanceDynamic::Create(fadeMaterial, fadeObjectsHit[fO]));
-				lBaseMaterials_.Add(fadeObjectsHit[fO]->GetMaterial(nM));
+				MidMaterialsArray.Add(UMaterialInstanceDynamic::Create(FadeMaterial, FadeObjectsHit[FadeObjIndex]));
+				BaseMaterialsArray.Add(FadeObjectsHit[FadeObjIndex]->GetMaterial(MatIndex));
 
 				// Set new material on object
-				fadeObjectsHit[fO]->SetMaterial(nM, lMidMaterials_.Last());
+				FadeObjectsHit[FadeObjIndex]->SetMaterial(MatIndex, MidMaterialsArray.Last());
 			}
 			// Create new fade object in array of objects to fade
-			FFadeObjStruct newObject_;
-			newObject_.NewElement(fadeObjectsHit[fO], lBaseMaterials_, lMidMaterials_, immediatelyFade, true);
+			FFadeObjStruct NewObject;
+			NewObject.NewFadingObject(FadeObjectsHit[FadeObjIndex], BaseMaterialsArray, MidMaterialsArray, FadeValue, true);
 			// Add object to array
-			fadeObjects.Add(newObject_);
-
-			// Set collision on Primitive Component
-			fadeObjectsHit[fO]->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+			FadeObjects.Add(NewObject);
 		}
 	}
 
 	// Set hide to visible true if contains
-	for (int fOT = 0; fOT < fadeObjectsTemp.Num(); ++fOT)
+	for (int FadeObjTmpIndex = 0; FadeObjTmpIndex < FadeObjectsTemp.Num(); ++FadeObjTmpIndex)
 	{
-		if (!fadeObjectsHit.Contains(fadeObjectsTemp[fOT]))
+		if (!FadeObjectsHit.Contains(FadeObjectsTemp[FadeObjTmpIndex]))
 		{
-			fadeObjects[fOT].SetHideOnly(false);
+			FadeObjects[FadeObjTmpIndex].SetHideOnly(false);
 		}
 	}
 
 	// Clear array
-	fadeObjectsHit.Empty();
+	FadeObjectsHit.Empty();
 }
 
-void UFadeObjectsComponent::FadeObjWorkerTimer()
+void UFadeObjectsComponent::UnFadeObject()
 {
-	if (fadeObjects.Num() > 0)
+	if (FadeObjects.Num() > 0)
 	{
 		// For loop all fade objects
-		for (int i = 0; i < fadeObjects.Num(); ++i)
+		for (int i = 0; i < FadeObjects.Num(); ++i)
 		{
-			// Index of iteration 
-			int fnID_ = i;
-
-			float adaptiveFade_;
-
-			if (fnID_ == fadeObjects.Num())
-			{
-				adaptiveFade_ = nearObjectFade;
-			}
-			else
-			{
-				adaptiveFade_ = farObjectFade;
-			}
-
 			// For loop fadeMID array
-			for (int t = 0; t < fadeObjects[i].fadeMID.Num(); ++t)
+			for (int t = 0; t < FadeObjects[i].FadeMID.Num(); ++t)
 			{
-				float targetF_;
+				float TargetF;
 
-				const float currentF = fadeObjects[i].fadeCurrent;
-
-				if (fadeObjects[i].bToHide)
+				if (FadeObjects[i].bToHide)
 				{
-					targetF_ = adaptiveFade_;
+					TargetF = FadeValue;
 				}
 				else
 				{
-					targetF_ = 1.0f;
+					TargetF = 1.0f;
 				}
 
-				const float newFade_ = FMath::FInterpConstantTo(currentF, targetF_, GetOwner()->GetWorld()->GetDeltaSeconds(), fadeRate);
+				FadeObjects[i].FadeMID[t]->SetScalarParameterValue("Fade", TargetF);
 
-				fadeObjects[i].fadeMID[t]->SetScalarParameterValue("Fade", newFade_);
+				CurrentFade = TargetF;
 
-				currentFade = newFade_;
-
-				fadeObjects[i].SetFadeAndHide(newFade_, fadeObjects[i].bToHide);
+				FadeObjects[i].SetFadeAndHide(TargetF, FadeObjects[i].bToHide);
 			}
 			// remove index in array
-			if (currentFade == 1.0f)
+			if (CurrentFade == 1.0f)
 			{
-				for (int bmi = 0; bmi < fadeObjects[fnID_].baseMatInterface.Num(); ++bmi)
+				for (int BaseMatIndex = 0; BaseMatIndex < FadeObjects[i].BaseMatInterface.Num(); ++BaseMatIndex)
 				{
-					fadeObjects[fnID_].primitiveComp->SetMaterial(bmi, fadeObjects[fnID_].baseMatInterface[bmi]);
+					FadeObjects[i].PrimitiveComp->SetMaterial(BaseMatIndex, FadeObjects[i].BaseMatInterface[BaseMatIndex]);
 				}
-
-				fadeObjects[fnID_].primitiveComp->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-				fadeObjects.RemoveAt(fnID_);
-				fadeObjectsTemp.RemoveAt(fnID_);
+				
+				FadeObjects.RemoveAt(i);
+				FadeObjectsTemp.RemoveAt(i);
 			}
 		}
 	}
 }
 
-void UFadeObjectsComponent::SetActivate(bool setActivate)
+void UFadeObjectsComponent::SetActivate(bool bActivate)
 {
-	bIsActivate = setActivate;
+	bIsActivate = bActivate;
 
 	if (!bIsActivate)
 	{
-		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(timerHandle_ObjectComputeTimer);
-		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(timerHandle_AddObjectsTimer);
+		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(ObjectComputeTimer);
+		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(AddFadeObjectsTimer);
 	}
 	else
 	{
-		GetOwner()->GetWorld()->GetTimerManager().UnPauseTimer(timerHandle_ObjectComputeTimer);
-		GetOwner()->GetWorld()->GetTimerManager().UnPauseTimer(timerHandle_AddObjectsTimer);
+		GetOwner()->GetWorld()->GetTimerManager().UnPauseTimer(ObjectComputeTimer);
+		GetOwner()->GetWorld()->GetTimerManager().UnPauseTimer(AddFadeObjectsTimer);
 	}
 }
 
-void UFadeObjectsComponent::SetEnable(bool setEnable)
+void UFadeObjectsComponent::SetEnable(bool bEnable)
 {
-	bIsEnabled = setEnable;
+	bIsEnabled = bEnable;
 }

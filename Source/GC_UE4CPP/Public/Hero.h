@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FadeObjectsComponent.h"
 #include "Food.h"
 #include "GameCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -56,6 +57,9 @@ private:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
 	float CamZoomDestination;
+	// Component that allow to see through objects
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	UFadeObjectsComponent* FadeObjectsComponent;
 
 protected:
 	// Called for forward/backward input

@@ -39,7 +39,10 @@ CameraZoomSteps(45.f)
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character rotate in the direction of input ...
-	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate	
+	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate
+
+	// Setup fade objects component
+	FadeObjectsComponent = CreateDefaultSubobject<UFadeObjectsComponent>(FName(TEXT("Fade Object Component")));
 }
 
 // Called when the game starts or when spawned
