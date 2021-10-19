@@ -38,12 +38,20 @@ void AInGameInterface::BeginPlay()
 		if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
-			//UGameplayStatics::SetGamePaused(GetWorld(),true);
+			AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			if (GameMode->GetLaunchGame())
+			{
+				UGameplayStatics::SetGamePaused(GetWorld(),true);
 
-			/*APlayerController* Player = GetWorld()->GetFirstPlayerController();
-			FInputModeUIOnly InputMode;
-			Player->SetInputMode(InputMode);
-			Player->bShowMouseCursor = true;*/
+				APlayerController* Player = GetWorld()->GetFirstPlayerController();
+				FInputModeUIOnly InputMode;
+				Player->SetInputMode(InputMode);
+				Player->bShowMouseCursor = true;
+			} else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("aaaaaaaaaaaaaaaaaaa") );
+				MainMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 	}
 }

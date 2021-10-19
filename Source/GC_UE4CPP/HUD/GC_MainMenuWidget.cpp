@@ -28,18 +28,14 @@ void UGC_MainMenuWidget::Play()
 	if(UIPlay)
 	{
 		this->SetVisibility(ESlateVisibility::Hidden);
-		FLatentActionInfo LatentInfo;
-		UGameplayStatics::LoadStreamLevel(this, FName(FString("Level1Map")), true, true, LatentInfo);
-		//GetWidgetFromName(FName(FString("ScoreWidget")))->SetVisibility(ESlateVisibility::Visible);
-		//UGameplayStatics::SetGamePaused(GetWorld(),false);
+		//FLatentActionInfo LatentInfo;
+		//UGameplayStatics::LoadStreamLevel(this, FName(FString("Level1Map")), true, true, LatentInfo);
+		UGameplayStatics::SetGamePaused(GetWorld(),false);
 		
-		/*APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
 		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
-		Player->bShowMouseCursor = false;*/
-		
-		//AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		//GameMode->StartPlay();
+		Player->bShowMouseCursor = false;
 	}
 }
 

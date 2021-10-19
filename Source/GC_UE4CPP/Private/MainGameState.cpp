@@ -7,6 +7,7 @@ AMainGameState::AMainGameState():
 CurrentGameState(EGS_PLAYING),
 StoredFood(0),
 PickableFood(0),
-StoredFoodToWin(5)
+StoredFoodToWin(5),
+LaunchGame(true)
 {
 }

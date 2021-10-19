@@ -46,12 +46,14 @@ void UMenuWidget::Restart()
 {
 	if(UIRestart)
 	{
-		FInputModeGameOnly InputMode;
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
 		
 		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		GameMode->SetLaunchGame();
 		GameMode->RestartGame();
+		GameMode->SetLaunchGame();
 	}
 }
 
