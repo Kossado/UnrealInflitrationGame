@@ -6,7 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GC_UE4CPP/HUD/InGameInterface.h"
+#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 // Sets default values
 AHero::AHero():
@@ -77,8 +77,17 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AHero::ZoomIn);
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AHero::ZoomOut);
 
-	// Setting up Menu Inputs
-	PlayerInputComponent->BindAction("InvokeMenu", IE_Pressed, this, &AHero::InvokeMenu);
+	//Setting up Menu Inputs
+	PlayerInputComponent->BindAction("InvokeMenu",IE_Pressed, this, &AHero::InvokeMenu);
+}
+
+void AHero::InvokeMenu()
+{
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GameMode)
+	{
+		GameMode->LaunchMenuPause();
+	}
 }
 
 void AHero::MoveForward(float Value)
@@ -127,13 +136,6 @@ void AHero::SmoothZoom(float DeltaTime)
 			CameraZoomSpeed//Speed
 			);
 	}
-}
-
-void AHero::InvokeMenu()
-{
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(GameMode)
-		GameMode->RestartGame();
 }
 
 /*void AHero::UpdateFood()

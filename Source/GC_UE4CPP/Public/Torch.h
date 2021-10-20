@@ -1,17 +1,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/PointLightComponent.h"
 #include "GameFramework/Actor.h"
-#include "Chest.generated.h"
+#include "Torch.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AChest : public AActor
+class GC_UE4CPP_API ATorch : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AChest();
+	ATorch();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,16 +22,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FVector GetValidStoredPosition();
-
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* ChestMesh;
+	USceneComponent* SceneComponent;
 
-	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* FoodParentComponent;
-	
-	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
-	TArray<USceneComponent*> FoodPlaceholder;
+	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	UPointLightComponent* LightMesh;
 
 };
