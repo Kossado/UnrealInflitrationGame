@@ -3,6 +3,7 @@
 
 #include "GameCharacter.h"
 
+#include "Hero.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -92,6 +93,11 @@ void AGameCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		ChestInFront = Chest;
 	}
+	AChair* Chair = Cast<AChair>(OtherActor);
+	if(Chair)
+	{
+		ChairInFront = Chair;
+	}
 }
 
 void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -107,21 +113,51 @@ void AGameCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		ChestInFront = nullptr;
 	}
+	AChair* Chair = Cast<AChair>(OtherActor);
+	if(Chair == ChairInFront)
+	{
+		ChairInFront = nullptr;
+	}
 }
 
 void AGameCharacter::Interact()
 {
 	// When "E" key is pressed ...
+	if(ChairInFront != nullptr)
+	{
+		SitDown();
+		return;
+	}
+	if(bIsSitting)
+	{
+		StandUp();
+		return;
+	}
 	//... Drop food in hand if not empty handed ...
 	if(CarriedFood != nullptr)
 	{
 		DropFood();
-	}else if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
+		return;
+	}
+	if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
 		CarryFood(FoodToPick);
 	}
-	
-	
+}
+
+void AGameCharacter::SitDown()
+{
+	bIsSitting = true;
+	if(ChairInFront != nullptr)
+	{
+		SetActorLocation(ChairInFront->GetSitLocation());
+		SetActorRotation(ChairInFront->GetSitRotation());
+	}
+}
+
+void AGameCharacter::StandUp()
+{
+	bIsSitting = false;
 }
 
 void AGameCharacter::StoreFood()

@@ -25,7 +25,6 @@ CameraZoomSteps(45.f)
 	CameraStick->SetupAttachment(RootComponent);
 	CameraStick->TargetArmLength = 300.f; // Distance between the camera and the character
 	CameraStick->bUsePawnControlRotation = true; // Rotate based on the controller
-	CameraStick->SetRelativeRotation(FRotator(0.f,-30.f,0.f));
 
 	// Create Camera that will follow the character
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
@@ -39,7 +38,10 @@ CameraZoomSteps(45.f)
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character rotate in the direction of input ...
-	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate	
+	GetCharacterMovement()->RotationRate = FRotator(0.f,540.f,0.f); // ... at this rate
+
+	// Setup fade objects component
+	FadeObjectsComponent = CreateDefaultSubobject<UFadeObjectsComponent>(FName(TEXT("Fade Object Component")));
 }
 
 // Called when the game starts or when spawned
@@ -55,7 +57,8 @@ void AHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SmoothZoom(DeltaTime);
-
+	
+	//SeeThroughComponent();
 }
 
 // Called to bind functionality to input
@@ -68,8 +71,6 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight",this, &AHero::MoveRight);
 
 	// Setting up Mouse/Camera Movements
-	/*PlayerInputComponent->BindAxis("Turn", this, &AHero::TurnRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &AHero::LookUpRate);*/
 	PlayerInputComponent->BindAxis("Turn", this, &AHero::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &AHero::AddControllerPitchInput);
 
@@ -138,23 +139,6 @@ void AHero::SmoothZoom(float DeltaTime)
 	}
 }
 
-/*void AHero::UpdateFood()
-{
-	FVector positionHero = GetActorLocation();
-	//FVector positionHero = GetMesh();
-	if (positionHero.X < -1500)
-	{
-		AInGameInterface* InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		InGameInterface->UpdateCurrentFood(positionHero.X);
-		if (InGameInterface)
-		{
-			CarriedFood = NULL; // On supprime la nourriture
-			CurrentFood += 1; // On ajoute 1 nourriture au compteur
-			//InGameInterface->UpdateCurrentFood(CurrentFood);
-		}
-	}
-}*/
-
 bool AHero::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
 {
 	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
@@ -203,5 +187,27 @@ bool AHero::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
 	return false;
 }
 
+void AHero::InvokeMenu()
+{
+	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(GameMode)
+		GameMode->RestartGame();
+}
 
+void AHero::SitDown()
+{
+	Super::SitDown();
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
+	CameraStick->bUsePawnControlRotation = false;
+	CameraStick->SetRelativeRotation(FRotator(0.f,180.f,0.f));
+	
+}
 
+void AHero::StandUp()
+{
+	Super::StandUp();
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(false);
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(false);
+	CameraStick->bUsePawnControlRotation = true;
+}
