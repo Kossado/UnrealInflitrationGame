@@ -2,9 +2,12 @@
 
 
 #include "IAEnnemyCharacterController.h"
+
+#include "ChaosInterfaceWrapperCore.h"
 #include "IAEnnemyManager.h"
 #include "IASpotFoodPoint.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Chaos/CollisionResolutionUtil.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -40,10 +43,12 @@ bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerS
 		return false;
 	}
 	
-	AI_PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AIAEnnemyCharacterController::SightPlayer);
+	// AI_PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AIAEnnemyCharacterController::SightPlayer);
+	AI_PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AIAEnnemyCharacterController::SightPlayer);
 
 	IAEnnemyManager = IAEnnemyManagerSpawner;
 	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
+	Blackboard->SetValueAsBool("NeedNewSpot", true);
 
 	return true;
 }
@@ -88,31 +93,57 @@ AIAEnnemyManager* AIAEnnemyCharacterController::GetIAEnnemyManager() const
 	return IAEnnemyManager;
 }
 
-void AIAEnnemyCharacterController::SightPlayer(const TArray<AActor*>& UpdateActors)
+///Mise à jour du sens de vue concernant un acteur de la scène
+///On vérifie si il s'agit d'une vue sur un nouveau joueur ou si c'est une perte de vision
+///
+///Si on voit un nouveau joueur, on vérifie qu'on en poursuit pas déjà un
+///Si on en poursuit un, on va sélectionner la cible la plus proche de l'IA et elle va devenir la nouvelle proie
+///Si on a perdu la vision sur l'ancienne cible, alors on switch directement
+///
+///Si c'est une perte de vision sur la cible en cours, alors on va à sa dernière position connue, puis on cours dans la
+///direction qu'avait prise le joueur
+void AIAEnnemyCharacterController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus)
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Blue, FString::Printf(TEXT("Detection of %s int team %d"), ToCStr(GetName()), GetGenericTeamId().GetId()));
+	bool HasSensedSomeone = FaiStimulus.WasSuccessfullySensed();
 
-	for(int i = 0; i < UpdateActors.Num();i++)
+	if(HasSensedSomeone)
 	{
-		IGenericTeamAgentInterface* teamIA = dynamic_cast<IGenericTeamAgentInterface*>(UpdateActors[i]);
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Blue, FString::Printf(TEXT("See %s"), ToCStr(UpdateActors[i]->GetName())));
-		
-		if(teamIA)
-		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Blue, FString::Printf(TEXT("on team %d"), teamIA->GetGenericTeamId().GetId()));	
-		}
-		
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Detection of %s"), ToCStr(UpdateActor->GetName())));
+		Blackboard->SetValueAsBool("HaveSeenPlayer", true);
+		Blackboard->SetValueAsBool("HasLineOfSight", true);
+		Blackboard->SetValueAsObject("TargetChase", UpdateActor);
+		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
 	}
-	
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Lost of %s"), ToCStr(UpdateActor->GetName())));
+		Blackboard->SetValueAsBool("HasLineOfSight", false);
+		Blackboard->SetValueAsObject("TargetChase", nullptr);
+		const FVector PreviousLocationTarget = Blackboard->GetValueAsVector("LastLocationSawPlayer");
 
-	
+		Blackboard->SetValueAsVector("DirectionTakenByTarget", UpdateActor->GetActorLocation() + (UpdateActor->GetActorLocation() - PreviousLocationTarget) * 500000);
+
+		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
+
+	}
+}
+
+void AIAEnnemyCharacterController::ForgetTarget()
+{	
+	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Forget target")));
+	Blackboard->SetValueAsBool("HaveSeenPlayer", false);
+	Blackboard->SetValueAsBool("HasLineOfSight", false);	
+	Blackboard->SetValueAsObject("TargetChase", nullptr);	
 }
 
 void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint)
 {
 	Super::SetNextTargetAIPatrolPoint(NextTargetAIPatrolPoint);
 	Blackboard->SetValueAsObject("SpotFood", NextTargetAIPatrolPoint);
+}
 
+void AIAEnnemyCharacterController::WillNeedNewDestination()
+{
 	NbRetriesBeforeBack--;
 
 	if(NbRetriesBeforeBack <= 0)
@@ -120,3 +151,4 @@ void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint *
 		Blackboard->SetValueAsBool("GoUnSpawn", true);
 	}
 }
+

@@ -155,4 +155,53 @@ void AHero::SmoothZoom(float DeltaTime)
 	}
 }*/
 
+bool AHero::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
+{
+	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+
+	FHitResult HitResult;
+
+	auto sockets = NameSocketDetectionByIA;
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor);
+	CollisionQueryParams.AddIgnoredActor(this);
+	
+	for (int i = 0; i < sockets.Num(); i++)
+	{		
+		FVector SocketLocation = GetMesh()->GetSocketLocation(sockets[i]);
+
+		const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, SocketLocation
+			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
+			, CollisionQueryParams);
+
+		NumberOfLoSChecksPerformed++;
+
+		if (bHitSocket == false) {
+			DrawDebugLine(GetWorld(), ObserverLocation, SocketLocation, FColor::Green, false, 1);
+			
+			OutSeenLocation = SocketLocation;
+			OutSightStrength = 1;
+
+			return true;
+		}
+	}
+
+	const bool bHit = GetWorld()->LineTraceSingleByObjectType(HitResult, ObserverLocation, GetActorLocation()
+		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
+		, CollisionQueryParams);
+	
+	NumberOfLoSChecksPerformed++;
+	
+	if (bHit == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+	{
+		OutSeenLocation = GetActorLocation();
+		OutSightStrength = 1;
+	
+		return true;
+	}
+
+	OutSightStrength = 0;
+	return false;
+}
+
+
 

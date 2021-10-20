@@ -39,7 +39,6 @@ bool AIAPawnController::Initialize(AIAPawnManager* IAPawnerManagerSpawner, const
 		if(AICharacter->BehaviourTree->BlackboardAsset)
 		{
 			Blackboard->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
-			Blackboard->SetValueAsBool("NeedNewSpot", true);
 			Blackboard->SetValueAsVector("LocationUnSpawn", UnSpawnPatrolPoint->GetActorLocation());
 		}
 	}

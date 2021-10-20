@@ -7,10 +7,11 @@
 #include "GameCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Perception/AISightTargetInterface.h"
 #include "Hero.generated.h"
 
-UCLASS()
-class GC_UE4CPP_API AHero : public AGameCharacter
+UCLASS() 
+class GC_UE4CPP_API AHero : public AGameCharacter, public IAISightTargetInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, int32* UserData = nullptr) const override;
 
 private:
 	// Camera stick positioning the camera behind the character
@@ -56,6 +58,9 @@ private:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
 	float CamZoomDestination;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> NameSocketDetectionByIA;
 
 protected:
 	// Called for forward/backward input

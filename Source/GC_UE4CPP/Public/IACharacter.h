@@ -14,7 +14,7 @@ class GC_UE4CPP_API AIACharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AIACharacter();
+	AIACharacter(const FObjectInitializer& ObjectInitializer);
 	UPROPERTY(EditAnywhere)
 	UBehaviorTree* BehaviourTree;
 

@@ -16,8 +16,21 @@ EBTNodeResult::Type UBTT_CheckSpawnFood::ExecuteTask(UBehaviorTreeComponent & Ow
 		{
 			return EBTNodeResult::Failed;
 		}
-		
-		IAController->GetBlackboardComponent()->SetValueAsBool("NeedNewSpot", !IAController->IsSpotHasFood(CurrentAIPatrolPoint));
+
+		///If there is food, we need a new spot		
+		if(!IAController->IsSpotHasFood(CurrentAIPatrolPoint))
+		{
+			IAController->WillNeedNewDestination();
+			IAController->GetBlackboardComponent()->SetValueAsBool("NeedNewSpot", true);
+			return EBTNodeResult::Failed;
+		}
+
+		else
+		{
+			IAController->GetBlackboardComponent()->SetValueAsBool("NeedNewSpot", false);
+			IAController->GetBlackboardComponent()->SetValueAsBool("GoUnSpawn", true);
+		}
+
 	}
 
 	else
