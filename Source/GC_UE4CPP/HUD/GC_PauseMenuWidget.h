@@ -18,11 +18,16 @@ public:
 
 	virtual void NativeConstruct() override;
 
+	void InitializeOptionsWidget(UWidget*);
+
 	UFUNCTION()
 	void Resume();
 
 	UFUNCTION()
 	void Restart();
+
+	UFUNCTION()
+	void Options();
 
 	UFUNCTION()
 	void Quit();
@@ -33,14 +38,14 @@ public:
 	UFUNCTION()
 	void QuitMainMenu();
 
-	UFUNCTION()
-	void Options();
-
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIResume;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIRestart;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* UIOptions;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuit;
@@ -51,6 +56,5 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuitMainMenu;
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UButton* UIOptions;
+	UWidget* OptionsWidget;
 };

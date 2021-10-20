@@ -9,6 +9,7 @@ AGC_InGameInterface::AGC_InGameInterface()
 void AGC_InGameInterface::BeginPlay()
 {
 	Super::BeginPlay();
+	// Score Menu
 	if (ScoreWidgetClass)
 	{
 		ScoreWidget = CreateWidget<UGC_ScoreMenuWidget>(GetWorld(), ScoreWidgetClass);
@@ -17,6 +18,7 @@ void AGC_InGameInterface::BeginPlay()
 			ScoreWidget->AddToViewport();
 		}
 	}
+	// Pause Menu
 	if (MenuWidgetClass)
 	{
 		MenuWidget = CreateWidget<UGC_PauseMenuWidget>(GetWorld(), MenuWidgetClass);
@@ -25,6 +27,22 @@ void AGC_InGameInterface::BeginPlay()
 			MenuWidget->AddToViewport();
 			MenuWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+	}
+	// Options Menu
+	if (OptionsWidgetClass)
+	{
+		OptionsWidget = CreateWidget<UGC_OptionsMenuWidget>(GetWorld(), OptionsWidgetClass);
+		if (OptionsWidget)
+		{
+			OptionsWidget->AddToViewport();
+			OptionsWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+	// Initialize pour Options Menu et Pause Menu
+	if (OptionsWidget && OptionsWidget)
+	{
+		MenuWidget->InitializeOptionsWidget(OptionsWidget);
+		OptionsWidget->InitializePauseWidget(MenuWidget);
 	}
 }
 

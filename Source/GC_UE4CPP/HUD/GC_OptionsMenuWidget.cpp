@@ -19,12 +19,25 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	}
 }
 
+void UGC_OptionsMenuWidget::InitializePauseWidget(UWidget* pauseWidget)
+{
+	PauseWidget = pauseWidget;
+}
+
 void UGC_OptionsMenuWidget::Back()
 {
-	
+	if(UIBack)
+	{
+		this->SetVisibility(ESlateVisibility::Hidden);
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UGC_OptionsMenuWidget::Confirm()
 {
-	
+	if(UIConfirm)
+	{
+		this->SetVisibility(ESlateVisibility::Hidden);
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GC_OptionsMenuWidget.h"
 #include "GC_PauseMenuWidget.h"
 #include "GC_ScoreMenuWidget.h"
 #include "GameFramework/HUD.h"
@@ -32,8 +33,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> MenuWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category=Widgets)
+	TSubclassOf<UUserWidget> OptionsWidgetClass;
 	
 private:
 	UGC_ScoreMenuWidget* ScoreWidget;
 	UGC_PauseMenuWidget* MenuWidget;
+	UGC_OptionsMenuWidget* OptionsWidget;
 };

@@ -18,6 +18,10 @@ void UGC_PauseMenuWidget::NativeConstruct()
 	{
 		UIRestart->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Restart);
 	}
+	if(UIOptions)
+	{
+		UIOptions->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Options);
+	}
 	if(UIQuit)
 	{
 		UIQuit->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Quit);
@@ -30,10 +34,11 @@ void UGC_PauseMenuWidget::NativeConstruct()
 	{
 		UIQuitMainMenu->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::QuitMainMenu);
 	}
-	if(UIOptions)
-	{
-		UIOptions->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Options);
-	}
+}
+
+void UGC_PauseMenuWidget::InitializeOptionsWidget(UWidget* optionsWidget)
+{
+	OptionsWidget = optionsWidget;
 }
 
 void UGC_PauseMenuWidget::Resume()
@@ -69,6 +74,15 @@ void UGC_PauseMenuWidget::Restart()
 	}
 }
 
+void UGC_PauseMenuWidget::Options()
+{
+	if(UIOptions)
+	{
+		this->SetVisibility(ESlateVisibility::Hidden);
+		OptionsWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
 void UGC_PauseMenuWidget::Quit()
 {
 	if(UIQuit && UIQuitDesktop && UIQuitMainMenu)
@@ -97,14 +111,5 @@ void UGC_PauseMenuWidget::QuitMainMenu()
 	if(UIQuitMainMenu)
 	{
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
-	}
-}
-
-void UGC_PauseMenuWidget::Options()
-{
-	if(UIOptions)
-	{
-		this->SetVisibility(ESlateVisibility::Hidden);
-		//GetWidgetFromName()
 	}
 }

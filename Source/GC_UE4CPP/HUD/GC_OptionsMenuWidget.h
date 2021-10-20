@@ -18,6 +18,8 @@ public:
 
 	virtual void NativeConstruct() override;
 
+	void InitializePauseWidget(UWidget*);
+
 	UFUNCTION()
 	void Back();
 
@@ -29,4 +31,6 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIConfirm;
+	
+	UWidget* PauseWidget;
 };
