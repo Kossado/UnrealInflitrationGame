@@ -37,7 +37,7 @@ EBTNodeResult::Type UGCBTT_FollowDirectionTarget::ExecuteTask(UBehaviorTreeCompo
 
 			if(bHitSocket == true)
 			{
-				DrawDebugLine(GetWorld(), LocationLostTarget, HitResult.Location, FColor::Red, false, 5);
+				DrawDebugLine(GetWorld(), LocationLostTarget, HitResult.Location + (LocationLostTarget - HitResult.Location).GetSafeNormal() * 100, FColor::Red, false, 5);
 				OwnerComp.GetBlackboardComponent()->SetValueAsVector("LocationSearchPlayer", HitResult.Location + (LocationLostTarget - HitResult.Location).GetSafeNormal() * 100);	
 			}
 		}

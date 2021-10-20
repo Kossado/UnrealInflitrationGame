@@ -36,14 +36,11 @@ public:
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	void ForgetTarget();
-	void RotateLookAround();
-
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
-	// void SightPlayer(const TArray<AActor*>& UpdateActors);
 private:
-	void IterationLookAround();
+
 	
 	UPROPERTY(EditAnywhere)
 	FGenericTeamId TeamID;

@@ -136,35 +136,6 @@ void AIAEnnemyCharacterController::ForgetTarget()
 	Blackboard->SetValueAsObject("TargetChase", nullptr);	
 }
 
-void AIAEnnemyCharacterController::LookAround()
-{	
-	float CurrentAngle=0;
-	if(OutHand)
-
-	GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &AIAEnnemyCharacterController::IterationLookAround, 0.5f);
-
-}
-
-void AIAEnnemyCharacterController::IterationLookAround()
-{
-	GetCharacter()->AddActorLocalRotation(FRotator(0,0,DifferenceAngleIterationLookAround), true);
-	
-}
-
-// void AIAEnnemyCharacterController::SightPlayer(const TArray<AActor*>& UpdateActors)
-// {
-// 	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Blue, FString::Printf(TEXT("Detection of %s int team %d"), ToCStr(GetName()), GetGenericTeamId().GetId()));
-//
-// 	for(int i = 0; i < UpdateActors.Num();i++)
-// 	{
-// 		Blackboard->SetValueAsBool("HasLineOfSight", true);
-// 		break;		
-// 	}
-// 	
-//
-// 	
-// }
-
 void AIAEnnemyCharacterController::SetNextTargetAIPatrolPoint(AIASpotFoodPoint * NextTargetAIPatrolPoint)
 {
 	Super::SetNextTargetAIPatrolPoint(NextTargetAIPatrolPoint);
