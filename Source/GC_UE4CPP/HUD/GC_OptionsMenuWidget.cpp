@@ -1,7 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GC_OptionsMenuWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 UGC_OptionsMenuWidget::UGC_OptionsMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -19,4 +17,14 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	{
 		UIConfirm->OnClicked.AddDynamic(this,&UGC_OptionsMenuWidget::Confirm);
 	}
+}
+
+void UGC_OptionsMenuWidget::Back()
+{
+	
+}
+
+void UGC_OptionsMenuWidget::Confirm()
+{
+	
 }

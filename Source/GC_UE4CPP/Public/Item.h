@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Chest.generated.h"
+#include "Item.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AChest : public AActor
+class GC_UE4CPP_API AItem : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AChest();
+	AItem();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,9 +23,9 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* ChestMesh;
+	USceneComponent* SceneComponent;
 
-	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* FoodPlaceholder;
+	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StaticMesh;
 
 };

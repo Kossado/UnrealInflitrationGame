@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Runtime/UMG/Public/UMG.h"
 #include "GC_OptionsMenuWidget.generated.h"
 
 /**
