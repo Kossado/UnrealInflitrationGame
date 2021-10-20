@@ -49,6 +49,8 @@ bool AIAEnnemyCharacterController::Initialize(AIAEnnemyManager* IAEnnemyManagerS
 	IAEnnemyManager = IAEnnemyManagerSpawner;
 	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
 	Blackboard->SetValueAsBool("NeedNewSpot", true);
+	Blackboard->SetValueAsObject("SelfActor", GetCharacter());
+
 
 	return true;
 }
