@@ -15,6 +15,9 @@ public:
 	// Sets default values for this actor's properties
 	AChair();
 
+	FVector GetSitLocation();
+	FRotator GetSitRotation();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -25,6 +28,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* SitLocationComponent;
 
 public:	
 	// Called every frame

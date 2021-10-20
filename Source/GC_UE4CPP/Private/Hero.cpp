@@ -25,7 +25,6 @@ CameraZoomSteps(45.f)
 	CameraStick->SetupAttachment(RootComponent);
 	CameraStick->TargetArmLength = 300.f; // Distance between the camera and the character
 	CameraStick->bUsePawnControlRotation = true; // Rotate based on the controller
-	CameraStick->SetRelativeRotation(FRotator(0.f,-30.f,0.f));
 
 	// Create Camera that will follow the character
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
@@ -72,8 +71,6 @@ void AHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight",this, &AHero::MoveRight);
 
 	// Setting up Mouse/Camera Movements
-	/*PlayerInputComponent->BindAxis("Turn", this, &AHero::TurnRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &AHero::LookUpRate);*/
 	PlayerInputComponent->BindAxis("Turn", this, &AHero::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &AHero::AddControllerPitchInput);
 
@@ -140,25 +137,20 @@ void AHero::InvokeMenu()
 		GameMode->RestartGame();
 }
 
-/*void AHero::SeeThroughComponent()
+void AHero::SitDown()
 {
-	TArray<FHitResult> HitResults;
-	FVector Start = CameraComponent->GetComponentLocation();
-	FVector End = GetActorLocation();
-	FCollisionObjectQueryParams ObjectTypes = ECC_WorldDynamic;
-	GetWorld()->LineTraceMultiByObjectType(HitResults, Start, End, ObjectTypes);
-	TArray<UMaterialInterface*> MaterialInterfaces;
+	Super::SitDown();
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
+	CameraStick->bUsePawnControlRotation = false;
+	CameraStick->SetRelativeRotation(FRotator(0.f,180.f,0.f));
 	
-	for(int i = 0; i<HitResults.Num();i++)
-	{
-		if(GEngine)
-		{
-			if(HitResults[i].GetComponent()->GetMaterial(0))
-				GEngine->AddOnScreenDebugMessage(-1, 2.f,FColor::White,HitResults[i].GetComponent()->GetMaterial(0)->GetName());
-		}
-		HitResults[i].GetComponent()->GetUsedMaterials(MaterialInterfaces);
-		MaterialInterfaces[0]
-	}
-}*/
+}
 
-
+void AHero::StandUp()
+{
+	Super::StandUp();
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(false);
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(false);
+	CameraStick->bUsePawnControlRotation = true;
+}

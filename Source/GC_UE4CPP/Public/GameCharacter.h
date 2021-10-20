@@ -41,9 +41,9 @@ protected:
 
 	void StoreFood();
 
-	void SitDown();
+	virtual void SitDown();
 
-	void StandUp();
+	virtual void StandUp();
 	
 private:
 	// Collision detection with items

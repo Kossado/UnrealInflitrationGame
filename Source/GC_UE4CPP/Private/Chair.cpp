@@ -17,6 +17,22 @@ AChair::AChair()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
 	StaticMesh->SetupAttachment(RootComponent);
 
+	//Set up Location to sit Component
+	SitLocationComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Sit Location")));
+	SitLocationComponent->SetupAttachment(RootComponent);
+	SitLocationComponent->SetRelativeRotation(FRotator(0.f,90.f,0.f));
+
+}
+
+FVector AChair::GetSitLocation()
+{
+	return SitLocationComponent->GetComponentLocation();
+}
+
+FRotator AChair::GetSitRotation()
+{
+	//return StaticMesh->GetComponentRotation();
+	return SitLocationComponent->GetComponentRotation();
 }
 
 // Called when the game starts or when spawned

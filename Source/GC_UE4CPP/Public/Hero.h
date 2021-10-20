@@ -74,6 +74,7 @@ protected:
 	// Menu Function
 	void InvokeMenu();
 
-	void SeeThroughComponent();
+	virtual void SitDown() override;
 
+	virtual void StandUp() override;
 };
