@@ -33,6 +33,9 @@ public:
 	UFUNCTION()
 	void QuitMainMenu();
 
+	UFUNCTION()
+	void Options();
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIResume;
 
@@ -47,4 +50,7 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuitMainMenu;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* UIOptions;
 };

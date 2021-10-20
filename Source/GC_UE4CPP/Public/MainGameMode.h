@@ -28,12 +28,10 @@ public:
 	int GetStoredFood() const;
 	int GetPickableFood() const;
 	int GetStoredFoodToWin() const;
-	bool GetLaunchGame();
 	// Setters
 	void SetCurrentGameState(EGameState CurrentGameState) const;
 	void IncrementStoredFood();
 	void IncrementPickableFood();
-	void SetLaunchGame();
 	// Checks
 	void CheckGameConditions();
 	void DisableCharacterInput();

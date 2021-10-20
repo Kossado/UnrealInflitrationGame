@@ -30,6 +30,10 @@ void UGC_PauseMenuWidget::NativeConstruct()
 	{
 		UIQuitMainMenu->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::QuitMainMenu);
 	}
+	if(UIOptions)
+	{
+		UIOptions->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Options);
+	}
 }
 
 void UGC_PauseMenuWidget::Resume()
@@ -93,5 +97,14 @@ void UGC_PauseMenuWidget::QuitMainMenu()
 	if(UIQuitMainMenu)
 	{
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
+	}
+}
+
+void UGC_PauseMenuWidget::Options()
+{
+	if(UIOptions)
+	{
+		this->SetVisibility(ESlateVisibility::Hidden);
+		//GetWidgetFromName()
 	}
 }

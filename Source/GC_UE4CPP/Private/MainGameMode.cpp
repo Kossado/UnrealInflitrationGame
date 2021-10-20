@@ -103,14 +103,3 @@ void AMainGameMode::DisableCharacterInput()
 	// Method to restart the game Useful later // TO DELETE
 	//RestartGame();
 }
-
-bool AMainGameMode::GetLaunchGame()
-{
-	return GetGameState<AMainGameState>()->LaunchGame;
-}
-
-void AMainGameMode::SetLaunchGame()
-{
-	UE_LOG(LogTemp, Warning, TEXT("bbbbbbbbbbbbbbbbbbbb") );
-	GetGameState<AMainGameState>()->LaunchGame = false;
-}

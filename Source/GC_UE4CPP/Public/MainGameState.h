@@ -36,6 +36,4 @@ public:
 	// Quantity of food needed to win the game
 	UPROPERTY(VisibleAnywhere, Category=GameData)
 	int StoredFoodToWin;
-
-	bool LaunchGame;
 };
