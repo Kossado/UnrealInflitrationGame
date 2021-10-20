@@ -19,7 +19,7 @@ class GC_UE4CPP_API AGameCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AGameCharacter();
+	AGameCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// Takes food and carry it

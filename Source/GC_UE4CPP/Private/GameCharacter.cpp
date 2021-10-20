@@ -9,7 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AGameCharacter::AGameCharacter():
+AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer),
 BaseWalkSpeed(300.f),
 CarryWalkSpeedMultiplicator(0.5f)
 {

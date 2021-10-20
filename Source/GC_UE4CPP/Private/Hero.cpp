@@ -187,13 +187,6 @@ bool AHero::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
 	return false;
 }
 
-void AHero::InvokeMenu()
-{
-	AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(GameMode)
-		GameMode->RestartGame();
-}
-
 void AHero::SitDown()
 {
 	Super::SitDown();
