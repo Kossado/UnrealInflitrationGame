@@ -4,8 +4,6 @@
 #include "Food.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Hero.h"
-
 // Sets default values
 AFood::AFood()
 {

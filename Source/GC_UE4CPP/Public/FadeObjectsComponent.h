@@ -146,7 +146,7 @@ private:
 	
 	// Instance fade
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-	float FadeValue = 0.5f;
+	float FadeValue = 0.25f;
 	
 
 public:	

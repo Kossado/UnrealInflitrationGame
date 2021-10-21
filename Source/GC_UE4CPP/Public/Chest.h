@@ -28,7 +28,7 @@ private:
 	UStaticMeshComponent* ChestMesh;
 
 	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* FoodParentComponent;
+	USceneComponent* SceneComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
 	TArray<USceneComponent*> FoodPlaceholder;

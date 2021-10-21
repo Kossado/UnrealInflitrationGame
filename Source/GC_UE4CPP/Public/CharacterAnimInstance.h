@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameCharacter.h"
-#include "MainGameMode.h"
+#include "GCCharacter.h"
+#include "GCGameMode.h"
 #include "Animation/AnimInstance.h"
 
 #include "CharacterAnimInstance.generated.h"
@@ -25,7 +25,7 @@ public:
 private:
 	// Character's ref
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-	AGameCharacter* Character;
+	AGCCharacter* Character;
 	// Character speed for the walk animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	float Speed;
@@ -41,6 +41,6 @@ private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bSit;
 	
-	AMainGameMode* MainGameMode;
+	AGCGameMode* MainGameMode;
 	
 };

@@ -67,8 +67,9 @@ void UFadeObjectsComponent::FadeObject()
 			TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ObjectTypes[i].GetValue()));
 		}
 		// Check distance between camera and player for new object to fade, and add this in array
-		GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
-				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);
+		GetOwner()->GetWorld()->LineTraceMultiByObjectType(HitArray, TraceStart, TraceEnd, TraceObjectTypes, TraceParams);
+		/*GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
+				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);*/
 
 		for (int HitArrayIndex = 0; HitArrayIndex < HitArray.Num(); ++HitArrayIndex)
 		{

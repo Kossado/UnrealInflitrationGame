@@ -3,7 +3,7 @@
 
 #include "GC_MainMenuWidget.h"
 
-#include "MainGameMode.h"
+#include "GCGameMode.h"
 
 UGC_MainMenuWidget::UGC_MainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

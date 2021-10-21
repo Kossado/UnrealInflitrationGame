@@ -4,7 +4,6 @@
 #include "BTT_ChasePlayer.h"
 
 #include "AIController.h"
-#include "Hero.h"
 #include "IAEnnemyCharacterController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"

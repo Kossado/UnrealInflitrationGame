@@ -3,16 +3,16 @@
 
 #include "CharacterAnimInstance.h"
 
-#include "Hero.h"
 #include "IACharacter.h"
-#include "MainGameMode.h"
+#include "GCGameMode.h"
+#include "GCPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	MainGameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	Character = Cast<AGameCharacter>(TryGetPawnOwner());
+	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	Character = Cast<AGCCharacter>(TryGetPawnOwner());
 	bIsCarryingFood = false;
 	bGameInProgress = true;
 }
@@ -22,14 +22,14 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	if(Character == nullptr)
 	{
-		Character = Cast<AGameCharacter>(TryGetPawnOwner());// Double check - Useless ?
+		Character = Cast<AGCCharacter>(TryGetPawnOwner());// Double check - Useless ?
 	}
 	if(Character)
 	{
 		FVector Velocity = Character->GetVelocity();
 		Velocity.Z = 0;
 		Speed = Velocity.Size();
-		if(Character->IsA(AHero::StaticClass()) && MainGameMode)
+		if(Character->IsA(AGCPlayerCharacter::StaticClass()) && MainGameMode)
 		{
 			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
 			{
