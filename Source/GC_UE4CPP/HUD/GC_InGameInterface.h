@@ -36,7 +36,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> OptionsWidgetClass;
-	
+
 private:
 	UGC_ScoreMenuWidget* ScoreWidget;
 	UGC_PauseMenuWidget* MenuWidget;

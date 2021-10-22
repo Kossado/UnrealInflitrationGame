@@ -1,5 +1,6 @@
 #include "GC_PauseMenuWidget.h"
 #include "GCGameMode.h"
+#include "Components/Button.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 UGC_PauseMenuWidget::UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
