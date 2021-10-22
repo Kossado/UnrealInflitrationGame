@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#define COLLISION_TRANSPARENT ECC_GameTraceChannel1
 
 #include "FadeObjectsComponent.h"
 
@@ -15,7 +15,7 @@ UFadeObjectsComponent::UFadeObjectsComponent()
 
 	// ...
 	// Add first collision type
-	ObjectTypes.Add(ECC_WorldStatic);
+	ObjectTypes.Add(COLLISION_TRANSPARENT);
 }
 
 
