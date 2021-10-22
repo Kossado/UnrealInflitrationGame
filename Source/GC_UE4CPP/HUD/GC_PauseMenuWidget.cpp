@@ -1,5 +1,5 @@
 #include "GC_PauseMenuWidget.h"
-#include "MainGameMode.h"
+#include "GCGameMode.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 UGC_PauseMenuWidget::UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -69,7 +69,7 @@ void UGC_PauseMenuWidget::Restart()
 		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
 		
-		AMainGameMode* GameMode = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->RestartGame();
 	}
 }

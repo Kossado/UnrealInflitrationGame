@@ -3,18 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GCCharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "GameFramework/Character.h"
 #include "IACharacter.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AIACharacter : public ACharacter
+class GC_UE4CPP_API AIACharacter : public AGCCharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AIACharacter();
+	AIACharacter(const FObjectInitializer& ObjectInitializer);
 	UPROPERTY(EditAnywhere)
 	UBehaviorTree* BehaviourTree;
 

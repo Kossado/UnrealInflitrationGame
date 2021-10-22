@@ -21,11 +21,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	FVector GetValidStoredPosition();
+
 private:
 	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ChestMesh;
 
 	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* FoodPlaceholder;
+	USceneComponent* SceneComponent;
+	
+	UPROPERTY(VisibleAnywhere, Category=Storing, meta = (AllowPrivateAccess = "true"))
+	TArray<USceneComponent*> FoodPlaceholder;
 
 };

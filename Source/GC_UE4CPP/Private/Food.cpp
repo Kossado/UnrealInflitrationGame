@@ -4,8 +4,6 @@
 #include "Food.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "Hero.h"
-
 // Sets default values
 AFood::AFood()
 {
@@ -15,7 +13,6 @@ AFood::AFood()
 	//Set up Mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static Mesh"));
 	SetRootComponent(StaticMesh);
-	StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn,ECollisionResponse::ECR_Ignore);
 	//Set up food state
 	SetFoodState(EFS_Dropped);
 }
@@ -40,6 +37,7 @@ void AFood::SetFoodProperties(EFoodState State)
 			//Set mesh properties
 			StaticMesh->SetSimulatePhysics(true);
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+			StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			break;
 		case EFoodState::EFS_Stored:
@@ -51,6 +49,7 @@ void AFood::SetFoodProperties(EFoodState State)
 			//Set mesh properties
 			StaticMesh->SetSimulatePhysics(true);
 			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+			StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
 			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			break;
 	}
