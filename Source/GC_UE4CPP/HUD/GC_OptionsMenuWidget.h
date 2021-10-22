@@ -39,6 +39,12 @@ public:
 	UFUNCTION()
 	void ChangeKeyMoveBack(FInputChord InputChord);
 
+	UFUNCTION()
+	void ChangeKeyMoveRight(FInputChord InputChord);
+
+	UFUNCTION()
+	void ChangeKeyMoveLeft(FInputChord InputChord);
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIBack;
 
@@ -56,6 +62,12 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UInputKeySelector* UIAxisMoveBack;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UInputKeySelector* UIAxisMoveRight;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UInputKeySelector* UIAxisMoveLeft;
 	
 	UWidget* PauseWidget;
 	

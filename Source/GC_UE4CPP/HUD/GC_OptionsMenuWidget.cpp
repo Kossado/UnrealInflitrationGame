@@ -24,13 +24,13 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	}
 
 	InputSettings = UInputSettings::GetInputSettings();
-	KeyChange.Init(false,4);
+	KeyChange.Init(false,6);
 	
 	ActionArrayKeys.Init(FInputActionKeyMapping(),2);
 	ActionArrayKeysNext.Init(FInputActionKeyMapping(),2);
 
-	AxisArrayKeys.Init(FInputAxisKeyMapping(),2);
-	AxisArrayKeysNext.Init(FInputAxisKeyMapping(),2);
+	AxisArrayKeys.Init(FInputAxisKeyMapping(),4);
+	AxisArrayKeysNext.Init(FInputAxisKeyMapping(),4);
 
 	TArray <struct FInputActionKeyMapping> OutMappingsInteract;
 	InputSettings->GetActionMappingByName("Interact", OutMappingsInteract);
@@ -44,6 +44,11 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	InputSettings->GetAxisMappingByName("MoveForward", OutMappingsMoveForward);
 	AxisArrayKeys[1] = OutMappingsMoveForward[0];
 	AxisArrayKeys[0] = OutMappingsMoveForward[1];
+
+	TArray <struct FInputAxisKeyMapping> OutMappingsMoveRight;
+	InputSettings->GetAxisMappingByName("MoveRight", OutMappingsMoveRight);
+	AxisArrayKeys[3] = OutMappingsMoveRight[0];
+	AxisArrayKeys[2] = OutMappingsMoveRight[1];
 	
 	if(UIActionInteract)
 	{
@@ -64,6 +69,16 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	{
 		UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
 		UIAxisMoveBack->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveBack);
+	}
+	if(UIAxisMoveLeft)
+	{
+		UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
+		UIAxisMoveLeft->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveLeft);
+	}
+	if(UIAxisMoveRight)
+	{
+		UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
+		UIAxisMoveRight->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveRight);
 	}
 }
 
@@ -91,6 +106,18 @@ void UGC_OptionsMenuWidget::ChangeKeyMoveBack(FInputChord InputChord)
 	KeyChange[3] = true;
 }
 
+void UGC_OptionsMenuWidget::ChangeKeyMoveLeft(FInputChord InputChord)
+{
+	AxisArrayKeysNext[2] = FInputAxisKeyMapping("MoveRight",InputChord.Key, 1.0f);
+	KeyChange[4] = true;
+}
+
+void UGC_OptionsMenuWidget::ChangeKeyMoveRight(FInputChord InputChord)
+{
+	AxisArrayKeysNext[3] = FInputAxisKeyMapping("MoveRight",InputChord.Key, -1.0f);
+	KeyChange[5] = true;
+}
+
 void UGC_OptionsMenuWidget::InitializePauseWidget(UWidget* pauseWidget)
 {
 	PauseWidget = pauseWidget;
@@ -105,10 +132,12 @@ void UGC_OptionsMenuWidget::Back()
 	UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
 	UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
 	UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
+	UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
+	UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
 	
 	ActionArrayKeysNext.Init(FInputActionKeyMapping(),2);
-	AxisArrayKeys.Init(FInputAxisKeyMapping(),2);
-	KeyChange.Init(false,4);
+	AxisArrayKeysNext.Init(FInputAxisKeyMapping(),4);
+	KeyChange.Init(false,6);
 }
 
 void UGC_OptionsMenuWidget::Confirm()
