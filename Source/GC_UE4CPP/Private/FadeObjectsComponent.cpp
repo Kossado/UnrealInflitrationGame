@@ -70,7 +70,7 @@ void UFadeObjectsComponent::FadeObject()
 		GetOwner()->GetWorld()->LineTraceMultiByObjectType(HitArray, TraceStart, TraceEnd, TraceObjectTypes, TraceParams);
 		/*GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
 				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);*/
-
+		
 		for (int HitArrayIndex = 0; HitArrayIndex < HitArray.Num(); ++HitArrayIndex)
 		{
 			if (HitArray[HitArrayIndex].bBlockingHit && IsValid(HitArray[HitArrayIndex].GetComponent()) && !FadeObjectsHit.Contains(HitArray[HitArrayIndex].GetComponent()))

@@ -123,7 +123,7 @@ void AGCCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 void AGCCharacter::Interact()
 {
 	// When "E" key is pressed ...
-	if(ChairInFront != nullptr)
+	if(ChairInFront != nullptr && !bIsSitting)
 	{
 		SitDown();
 		return;
@@ -147,9 +147,11 @@ void AGCCharacter::Interact()
 
 void AGCCharacter::SitDown()
 {
-	bIsSitting = true;
 	if(ChairInFront != nullptr)
 	{
+		bIsSitting = true;
+		ChairInFront->SetCollisionProperties(bIsSitting);
+		GetCharacterMovement()->GravityScale = 0.f;
 		SetActorLocation(ChairInFront->GetSitLocation());
 		SetActorRotation(ChairInFront->GetSitRotation());
 	}
@@ -158,15 +160,22 @@ void AGCCharacter::SitDown()
 void AGCCharacter::StandUp()
 {
 	bIsSitting = false;
+	GetCharacterMovement()->GravityScale = 1.f;
+
+	// To Modify => ChairInFront become null when the character sit // BoxCollision should take the character too or change the way of doing it
+	if(ChairInFront != nullptr)
+	{
+		ChairInFront->SetCollisionProperties(bIsSitting);
+	}
 }
 
 void AGCCharacter::StoreFood()
 {
 	CarriedFood->SetActorLocation(ChestInFront->GetValidStoredPosition());
 	CarriedFood->SetActorRotation(ChestInFront->GetActorRotation() + FRotator(90.f,0.f,0.f));
-	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(MainGameMode)
-		MainGameMode->IncrementStoredFood();
+	LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(LevelGameMode)
+		LevelGameMode->IncrementStoredFood();
 }
 
 void AGCCharacter::DropFood()

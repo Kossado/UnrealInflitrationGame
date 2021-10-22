@@ -63,7 +63,7 @@ private:
 	// Characters Speed when carrying food
 	float CarryWalkSpeedMultiplicator;
 
-	AGCGameMode* MainGameMode;
+	AGCGameMode* LevelGameMode;
 	
 public:	
 	// Called every frame
