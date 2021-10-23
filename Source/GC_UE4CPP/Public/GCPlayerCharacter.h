@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "FadeObjectsComponent.h"
 #include "GCCharacter.h"
+#include "Interactable.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AISightTargetInterface.h"
@@ -19,46 +20,39 @@ class GC_UE4CPP_API AGCPlayerCharacter : public AGCCharacter, public IAISightTar
 public:
 	// Sets default values for this character's properties
 	AGCPlayerCharacter();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, int32* UserData = nullptr) const override;
 
+	// Grab an item
+	void GrabItem(TSubclassOf<AActor> ItemClass);
+	
+	void OnEnterActor(AActor* InteractiveActor);
+	void OnLeaveActor();
+	UFUNCTION()
+	void Action();
+	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	// Called when the player try to sit down
+	virtual void SitDown() override;
+	// Called when the player try to stand up
+	virtual void StandUp() override;
+	bool bHasItem = false;
+
+	AActor* CurrentInteractiveActor;
+	IInteractable* CurrentInteractive;
+	
 private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraStick;
+	USpringArmComponent* CameraSpringArm;
 	// Camera that follow the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
-	// Base turn rate for the right/left camera movement in deg/sec
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float BaseTurnRate;
-	// Base Lookup rate for the up/down camera movement in deg/sec
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float BaseLookUpRate;
-	// Minimum Length of the CameraStick
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float MinCameraDistance;
-	// Maximum Length of the CameraStick
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float MaxCameraDistance;
-	// Camera zoom speed
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float CameraZoomSpeed;
-	// How much the camera will move with one mouse wheel input
-	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	float CameraZoomSteps;
-	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
-	float CamZoomDestination;
 	// Component that allow to see through objects
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UFadeObjectsComponent* FadeObjectsComponent;
@@ -66,20 +60,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TArray<FName> NameSocketDetectionByIA;
 
-protected:
-	// Called for forward/backward input
-	void MoveForward(float Value);
-	// Called for right/left input
-	void MoveRight(float Value);
-	// Called to setup the zoom's destination
-	void ZoomIn();	
-	void ZoomOut();
-	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
-	void SmoothZoom(float DeltaTime);
-	// Launch menu Pause
-	void InvokeMenu();
-
-	virtual void SitDown() override;
-
-	virtual void StandUp() override;
+	
+public:
+	// GETTERS / SETTERS
+	FORCEINLINE USpringArmComponent* GetCameraSpringArm() const {return CameraSpringArm;}
+	FORCEINLINE bool HasItem() const { return bHasItem; }
 };

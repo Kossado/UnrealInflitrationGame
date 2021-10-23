@@ -64,6 +64,7 @@ private:
 	float CarryWalkSpeedMultiplicator;
 
 	AGCGameMode* LevelGameMode;
+
 	
 public:	
 	// Called every frame

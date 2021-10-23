@@ -8,26 +8,20 @@
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 // Sets default values
-AGCPlayerCharacter::AGCPlayerCharacter():
-BaseTurnRate(45.f),
-BaseLookUpRate(45.f),
-MinCameraDistance(100.f),
-MaxCameraDistance(900.f),
-CameraZoomSpeed(10.f),
-CameraZoomSteps(45.f)
+AGCPlayerCharacter::AGCPlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create camera stick
-	CameraStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Stick"));
-	CameraStick->SetupAttachment(RootComponent);
-	CameraStick->TargetArmLength = 300.f; // Distance between the camera and the character
-	CameraStick->bUsePawnControlRotation = true; // Rotate based on the controller
+	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Stick"));
+	CameraSpringArm->SetupAttachment(RootComponent);
+	CameraSpringArm->TargetArmLength = 300.f; // Distance between the camera and the character
+	CameraSpringArm->bUsePawnControlRotation = true; // Rotate based on the controller
 
 	// Create Camera that will follow the character
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
-	CameraComponent->SetupAttachment(CameraStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
+	CameraComponent->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
 
 	// Don't rotate when the controller rotates. The controller only affect the camera.
@@ -47,95 +41,19 @@ CameraZoomSteps(45.f)
 void AGCPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CamZoomDestination = CameraStick->TargetArmLength;
 }
 
 // Called every frame
 void AGCPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SmoothZoom(DeltaTime);
 	
-	//SeeThroughComponent();
 }
 
 // Called to bind functionality to input
 void AGCPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Setting up Key/Character Movements
-	PlayerInputComponent->BindAxis("MoveForward",this, &AGCPlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight",this, &AGCPlayerCharacter::MoveRight);
-
-	// Setting up Mouse/Camera Movements
-	PlayerInputComponent->BindAxis("Turn", this, &AGCPlayerCharacter::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &AGCPlayerCharacter::AddControllerPitchInput);
-
-	//Setting up Zoom In/Out
-	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AGCPlayerCharacter::ZoomIn);
-	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AGCPlayerCharacter::ZoomOut);
-
-	//Setting up Menu Inputs
-	PlayerInputComponent->BindAction("InvokeMenu",IE_Pressed, this, &AGCPlayerCharacter::InvokeMenu);
-}
-
-void AGCPlayerCharacter::InvokeMenu()
-{
-	AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (GameMode)
-	{
-		GameMode->LaunchMenuPause();
-	}
-}
-
-void AGCPlayerCharacter::MoveForward(float Value)
-{
-	if((Controller != nullptr) && (Value != 0.0f))
-	{
-		// Find out which way is forward
-		const FRotator YawRotation{0,Controller->GetControlRotation().Yaw,0};
-		FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X); // Based on the X axis (Forward/Backward)
-		
-		AddMovementInput(Direction, Value);
-	}
-}
-
-void AGCPlayerCharacter::MoveRight(float Value)
-{
-	if((Controller != nullptr) && (Value != 0.0f))
-	{
-		// Find out which way is right
-		const FRotator YawRotation{0,Controller->GetControlRotation().Yaw,0};
-		FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y); // Based on the Y Axis (Right/Left)
-		
-		AddMovementInput(Direction, Value);
-	}
-}
-
-void AGCPlayerCharacter::ZoomIn()
-{
-	CamZoomDestination = FMath::Clamp(CameraStick->TargetArmLength - CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
-}
-
-void AGCPlayerCharacter::ZoomOut()
-{
-	CamZoomDestination = FMath::Clamp(CameraStick->TargetArmLength + CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
-}
-
-void AGCPlayerCharacter::SmoothZoom(float DeltaTime)
-{
-	if(!FMath::IsNearlyEqual(CameraStick->TargetArmLength, CamZoomDestination, 0.5f))
-	{
-		// Smooth zoom over time
-		CameraStick->TargetArmLength = FMath::FInterpTo(
-			CameraStick->TargetArmLength,//Current value
-			CamZoomDestination,// Target Value
-			DeltaTime,// Time passed
-			CameraZoomSpeed//Speed
-			);
-	}
 }
 
 bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
@@ -186,6 +104,31 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
+void AGCPlayerCharacter::GrabItem(TSubclassOf<AActor> ItemClass)
+{
+	
+}
+
+void AGCPlayerCharacter::OnEnterActor(AActor* InteractiveActor)
+{
+	if(InteractiveActor != nullptr)
+	{
+		const bool bInteractable = UKismetSystemLibrary::DoesImplementInterface(InteractiveActor, UInteractable::StaticClass());
+		if(bInteractable)
+		{
+			CurrentInteractiveActor = InteractiveActor;
+
+			CurrentInteractive = Cast<IInteractable>(InteractiveActor);
+		}
+	}
+}
+
+void AGCPlayerCharacter::OnLeaveActor()
+{
+	CurrentInteractive = nullptr;
+	CurrentInteractiveActor = nullptr;
+}
+
 void AGCPlayerCharacter::SitDown()
 {
 	Super::SitDown();
@@ -193,8 +136,8 @@ void AGCPlayerCharacter::SitDown()
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
 	// Make the camera stay in front of the player
-	CameraStick->bUsePawnControlRotation = false;
-	CameraStick->SetRelativeRotation(FRotator(0.f,180.f,0.f));
+	CameraSpringArm->bUsePawnControlRotation = false;
+	CameraSpringArm->SetRelativeRotation(FRotator(0.f,180.f,0.f));
 }
 
 void AGCPlayerCharacter::StandUp()
@@ -204,5 +147,13 @@ void AGCPlayerCharacter::StandUp()
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(false);
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(false);
 	// Allow the camera to move normally
-	CameraStick->bUsePawnControlRotation = true;
+	CameraSpringArm->bUsePawnControlRotation = true;
+}
+
+void AGCPlayerCharacter::Action()
+{
+	if(CurrentInteractive != nullptr)
+	{
+		IInteractable::Execute_OnInteract(CurrentInteractiveActor);
+	}
 }

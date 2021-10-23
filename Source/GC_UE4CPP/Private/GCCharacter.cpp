@@ -52,7 +52,7 @@ void AGCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	// Setting up Interact input
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AGCCharacter::Interact);
+	//PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AGCCharacter::Interact);
 }
 
 void AGCCharacter::CarryFood(AFood* FoodToCarry)
