@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "GC_MainMenuWidget.h"
 #include "GameFramework/HUD.h"
-#include "GC_MenuPrincipalInterface.generated.h"
+#include "GC_PrincipalMenuInterface.generated.h"
 
 /**
  * 

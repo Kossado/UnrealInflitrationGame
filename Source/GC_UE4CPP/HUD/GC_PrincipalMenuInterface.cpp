@@ -1,4 +1,4 @@
-#include "GC_MenuPrincipalInterface.h"
+#include "GC_PrincipalMenuInterface.h"
 
 AGC_MenuPrincipalInterface::AGC_MenuPrincipalInterface()
 {

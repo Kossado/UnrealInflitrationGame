@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "GC_UE4CPP/HUD/GC_MenuPrincipalInterface.h"
+#include "GC_UE4CPP/HUD/GC_PrincipalMenuInterface.h"
 #include "MenuPrincipalGameMode.generated.h"
 
 /**
