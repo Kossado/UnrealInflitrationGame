@@ -1,11 +1,11 @@
 #include "GC_PrincipalMenuInterface.h"
 
-AGC_MenuPrincipalInterface::AGC_MenuPrincipalInterface()
+AGC_PrincipalMenuInterface::AGC_PrincipalMenuInterface()
 {
 	
 }
 
-void AGC_MenuPrincipalInterface::BeginPlay()
+void AGC_PrincipalMenuInterface::BeginPlay()
 {
 	Super::BeginPlay();
 	if (MainMenuWidgetClass)
@@ -23,12 +23,12 @@ void AGC_MenuPrincipalInterface::BeginPlay()
 	}
 }
 
-void AGC_MenuPrincipalInterface::Tick(float DeltaTime)
+void AGC_PrincipalMenuInterface::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void AGC_MenuPrincipalInterface::DrawHUD()
+void AGC_PrincipalMenuInterface::DrawHUD()
 {
 	Super::DrawHUD();
 }

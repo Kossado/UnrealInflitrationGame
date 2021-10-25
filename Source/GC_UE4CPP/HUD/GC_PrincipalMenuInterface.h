@@ -9,12 +9,12 @@
  * 
  */
 UCLASS()
-class GC_UE4CPP_API AGC_MenuPrincipalInterface : public AHUD
+class GC_UE4CPP_API AGC_PrincipalMenuInterface : public AHUD
 {
 	GENERATED_BODY()
 
 public:
-	AGC_MenuPrincipalInterface();
+	AGC_PrincipalMenuInterface();
 
 	virtual void DrawHUD() override;
 
