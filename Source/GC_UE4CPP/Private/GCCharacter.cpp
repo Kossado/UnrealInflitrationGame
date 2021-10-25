@@ -87,16 +87,19 @@ void AGCCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, A
 	if(Food && FoodToPick == nullptr)
 	{
 		FoodToPick = Food;
+		return;
 	}
 	AChest* Chest = Cast<AChest>(OtherActor);
-	if(Chest)
+	if(Chest && ChestInFront == nullptr)
 	{
 		ChestInFront = Chest;
+		return;
 	}
 	AChair* Chair = Cast<AChair>(OtherActor);
-	if(Chair)
+	if(Chair && ChairInFront==nullptr)
 	{
 		ChairInFront = Chair;
+		return;
 	}
 }
 
@@ -104,19 +107,22 @@ void AGCCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AFood* Food = Cast<AFood>(OtherActor);
-	if(FoodToPick == Food)
+	if(FoodToPick != nullptr && FoodToPick == Food)
 	{
 		FoodToPick = nullptr;
+		return;
 	}
 	AChest* Chest = Cast<AChest>(OtherActor);
-	if(Chest == ChestInFront)
+	if(ChestInFront != nullptr && Chest == ChestInFront)
 	{
 		ChestInFront = nullptr;
+		return;
 	}
 	AChair* Chair = Cast<AChair>(OtherActor);
-	if(Chair == ChairInFront)
+	if(ChairInFront != nullptr && Chair == ChairInFront)
 	{
 		ChairInFront = nullptr;
+		return;
 	}
 }
 
@@ -142,6 +148,7 @@ void AGCCharacter::Interact()
 	if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
 	{
 		CarryFood(FoodToPick);
+		return;
 	}
 }
 
@@ -189,3 +196,22 @@ void AGCCharacter::DropFood()
 	}
 }
 
+bool AGCCharacter::IsCarryingFood() const
+{
+	return CarriedFood != nullptr;
+}
+
+bool AGCCharacter::IsRotating() const
+{
+	return  bRotate; 
+}
+
+void AGCCharacter::BeginRotate()
+{
+	bRotate = true;
+}
+
+void AGCCharacter::EndRotate()
+{
+	bRotate = false;
+}

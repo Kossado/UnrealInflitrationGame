@@ -15,7 +15,10 @@ public:
 	// Sets default values for this actor's properties
 	AChair();
 
+	UFUNCTION()
 	FVector GetSitLocation();
+
+	UFUNCTION()
 	FRotator GetSitRotation();
 
 protected:

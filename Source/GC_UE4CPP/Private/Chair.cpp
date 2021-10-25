@@ -4,7 +4,7 @@
 #include "Chair.h"
 
 // Sets default values
-AChair::AChair()
+AChair::AChair() : Super()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,7 +32,11 @@ FVector AChair::GetSitLocation()
 FRotator AChair::GetSitRotation()
 {
 	//return StaticMesh->GetComponentRotation();
-	return SitLocationComponent->GetComponentRotation();
+	UE_LOG(LogTemp, Warning, TEXT("Try to sit on %s"), *(SitLocationComponent->GetName()));
+	FRotator ret =  SitLocationComponent->GetComponentRotation();
+	UE_LOG(LogTemp, Warning, TEXT("Try to sit %s"), *(ret.ToString()));
+	UE_LOG(LogTemp, Verbose, TEXT("Success to sat on %s"), *(SitLocationComponent->GetName()));
+	return ret;		
 }
 
 // Called when the game starts or when spawned

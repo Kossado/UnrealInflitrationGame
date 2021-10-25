@@ -40,6 +40,9 @@ private:
 	// Condition to sit in chair
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bSit;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
+	bool bRotate;
 	
 	AGCGameMode* MainGameMode;
 	

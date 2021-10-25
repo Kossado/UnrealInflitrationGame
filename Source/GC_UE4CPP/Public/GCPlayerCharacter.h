@@ -64,7 +64,7 @@ private:
 	UFadeObjectsComponent* FadeObjectsComponent;
 
 	UPROPERTY(EditAnywhere)
-	TArray<FName> NameSocketDetectionByIA;
+	TArray<FName> NameSocketDetectionByAI;
 
 protected:
 	// Called for forward/backward input

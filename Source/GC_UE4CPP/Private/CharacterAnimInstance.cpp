@@ -3,7 +3,7 @@
 
 #include "CharacterAnimInstance.h"
 
-#include "IACharacter.h"
+#include "AI/AIEnemyCharacter.h"
 #include "GCGameMode.h"
 #include "GCPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -41,7 +41,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 				bGameInProgress = false;
 			}
 		}
-		if(Character->IsA(AIACharacter::StaticClass()) && MainGameMode)
+		if(Character->IsA(AAIEnemyCharacter::StaticClass()) && MainGameMode)
 		{
 			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
 			{
@@ -67,6 +67,16 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}else
 		{
 			bSit = false;
+		}
+
+		if(Character->IsRotating())
+		{
+			bRotate = true;
+		}
+
+		else
+		{
+			bRotate = false;
 		}
 		
 	}

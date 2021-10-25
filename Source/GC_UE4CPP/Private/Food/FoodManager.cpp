@@ -1,0 +1,168 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Food/FoodManager.h"
+
+#include "Food/SpotFood.h"
+
+// Sets default values
+AFoodManager::AFoodManager()
+{
+
+}
+
+
+// Called when the game starts or when spawned
+void AFoodManager::BeginPlay()
+{
+	Super::BeginPlay();	
+
+	for(ASpotFood * SpotFood : ListSpotFood)
+	{
+		SpotFood->Initialize(this);
+	}
+	
+	TArray<ASpotFood *> ListSpotFoodAlreadyBusy;
+	for(int i = 0; i < NbFoodSpawnedBeginPlay; i++)
+	{
+		ASpotFood * FirstSpawnFood = GetRandomSpotFood(ListSpotFoodAlreadyBusy);
+		
+		if(FirstSpawnFood != nullptr)
+		{
+			AFood * FirstFoodRandomized = SpawnFood(FirstSpawnFood->GetTransform());
+			FirstSpawnFood->StoreFood(FirstFoodRandomized);
+			ListSpotFoodAlreadyBusy.Add(FirstSpawnFood);
+		}
+	}
+}
+
+ASpotFood * AFoodManager::GetRandomSpotFood(TArray<ASpotFood*> ListSpotFoodToIgnore)
+{
+	TArray<ASpotFood *> ListSpotFoodToRandomize;
+	for(ASpotFood * SpotFood : ListSpotFood)
+	{
+		if(ListSpotFoodToIgnore.Contains(SpotFood))
+		{
+			continue;
+		}
+
+		ListSpotFoodToRandomize.Add(SpotFood);
+	}
+
+	if(ListSpotFoodToRandomize.Num() <= 0)
+	{
+		return nullptr;
+	}
+	
+	const int IndexSelectedSpotFood = FMath::RandRange(0, ListSpotFoodToRandomize.Num()-1);		
+
+	return ListSpotFoodToRandomize[IndexSelectedSpotFood];
+}
+
+void AFoodManager::SpawnFoodSpot()
+{
+	if(BP_SpotFood != nullptr)
+	{
+		FActorSpawnParameters SpawnParams;
+		ASpotFood * SpotFoodCreated = GetWorld()->SpawnActor<ASpotFood>(BP_SpotFood, this->GetTransform(), SpawnParams);
+
+		if(SpotFoodCreated==nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("NO Blueprint for SpotFood"));
+			return;
+		}
+		
+		ListSpotFood.Add(SpotFoodCreated);
+		
+		#if WITH_EDITOR
+				SpotFoodCreated->SetFolderPath(GetFolderPath());
+		#endif
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("NO Blueprint for SpotFood"));
+		return;
+	}	
+}
+
+void AFoodManager::RemoveFoodSpot(ASpotFood* SpotFood)
+{
+	if(SpotFood == nullptr)
+	{
+		return;
+	}
+
+	ListSpotFood.Remove(SpotFood);
+	GetWorld()->RemoveActor(SpotFood->GetOwner(), true);
+}
+
+int AFoodManager::GetMaxFoodInScene() const
+{
+	return MaxFoodInScene;
+}
+
+bool AFoodManager::IsRemainingSlotFood() const
+{
+	return ListExistingFood.Num() < MaxFoodInScene;
+}
+
+int AFoodManager::GetCurrentNbFoodInScene() const
+{
+	return ListExistingFood.Num();
+}
+
+void AFoodManager::RemoveFoodInCounterFoodScene(AFood * FoodToIgnore)
+{
+	if(FoodToIgnore == nullptr)
+	{
+		return;
+	}
+	
+	ListExistingFood.Remove(FoodToIgnore);	
+}
+
+
+void AFoodManager::DestroyFood(AFood * FoodToDestroy)
+{
+	if(FoodToDestroy == nullptr)
+	{
+		return;
+	}
+
+	ListExistingFood.Remove(FoodToDestroy);
+	GetWorld()->RemoveActor(FoodToDestroy->GetOwner(), true);
+}
+
+
+AFood * AFoodManager::SpawnFood()
+{
+	return SpawnFood(this->GetTransform());
+}
+
+AFood * AFoodManager::SpawnFood(FTransform SpawnTranform)
+{
+	if(BP_Food != nullptr)
+	{
+		FActorSpawnParameters SpawnParams;
+		AFood * FoodCreated = GetWorld()->SpawnActor<AFood>(BP_Food, SpawnTranform, SpawnParams);
+
+		if(FoodCreated==nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("NO Blueprint for Food"));
+			return nullptr;
+		}
+		
+		ListExistingFood.Add(FoodCreated);
+
+		return FoodCreated;
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("NO Blueprint for Food"));
+		return nullptr;
+	}	
+}
+
+

@@ -144,7 +144,7 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 
 	FHitResult HitResult;
 
-	auto sockets = NameSocketDetectionByIA;
+	auto sockets = NameSocketDetectionByAI;
 	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor);
 	CollisionQueryParams.AddIgnoredActor(this);
 	
@@ -205,4 +205,33 @@ void AGCPlayerCharacter::StandUp()
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(false);
 	// Allow the camera to move normally
 	CameraStick->bUsePawnControlRotation = true;
+}
+
+void AGCPlayerCharacter::StoreFood()
+{
+	CarriedFood->SetActorLocation(ChestInFront->GetValidStoredPosition());
+	CarriedFood->SetActorRotation(ChestInFront->GetActorRotation() + FRotator(90.f,0.f,0.f));
+	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(MainGameMode)
+		MainGameMode->IncrementStoredFood();
+}
+
+void AGCPlayerCharacter::DropFood()
+{
+	if(CarriedFood == nullptr)
+	{
+		return;
+	}
+
+	AFood * FoodToDrop = CarriedFood;
+
+	Super::DropFood();
+
+	if(ChestInFront)
+	{
+		CarriedFood->SetFoodState(EFS_Stored);
+		StoreFood();
+	}
+	else
+		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 }
