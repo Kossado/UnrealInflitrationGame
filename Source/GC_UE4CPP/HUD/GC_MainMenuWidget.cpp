@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GC_MainMenuWidget.h"
-
 #include "GCGameMode.h"
 
 UGC_MainMenuWidget::UGC_MainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
