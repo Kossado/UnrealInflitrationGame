@@ -19,13 +19,13 @@ void AGC_InGameInterface::BeginPlay()
 		}
 	}
 	// Pause Menu
-	if (MenuWidgetClass)
+	if (PauseWidgetClass)
 	{
-		MenuWidget = CreateWidget<UGC_PauseMenuWidget>(GetWorld(), MenuWidgetClass);
-		if (MenuWidget)
+		PauseWidget = CreateWidget<UGC_PauseMenuWidget>(GetWorld(), PauseWidgetClass);
+		if (PauseWidget)
 		{
-			MenuWidget->AddToViewport();
-			MenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			PauseWidget->AddToViewport();
+			PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	// Options Menu
@@ -41,8 +41,8 @@ void AGC_InGameInterface::BeginPlay()
 	// Initialize pour Options Menu et Pause Menu
 	if (OptionsWidget && OptionsWidget)
 	{
-		MenuWidget->InitializeOptionsWidget(OptionsWidget);
-		OptionsWidget->InitializePauseWidget(MenuWidget);
+		PauseWidget->InitializeOptionsWidget(OptionsWidget);
+		OptionsWidget->InitializePauseWidget(PauseWidget);
 	}
 }
 
@@ -58,9 +58,9 @@ void AGC_InGameInterface::DrawHUD()
 
 void AGC_InGameInterface::Pause()
 {
-	if (MenuWidgetClass)
+	if (PauseWidgetClass)
 	{
-		MenuWidget->SetVisibility(ESlateVisibility::Visible);
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
 		UGameplayStatics::SetGamePaused(GetWorld(),true);
 		
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();

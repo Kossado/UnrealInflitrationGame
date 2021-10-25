@@ -32,13 +32,13 @@ public:
 	TSubclassOf<UUserWidget> ScoreWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
-	TSubclassOf<UUserWidget> MenuWidgetClass;
+	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> OptionsWidgetClass;
 
 private:
 	UGC_ScoreMenuWidget* ScoreWidget;
-	UGC_PauseMenuWidget* MenuWidget;
+	UGC_PauseMenuWidget* PauseWidget;
 	UGC_OptionsMenuWidget* OptionsWidget;
 };
