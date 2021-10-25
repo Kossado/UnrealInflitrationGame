@@ -36,7 +36,7 @@ private:
 	bool bGameInProgress;
 	// Condition for the carry animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bIsCarryingFood;
+	bool bCarryItem;
 	// Condition to sit in chair
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
 	bool bSit;

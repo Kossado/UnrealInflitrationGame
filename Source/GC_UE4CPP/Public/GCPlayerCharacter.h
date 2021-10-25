@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "FadeObjectsComponent.h"
 #include "GCCharacter.h"
-#include "Interactable.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AISightTargetInterface.h"
@@ -25,14 +23,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, int32* UserData = nullptr) const override;
-
-	// Grab an item
-	void GrabItem(TSubclassOf<AActor> ItemClass);
 	
-	void OnEnterActor(AActor* InteractiveActor);
-	void OnLeaveActor();
 	UFUNCTION()
-	void Action();
+	void Interact();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -41,10 +34,6 @@ protected:
 	virtual void SitDown() override;
 	// Called when the player try to stand up
 	virtual void StandUp() override;
-	bool bHasItem = false;
-
-	AActor* CurrentInteractiveActor;
-	IInteractable* CurrentInteractive;
 	
 private:
 	// Camera stick positioning the camera behind the character
@@ -64,5 +53,4 @@ private:
 public:
 	// GETTERS / SETTERS
 	FORCEINLINE USpringArmComponent* GetCameraSpringArm() const {return CameraSpringArm;}
-	FORCEINLINE bool HasItem() const { return bHasItem; }
 };

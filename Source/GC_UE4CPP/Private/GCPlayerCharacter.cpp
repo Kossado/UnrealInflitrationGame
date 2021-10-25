@@ -2,9 +2,7 @@
 
 
 #include "GCPlayerCharacter.h"
-
 #include "GenericTeamAgentInterface.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 // Sets default values
@@ -104,31 +102,6 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
-void AGCPlayerCharacter::GrabItem(TSubclassOf<AActor> ItemClass)
-{
-	
-}
-
-void AGCPlayerCharacter::OnEnterActor(AActor* InteractiveActor)
-{
-	if(InteractiveActor != nullptr)
-	{
-		const bool bInteractable = UKismetSystemLibrary::DoesImplementInterface(InteractiveActor, UInteractable::StaticClass());
-		if(bInteractable)
-		{
-			CurrentInteractiveActor = InteractiveActor;
-
-			CurrentInteractive = Cast<IInteractable>(InteractiveActor);
-		}
-	}
-}
-
-void AGCPlayerCharacter::OnLeaveActor()
-{
-	CurrentInteractive = nullptr;
-	CurrentInteractiveActor = nullptr;
-}
-
 void AGCPlayerCharacter::SitDown()
 {
 	Super::SitDown();
@@ -150,10 +123,10 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
-void AGCPlayerCharacter::Action()
+void AGCPlayerCharacter::Interact()
 {
 	if(CurrentInteractive != nullptr)
 	{
-		IInteractable::Execute_OnInteract(CurrentInteractiveActor);
+		CurrentInteractive->OnInteract();
 	}
 }

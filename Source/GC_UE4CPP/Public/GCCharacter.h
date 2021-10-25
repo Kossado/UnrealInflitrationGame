@@ -2,13 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Chair.h"
-#include "Chest.h"
-#include "Food.h"
-#include "GameFramework/Character.h"
 #include "GCGameMode.h"
-#include "Components/BoxComponent.h"
+#include "Interactable.h"
 
 #include "GCCharacter.generated.h"
 
@@ -23,54 +18,56 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// Takes food and carry it
-	void CarryFood(AFood* FoodToCarry);
+	//void CarryFood(AFood* FoodToCarry);
+	// Grab an item
+	void GrabItem(class AInteractiveItem* InteractiveItem);
+	// Drop an item
+	void DropItem();
 	// Drop food on the ground
-	void DropFood();
+	void StoreItem();
+	//void DropFood();
+	virtual void SitDown();
+
+	virtual void StandUp();
+	void OnEnterActor(AActor* InteractiveActor);
+	void OnLeaveActor();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Change speed according to the parameters
 	void ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator);
-	UFUNCTION()
-	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void Interact();
-
-	void StoreFood();
-
-	virtual void SitDown();
-
-	virtual void StandUp();
+	AActor* CurrentInteractiveActor;
+	IInteractable* CurrentInteractive;
 	
 private:
-	// Collision detection with items
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* CollisionMesh;
-	// Food to pick = in Overlap
+	/*// Food to pick = in Overlap
 	AFood* FoodToPick = nullptr;
 	// Carried food (might be null)
 	AFood* CarriedFood = nullptr;
 	// Chest to detect = in Overlap
 	AChest* ChestInFront = nullptr;
 	// Chair to detect in overlap
-	AChair* ChairInFront = nullptr;
-	bool bIsSitting = false;
+	AChair* ChairInFront = nullptr;*/
+	bool bSit = false;
 	// Characters Speed handfree
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food
 	float CarryWalkSpeedMultiplicator;
+	// Grabbed item
+	AInteractiveItem* ItemInHand = nullptr;
 
 	AGCGameMode* LevelGameMode;
+	bool bHasItem = false;
 
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	FORCEINLINE AFood* GetCarriedFood() const { return CarriedFood; }
-	FORCEINLINE bool IsSitting() const { return bIsSitting; }
+	//FORCEINLINE AFood* GetCarriedFood() const { return CarriedFood; }
+	FORCEINLINE bool IsSitting() const { return bSit; }
+	FORCEINLINE bool HasItem() const { return bHasItem; }
 
 };

@@ -1,13 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-#include "CoreMinimal.h"
-#include "GCPlayerCharacter.h"
+#include "GCCharacter.h"
 #include "Interactable.h"
+#include "Item.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/Actor.h"
+
 #include "InteractiveItem.generated.h"
+
+UENUM()
+enum EItemState
+{
+	EIS_Movable,
+	EIS_Interacting,
+	EIS_Immovable
+};
 
 UCLASS()
 class GC_UE4CPP_API AInteractiveItem : public AActor, public IInteractable
@@ -17,48 +24,36 @@ class GC_UE4CPP_API AInteractiveItem : public AActor, public IInteractable
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveItem();
+	
+	void SetItemProperties(EItemState State) const;
+
+	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, Category="Interactive")
-	USceneComponent* RootScene;
-	UPROPERTY(VisibleAnywhere, Category="Interactive")
-	USphereComponent* Trigger;
-	UPROPERTY(VisibleAnywhere, Category="Interactive")
+	UPROPERTY(VisibleAnywhere, Category=Mesh)
 	UStaticMeshComponent* StaticMesh;
-	AGCPlayerCharacter* PlayerCharacter;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USphereComponent* Trigger;
+	AGCCharacter* Character;
+	UPROPERTY(EditAnywhere, Category="Item")
 	TSubclassOf<AActor> ItemClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
+	UPROPERTY(EditAnywhere, Category="Item")
 	FName ItemName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	bool bItemCollected;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-protected:
 	UFUNCTION()
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	void OnPlayerBeginOverlap();
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	void OnPlayerEndOverlap();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Events")
-	void OnItemCollected();
+	
 
 	///////////////// INTERFACE IInteractable ///////////////////////
 	
 public:
 	virtual FName GetName() override;
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interact")
-	void OnInteract();
-
-	void OnInteract_Implementation();
+	
+	virtual void OnInteract() override;
 	
 	///////////////// INTERFACE IInteractable ///////////////////////
 };

@@ -6,21 +6,10 @@
 // Sets default values
 AChair::AChair()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	//Set up Scene Component
-	/*SceneComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Scene Component")));
-	RootComponent = SceneComponent;*/
-	
-	//Set up static mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
-	RootComponent = StaticMesh;
-
 	//Set up Location to sit Component
 	SitLocationComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Sit Location")));
 	SitLocationComponent->SetupAttachment(RootComponent);
-	SetCollisionProperties(false);
+	SetItemProperties(EIS_Immovable);
 }
 
 FVector AChair::GetSitLocation()
@@ -34,14 +23,22 @@ FRotator AChair::GetSitRotation()
 	return GetActorRotation() + FRotator(0.f,90.f,0.f);
 }
 
-void AChair::SetCollisionProperties(bool bUsed)
+void AChair::OnInteract()
 {
-	if(bUsed)
+	Super::OnInteract();
+	if(Character != nullptr)
 	{
-		StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
-	}else
-	{
-		StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Block);
+		if(bUsed)
+		{
+			SetItemProperties(EIS_Immovable);
+			Character->StandUp();
+		}
+		else
+		{
+			SetItemProperties(EIS_Interacting);
+			Character->SitDown();
+		}
+		
 	}
 }
 
@@ -50,11 +47,3 @@ void AChair::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
-// Called every frame
-void AChair::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

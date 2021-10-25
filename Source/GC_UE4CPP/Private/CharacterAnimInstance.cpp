@@ -13,7 +13,7 @@ void UCharacterAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	Character = Cast<AGCCharacter>(TryGetPawnOwner());
-	bIsCarryingFood = false;
+	bCarryItem = false;
 	bGameInProgress = true;
 }
 
@@ -53,13 +53,13 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 				bGameInProgress = false;
 			}
 		}
-		if(Character->GetCarriedFood() != nullptr)
+		if(Character->HasItem())
 		{
-			bIsCarryingFood = true;
+			bCarryItem = true;
 		}
 		else
 		{
-			bIsCarryingFood = false;
+			bCarryItem = false;
 		}
 		if(Character->IsSitting())
 		{

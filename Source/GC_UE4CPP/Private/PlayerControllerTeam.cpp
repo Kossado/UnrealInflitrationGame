@@ -118,7 +118,7 @@ void APlayerControllerTeam::Interact()
 {
 	if(PlayerCharacter != nullptr)
 	{
-		PlayerCharacter->Action();
+		PlayerCharacter->Interact();
 	}
 }
 
