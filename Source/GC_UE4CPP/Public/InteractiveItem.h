@@ -8,7 +8,14 @@
 
 #include "InteractiveItem.generated.h"
 
-
+UENUM()
+enum EItemState
+{
+	EIS_Movable,
+	EIS_Interacting,
+	EIS_Immovable,
+	EIS_Disabled
+};
 
 UCLASS()
 class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
@@ -18,6 +25,10 @@ class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveItem();
+	
+	void SetItemProperties(EItemState State) const;
+
+	void DisableTrigger();
 
 protected:
 	// Called when the game starts or when spawned

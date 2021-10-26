@@ -9,15 +9,18 @@
 AInteractiveItem::AInteractiveItem():Super()
 {
 	//Set up static mesh
-	/*StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
-	RootComponent = StaticMesh;*/
-	
 	Trigger = CreateDefaultSubobject<USphereComponent>(FName(TEXT("Sphere Component")));
 	Trigger->SetupAttachment(RootComponent);
-	Trigger->SetSphereRadius(100.f);
+	Trigger->SetSphereRadius(150.f);
+	Trigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Trigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 }
 
+void AInteractiveItem::DisableTrigger()
+{
+	Trigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+}
 
 // Called when the game starts or when spawned
 void AInteractiveItem::BeginPlay()
@@ -31,11 +34,13 @@ void AInteractiveItem::BeginPlay()
 void AInteractiveItem::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Character = Cast<AGCCharacter>(OtherActor);
-
-	if(Character != nullptr)
+	if(OtherActor->IsA(AGCCharacter::StaticClass()))
 	{
-		Character->OnEnterActor(this);
+		Character = Cast<AGCCharacter>(OtherActor);
+		if(Character != nullptr)
+		{
+			Character->OnEnterActor(this);
+		}
 	}
 }
 
@@ -44,7 +49,7 @@ void AInteractiveItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCompone
 {
 	if(Character != nullptr)
 	{
-		Character->OnLeaveActor();
+		Character->OnLeaveActor(this);
 	}
 }
 
