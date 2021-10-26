@@ -33,14 +33,21 @@ CameraZoomSteps(45.f)
 	// Create second camera stick
 	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Portrait Stick"));
 	CameraPortraitStick->SetupAttachment(RootComponent);
-	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, -90.0f, 0.0f));
-	CameraPortraitStick->TargetArmLength = 100.f; // Distance between the camera and the character
-
+	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 35.0f), FRotator(0.0f, 180.0f, 0.0f));
+	CameraPortraitStick->TargetArmLength = 80.f; // Distance between the camera and the character
+	
 	// Create Camera that will follow the portrait character
-	CameraPortraitComponent = CreateDefaultSubobject<UCameraComponent>(FName("CameraPortrait"));
+	CameraPortraitComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(FName("CameraPortrait"));
 	CameraPortraitComponent->SetupAttachment(CameraPortraitStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
-	CameraPortraitComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
+	CameraPortraitComponent->ShowOnlyActorComponents(this,false);
 
+	/*UTextureRenderTarget2D* Hero3DPortrait = CameraPortraitComponent->TextureTarget;
+	std::string ts = "TerrainMaterial";
+	std::wstring ws(ts.begin(), ts.end());
+	UMaterialInstance *terrainMaterialInstance = LoadObject<UMaterialInstance>(NULL, ws.c_str());
+	UMaterialInstanceDynamic *dynamicTerrainMaterialInstance = UMaterialInstanceDynamic::Create(BaseMaterial, terrainMaterialInstance);
+	dynamicTerrainMaterialInstance->SetTextureParameterValue("M_Hero3DPortrait", Hero3DPortrait); // This UTexture was created earlier and stored on the component*/
+	
 	// Don't rotate when the controller rotates. The controller only affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;

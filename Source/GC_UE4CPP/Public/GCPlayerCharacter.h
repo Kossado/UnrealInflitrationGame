@@ -42,7 +42,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* CameraPortraitComponent;
+	USceneCaptureComponent2D* CameraPortraitComponent;
 	// Base turn rate for the right/left camera movement in deg/sec
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	float BaseTurnRate;
@@ -69,6 +69,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TArray<FName> NameSocketDetectionByIA;
+
+	/*UPROPERTY(EditAnywhere, Category = Materials)
+	UMaterial* BaseMaterial;*/
 
 protected:
 	// Called for forward/backward input
