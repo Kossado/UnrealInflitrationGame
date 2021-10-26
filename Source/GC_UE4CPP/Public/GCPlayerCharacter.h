@@ -36,9 +36,13 @@ private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraStick;
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraPortraitStick;
 	// Camera that follow the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraPortraitComponent;
 	// Base turn rate for the right/left camera movement in deg/sec
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	float BaseTurnRate;

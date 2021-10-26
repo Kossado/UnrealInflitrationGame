@@ -30,6 +30,17 @@ CameraZoomSteps(45.f)
 	CameraComponent->SetupAttachment(CameraStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
 
+	// Create second camera stick
+	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Portrait Stick"));
+	CameraPortraitStick->SetupAttachment(RootComponent);
+	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, -90.0f, 0.0f));
+	CameraPortraitStick->TargetArmLength = 100.f; // Distance between the camera and the character
+
+	// Create Camera that will follow the portrait character
+	CameraPortraitComponent = CreateDefaultSubobject<UCameraComponent>(FName("CameraPortrait"));
+	CameraPortraitComponent->SetupAttachment(CameraPortraitStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
+	CameraPortraitComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
+
 	// Don't rotate when the controller rotates. The controller only affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
