@@ -13,7 +13,8 @@ enum EItemState
 {
 	EIS_Movable,
 	EIS_Interacting,
-	EIS_Immovable
+	EIS_Immovable,
+	EIS_Disabled
 };
 
 UCLASS()
@@ -27,7 +28,7 @@ public:
 	
 	void SetItemProperties(EItemState State) const;
 
-	//FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
+	void DisableTrigger();
 
 protected:
 	// Called when the game starts or when spawned

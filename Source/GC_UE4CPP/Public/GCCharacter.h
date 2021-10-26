@@ -30,7 +30,7 @@ public:
 
 	virtual void StandUp();
 	void OnEnterActor(AActor* InteractiveActor);
-	void OnLeaveActor();
+	void OnLeaveActor(AActor* InteractiveActor);
 
 protected:
 	// Called when the game starts or when spawned

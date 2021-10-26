@@ -16,8 +16,11 @@ void AFood::OnInteract()
 	{
 		if(!Character->HasItem())
 		{
-			SetItemProperties(EIS_Interacting);
 			Character->GrabItem(this);
+		}
+		else
+		{
+			Character->DropItem();
 		}
 	}
 }

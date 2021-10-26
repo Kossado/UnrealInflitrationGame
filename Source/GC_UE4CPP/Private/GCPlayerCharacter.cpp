@@ -129,4 +129,8 @@ void AGCPlayerCharacter::Interact()
 	{
 		CurrentInteractive->OnInteract();
 	}
+	/*else if(HasItem())
+	{
+		DropItem();
+	}*/
 }

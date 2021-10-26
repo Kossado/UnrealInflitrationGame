@@ -30,13 +30,15 @@ void AChair::OnInteract()
 	{
 		if(bUsed)
 		{
-			SetItemProperties(EIS_Immovable);
 			Character->StandUp();
+			bUsed = false;
+			SetItemProperties(EIS_Immovable);
 		}
 		else
 		{
 			SetItemProperties(EIS_Interacting);
 			Character->SitDown();
+			bUsed = true;
 		}
 		
 	}

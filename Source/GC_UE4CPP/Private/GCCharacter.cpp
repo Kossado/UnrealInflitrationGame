@@ -61,6 +61,7 @@ void AGCCharacter::GrabItem(AInteractiveItem* InteractiveItem)
 {
 	if(InteractiveItem != nullptr)
 	{
+		InteractiveItem->SetItemProperties(EIS_Interacting);
 		//Get the Hand Socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
 		if(HandSocket)
@@ -81,6 +82,7 @@ void AGCCharacter::DropItem()
 		// Detach item from the hand socket
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+		ItemInHand->SetItemProperties(EIS_Movable);
 		ItemInHand = nullptr;
 		bHasItem = false;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
@@ -89,11 +91,18 @@ void AGCCharacter::DropItem()
 
 void AGCCharacter::StoreItem()
 {
+	// Detach item from the hand socket
+	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+	ItemInHand->SetItemProperties(EIS_Interacting);
 	ItemInHand->SetActorLocation(Cast<AChest>(CurrentInteractiveActor)->GetValidStoredPosition());
 	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
 	LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if(LevelGameMode)
 		LevelGameMode->IncrementStoredFood();
+	ItemInHand = nullptr;
+	bHasItem = false;
+	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 }
 
 void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator)
@@ -218,13 +227,28 @@ void AGCCharacter::OnEnterActor(AActor* InteractiveActor)
 		{
 			CurrentInteractiveActor = InteractiveActor;
 			CurrentInteractive = Interactable;
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Enter Actor");
 		}
 	}
 }
 
-void AGCCharacter::OnLeaveActor()
+void AGCCharacter::OnLeaveActor(AActor* InteractiveActor)
 {
-	CurrentInteractive = nullptr;
-	CurrentInteractiveActor = nullptr;
+	if(InteractiveActor == CurrentInteractiveActor)
+	{
+		CurrentInteractive = nullptr;
+		CurrentInteractiveActor = nullptr;
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Leave Actor");
+	}
+	if(ItemInHand != nullptr)
+	{
+		IInteractable* Interactable = Cast<IInteractable>(ItemInHand);
+		if(Interactable != nullptr)
+		{
+			CurrentInteractiveActor = ItemInHand;
+			CurrentInteractive = ItemInHand;
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Re-enable Food in hand after Leaving previous actor");
+		}
+	}
 }
 
