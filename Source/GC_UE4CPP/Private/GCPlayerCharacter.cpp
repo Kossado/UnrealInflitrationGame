@@ -2,6 +2,9 @@
 
 
 #include "GCPlayerCharacter.h"
+#include "Food/Food.h"
+#include "Chair.h"
+#include "GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
@@ -102,9 +105,9 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
-void AGCPlayerCharacter::SitDown()
+void AGCPlayerCharacter::SitDown(AChair* Chair)
 {
-	Super::SitDown();
+	Super::SitDown(Chair);
 	// Disable Mouse and Keyboard inputs
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
@@ -123,14 +126,62 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
+void AGCPlayerCharacter::StoreItem(AChest* Chest)
+{
+	if(!ItemInHand->IsA(AFood::StaticClass()) || Chest == nullptr)
+	{
+		return;
+	}
+	// Detach item from the hand socket
+	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+	ItemInHand->SetItemProperties(EIS_Interacting);
+	ItemInHand->SetActorLocation(Chest->GetValidStoredPosition());
+	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
+	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(LevelGameMode)
+		LevelGameMode->IncrementStoredFood();
+	ItemInHand = nullptr;
+	bHasItem = false;
+	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+}
+
 void AGCPlayerCharacter::Interact()
 {
-	if(CurrentInteractive != nullptr)
+	if(HasItem())
 	{
-		CurrentInteractive->OnInteract();
+		AChest* FoundChest;
+		int ChestIndex;
+		if(InteractiveItems.FindItemByClass<AChest>(&FoundChest, &ChestIndex))
+		{
+			StoreItem(FoundChest);
+		}
+		else
+		{
+			DropItem();
+		}
 	}
-	/*else if(HasItem())
+	else if(bSit)
 	{
-		DropItem();
-	}*/
+		StandUp();
+	}
+	else if(InteractiveItems.Num() > 0)
+	{
+		AInteractiveItem* SelectedItem = InteractiveItems[0];
+		if(SelectedItem == nullptr)
+		{
+			return;
+		}
+		if(SelectedItem->IsA(AChair::StaticClass()))
+		{
+			AChair* Chair = Cast<AChair>(SelectedItem);
+			SitDown(Chair);
+		}
+		else if(SelectedItem->IsA(APickableItem::StaticClass()))
+		{
+			APickableItem* PickableItem = Cast<APickableItem>(SelectedItem);
+			GrabItem(PickableItem);
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Interact with Last Actor");
+	}
 }

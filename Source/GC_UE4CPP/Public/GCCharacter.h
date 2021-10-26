@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "Interactable.h"
+#include "Chest.h"
+#include "PickableItem.h"
 #include "GameFramework/Character.h"
 #include "GCCharacter.generated.h"
 
@@ -19,17 +20,15 @@ public:
 	// Takes food and carry it
 	//void CarryFood(AFood* FoodToCarry);
 	// Grab an item
-	void GrabItem(class AInteractiveItem* InteractiveItem);
+	void GrabItem(class APickableItem* PickableItem);
 	// Drop an item
 	void DropItem();
-	// Drop food on the ground
-	void StoreItem();
 	//void DropFood();
-	virtual void SitDown();
+	virtual void SitDown(class AChair* Chair);
 
 	virtual void StandUp();
-	void OnEnterActor(AActor* InteractiveActor);
-	void OnLeaveActor(AActor* InteractiveActor);
+	void OnEnterActor(AInteractiveItem* InteractiveActor);
+	void OnLeaveActor(AInteractiveItem* InteractiveActor);
 
 	
 	void BeginRotate();
@@ -42,9 +41,16 @@ protected:
 	// Change speed according to the parameters
 	void ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator);
 
-	AActor* CurrentInteractiveActor;
-	IInteractable* CurrentInteractive;
-	AInteractiveItem* ItemInHand = nullptr;
+	TArray<AInteractiveItem*> InteractiveItems;
+	/*AActor* CurrentInteractiveActor;
+	IInteractable* CurrentInteractive;*/
+	APickableItem* ItemInHand = nullptr;
+
+	bool bHasItem = false;
+	bool bSit = false;
+	AChair* ChairUsed = nullptr;
+	// Characters Speed handfree
+	float BaseWalkSpeed;
 
 private:
 	/*// Food to pick = in Overlap
@@ -55,22 +61,14 @@ private:
 	AChest* ChestInFront = nullptr;
 	// Chair to detect in overlap
 	AChair* ChairInFront = nullptr;*/
-	bool bSit = false;
-	// Characters Speed handfree
-	float BaseWalkSpeed;
+
 	// Characters Speed when carrying food
 	float CarryWalkSpeedMultiplicator;
-	// Grabbed item
-
-	bool bHasItem = false;
 
 	bool bRotate =false;
 
 	
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
 	//FORCEINLINE AFood* GetCarriedFood() const { return CarriedFood; }
 	FORCEINLINE bool IsSitting() const { return bSit; }
 	FORCEINLINE bool HasItem() const { return bHasItem; }

@@ -41,12 +41,3 @@ FVector AChest::GetValidStoredPosition()
 	return GetActorLocation();
 }
 
-void AChest::OnInteract()
-{
-	Super::OnInteract();
-	if(Character->HasItem())
-	{
-		Character->StoreItem();
-	}
-}
-

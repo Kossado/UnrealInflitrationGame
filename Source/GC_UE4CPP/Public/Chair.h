@@ -20,13 +20,17 @@ public:
 	UFUNCTION()
 	FRotator GetSitRotation();
 
-	virtual void OnInteract() override;
-	
+	void Use(class AGCCharacter* Character);
+	void Free(AGCCharacter* Character);
+	bool IsUsed();
+
+	FORCEINLINE AGCCharacter* GetUserCharacter() const { return UserCharacter; }
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	bool bUsed = false;
+	AGCCharacter* UserCharacter;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category=Mesh, meta = (AllowPrivateAccess = "true"))

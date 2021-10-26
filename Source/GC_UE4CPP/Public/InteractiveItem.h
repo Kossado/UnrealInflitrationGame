@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "GCCharacter.h"
-#include "Interactable.h"
 #include "Item.h"
 #include "Components/SphereComponent.h"
 
@@ -10,7 +8,7 @@
 
 
 UCLASS()
-class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
+class GC_UE4CPP_API AInteractiveItem : public AItem
 {
 	GENERATED_BODY()
 	
@@ -30,21 +28,9 @@ protected:
 	TSubclassOf<AActor> ItemClass;
 	UPROPERTY(EditAnywhere, Category="Item")
 	FName ItemName;
-
-	AGCCharacter* Character = nullptr;
 	
 	UFUNCTION()
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
-
-	///////////////// INTERFACE IInteractable ///////////////////////
-	
-public:
-	virtual FName GetName() override;
-	
-	virtual void OnInteract() override;
-	
-	///////////////// INTERFACE IInteractable ///////////////////////
 };

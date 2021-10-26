@@ -31,10 +31,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Called when the player try to sit down
-	virtual void SitDown() override;
+	virtual void SitDown(AChair* Chair) override;
 	// Called when the player try to stand up
 	virtual void StandUp() override;
-	
+	void StoreItem(AChest* Chest);
+
 private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))

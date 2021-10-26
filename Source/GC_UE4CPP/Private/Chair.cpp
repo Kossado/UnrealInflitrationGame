@@ -23,25 +23,33 @@ FRotator AChair::GetSitRotation()
 	return GetActorRotation() + FRotator(0.f,90.f,0.f);
 }
 
-void AChair::OnInteract()
+void AChair::Use(AGCCharacter* Character)
 {
-	Super::OnInteract();
-	if(Character != nullptr)
+	if(!bUsed)
 	{
-		if(bUsed)
-		{
-			Character->StandUp();
-			bUsed = false;
-			SetItemProperties(EIS_Immovable);
-		}
-		else
-		{
-			SetItemProperties(EIS_Interacting);
-			Character->SitDown();
-			bUsed = true;
-		}
-		
+		bUsed = true;
+		SetItemProperties(EIS_Interacting);
+		UserCharacter = Character;
 	}
+}
+
+void AChair::Free(AGCCharacter* Character)
+{
+	if(bUsed && UserCharacter == Character)
+	{
+		UserCharacter = nullptr;
+		SetItemProperties(EIS_Immovable);
+		bUsed = false;
+	}
+}
+
+bool AChair::IsUsed()
+{
+	if(bUsed)
+	{
+		return true;
+	}
+	return false;
 }
 
 // Called when the game starts or when spawned
