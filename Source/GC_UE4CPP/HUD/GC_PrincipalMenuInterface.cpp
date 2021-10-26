@@ -21,20 +21,6 @@ void AGC_PrincipalMenuInterface::BeginPlay()
 			Player->bShowMouseCursor = true;
 		}
 	}
-	if (GameStatusWidgetClass)
-	{
-		GameStatusWidget = CreateWidget<UGameStatusWidget>(GetWorld(), GameStatusWidgetClass);
-		if (GameStatusWidget)
-		{
-			GameStatusWidget->AddToViewport();
-			GameStatusWidget->SetVisibility(ESlateVisibility::Hidden);
-
-			APlayerController* Player = GetWorld()->GetFirstPlayerController();
-			FInputModeUIOnly InputMode;
-			Player->SetInputMode(InputMode);
-			Player->bShowMouseCursor = true;
-		}
-	}
 }
 
 void AGC_PrincipalMenuInterface::Tick(float DeltaTime)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameStatusWidget.h"
 #include "GC_MainMenuWidget.h"
 #include "GameFramework/HUD.h"
 #include "GC_PrincipalMenuInterface.generated.h"
@@ -26,10 +25,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, Category=Widgets)
-	TSubclassOf<UUserWidget> GameStatusWidgetClass;
-
 private:
 	UGC_MainMenuWidget* MainMenuWidget;
-	UGameStatusWidget* GameStatusWidget;
 };
