@@ -14,7 +14,7 @@ void AGC_PrincipalMenuInterface::BeginPlay()
 		if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
-		
+
 			APlayerController* Player = GetWorld()->GetFirstPlayerController();
 			FInputModeUIOnly InputMode;
 			Player->SetInputMode(InputMode);

@@ -44,6 +44,16 @@ void AGC_InGameInterface::BeginPlay()
 		MenuWidget->InitializeOptionsWidget(OptionsWidget);
 		OptionsWidget->InitializePauseWidget(MenuWidget);
 	}
+	// Game Status Menu
+	if (GameStatusWidgetClass)
+	{
+		GameStatusWidget = CreateWidget<UGameStatusWidget>(GetWorld(), GameStatusWidgetClass);
+		if (GameStatusWidget)
+		{
+			GameStatusWidget->AddToViewport();
+			GameStatusWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
 }
 
 void AGC_InGameInterface::Tick(float DeltaTime)
@@ -69,6 +79,27 @@ void AGC_InGameInterface::Pause()
 		Player->bShowMouseCursor = true;
 	}
 }
+void AGC_InGameInterface::EndGame(bool GameStatus)
+{
+	if (GameStatusWidgetClass)
+	{
+		ScoreWidget->SetVisibility(ESlateVisibility::Hidden);
+		GameStatusWidget->SetVisibility(ESlateVisibility::Visible);
+
+		if (GameStatus)
+		{
+			GameStatusWidget->UITitreVictory->SetVisibility(ESlateVisibility::Visible);
+		} else {
+			GameStatusWidget->UITitreDefeat->SetVisibility(ESlateVisibility::Visible);
+		}
+
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		FInputModeUIOnly InputMode;
+		Player->SetInputMode(InputMode);
+		Player->bShowMouseCursor = true;
+	}
+}
+
 
 void AGC_InGameInterface::UpdateCurrentFood(int32 value)
 {

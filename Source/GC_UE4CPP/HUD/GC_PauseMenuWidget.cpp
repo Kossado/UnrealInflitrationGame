@@ -111,6 +111,8 @@ void UGC_PauseMenuWidget::QuitMainMenu()
 {
 	if(UIQuitMainMenu)
 	{
+		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		GameMode->SetCurrentGameState(EGS_PLAYING);
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
 	}
 }

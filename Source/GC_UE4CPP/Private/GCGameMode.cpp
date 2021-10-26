@@ -74,6 +74,7 @@ void AGCGameMode::IncrementStoredFood()
 void AGCGameMode::LaunchMenuPause()
 {
 	if(InGameInterface)
+		SetCurrentGameState(EGS_PAUSE);
 		InGameInterface->Pause();
 }
 
@@ -87,23 +88,20 @@ void AGCGameMode::CheckGameConditions()
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{
 		SetCurrentGameState(EGS_VICTORY);
-		DisableCharacterInput();
+		DisableCharacterInput(true);
 	}
 	/*if(CharacterHitByAI)
 	{
 		SetCurrentGameState(EGS_DEFEAT);
-		DisableCharacterInput();
+		DisableCharacterInput(false);
 	}*/
 }
 
-void AGCGameMode::DisableCharacterInput()
+void AGCGameMode::DisableCharacterInput(bool GameStatus)
 {
 	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
 
-	// method to pause the game -> Will be useful for the menu, TO DELETE HERE
-	//UGameplayStatics::SetGamePaused(GetWorld(),true);
-	
-	// Method to restart the game Useful later // TO DELETE
-	//RestartGame();
+	if(InGameInterface)
+		InGameInterface->EndGame(GameStatus);
 }

@@ -35,7 +35,7 @@ public:
 	void IncrementPickableFood();
 	// Checks
 	void CheckGameConditions();
-	void DisableCharacterInput();
+	void DisableCharacterInput(bool GameStatus);
 	// Pause
 	void LaunchMenuPause();
 	// UI

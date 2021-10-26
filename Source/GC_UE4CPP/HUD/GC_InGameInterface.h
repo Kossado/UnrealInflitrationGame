@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameStatusWidget.h"
 #include "GC_OptionsMenuWidget.h"
 #include "GC_PauseMenuWidget.h"
 #include "GC_ScoreMenuWidget.h"
@@ -24,6 +25,9 @@ public:
 
 	UFUNCTION()
 		void Pause();
+
+	UFUNCTION()
+		void EndGame(bool GameStatus);
 	
 	UFUNCTION()
 		void UpdateCurrentFood(int32 value);
@@ -37,8 +41,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> OptionsWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category=Widgets)
+	TSubclassOf<UUserWidget> GameStatusWidgetClass;
+	
 private:
 	UGC_ScoreMenuWidget* ScoreWidget;
 	UGC_PauseMenuWidget* MenuWidget;
 	UGC_OptionsMenuWidget* OptionsWidget;
+	UGameStatusWidget* GameStatusWidget;
 };

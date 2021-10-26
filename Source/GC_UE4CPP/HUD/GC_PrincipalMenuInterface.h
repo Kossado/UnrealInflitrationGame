@@ -5,9 +5,6 @@
 #include "GameFramework/HUD.h"
 #include "GC_PrincipalMenuInterface.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class GC_UE4CPP_API AGC_PrincipalMenuInterface : public AHUD
 {
