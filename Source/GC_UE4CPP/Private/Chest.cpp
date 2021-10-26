@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AChest::AChest()
+AChest::AChest():Super()
 {
 	SetItemProperties(EIS_Immovable);
 	// Setup food position in chest

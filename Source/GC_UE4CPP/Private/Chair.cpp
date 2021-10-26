@@ -4,7 +4,7 @@
 #include "Chair.h"
 
 // Sets default values
-AChair::AChair()
+AChair::AChair():Super()
 {
 	//Set up Location to sit Component
 	SitLocationComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Sit Location")));

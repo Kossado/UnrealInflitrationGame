@@ -4,7 +4,7 @@
 #include "Food.h"
 
 // Sets default values
-AFood::AFood()
+AFood::AFood():Super()
 {
 	SetItemProperties(EIS_Movable);
 }

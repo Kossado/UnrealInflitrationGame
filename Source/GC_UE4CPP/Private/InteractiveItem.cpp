@@ -6,11 +6,11 @@
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
-AInteractiveItem::AInteractiveItem()
+AInteractiveItem::AInteractiveItem():Super()
 {
 	//Set up static mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
-	RootComponent = StaticMesh;
+	/*StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
+	RootComponent = StaticMesh;*/
 	
 	Trigger = CreateDefaultSubobject<USphereComponent>(FName(TEXT("Sphere Component")));
 	Trigger->SetupAttachment(RootComponent);

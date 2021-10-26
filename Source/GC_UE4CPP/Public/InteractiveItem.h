@@ -17,7 +17,7 @@ enum EItemState
 };
 
 UCLASS()
-class GC_UE4CPP_API AInteractiveItem : public AActor, public IInteractable
+class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
 {
 	GENERATED_BODY()
 	
@@ -27,16 +27,16 @@ public:
 	
 	void SetItemProperties(EItemState State) const;
 
-	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
+	//FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(VisibleAnywhere, Category=Mesh)
-	UStaticMeshComponent* StaticMesh;
+	/*UPROPERTY(VisibleAnywhere, Category=Mesh)
+	UStaticMeshComponent* StaticMesh;*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Trigger;
-	AGCCharacter* Character;
+	AGCCharacter* Character = nullptr;
 	UPROPERTY(EditAnywhere, Category="Item")
 	TSubclassOf<AActor> ItemClass;
 	UPROPERTY(EditAnywhere, Category="Item")
