@@ -3,9 +3,10 @@
 
 #include "GCCharacter.h"
 
-#include "GCPlayerCharacter.h"
+#include "Chair.h"
+#include "Chest.h"
+#include "InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -16,14 +17,6 @@ CarryWalkSpeedMultiplicator(0.5f)
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionMesh = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
-	CollisionMesh->SetupAttachment(RootComponent);
-	CollisionMesh->SetRelativeTransform(FTransform(FVector(0.f,0.f,70.f)));
-	CollisionMesh->SetBoxExtent(FVector(32.f,32.f,88.f));
-	
-	CollisionMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	CollisionMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	
 	// Set Maximum movement speed of the character
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
@@ -32,12 +25,6 @@ CarryWalkSpeedMultiplicator(0.5f)
 void AGCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	// Setup overlap for AreaSphere
-	if(CollisionMesh)
-	{
-		CollisionMesh->OnComponentBeginOverlap.AddDynamic(this, &AGCCharacter::OnBoxBeginOverlap);
-		CollisionMesh->OnComponentEndOverlap.AddDynamic(this, &AGCCharacter::OnBoxEndOverlap);
-	}
 }
 
 // Called every frame
@@ -51,15 +38,13 @@ void AGCCharacter::Tick(float DeltaTime)
 void AGCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	// Setting up Interact input
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AGCCharacter::Interact);
 }
 
-void AGCCharacter::CarryFood(AFood* FoodToCarry)
+/*void AGCCharacter::CarryFood(AFood* FoodToCarry)
 {
 	if(FoodToCarry)
 	{
-		FoodToCarry->SetFoodState(EFoodState::EFS_PickedUp);
+		FoodToCarry->SetItemProperties(EIS_Interacting);
 		//Get the Hand Socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
 		if(HandSocket)
@@ -70,6 +55,45 @@ void AGCCharacter::CarryFood(AFood* FoodToCarry)
 		CarriedFood = FoodToCarry;
 		ChangeCharacterSpeed(BaseWalkSpeed, CarryWalkSpeedMultiplicator);
 	}
+}*/
+
+void AGCCharacter::GrabItem(AInteractiveItem* InteractiveItem)
+{
+	if(InteractiveItem != nullptr)
+	{
+		//Get the Hand Socket
+		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
+		if(HandSocket)
+		{
+			// Attach Item to the hand socket
+			HandSocket->AttachActor(InteractiveItem,GetMesh());
+		}
+		ItemInHand = InteractiveItem;
+		bHasItem = true;
+		ChangeCharacterSpeed(BaseWalkSpeed, CarryWalkSpeedMultiplicator);
+	}
+}
+
+void AGCCharacter::DropItem()
+{
+	if(ItemInHand)
+	{
+		// Detach item from the hand socket
+		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+		ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+		ItemInHand = nullptr;
+		bHasItem = false;
+		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+	}
+}
+
+void AGCCharacter::StoreItem()
+{
+	ItemInHand->SetActorLocation(Cast<AChest>(CurrentInteractiveActor)->GetValidStoredPosition());
+	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
+	LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(LevelGameMode)
+		LevelGameMode->IncrementStoredFood();
 }
 
 void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator)
@@ -79,7 +103,7 @@ void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator
 		GetCharacterMovement()->MaxWalkSpeed = NewSpeed * SpeedMultiplicator;
 	}
 }
-
+/*
 void AGCCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -129,12 +153,12 @@ void AGCCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 void AGCCharacter::Interact()
 {
 	// When "E" key is pressed ...
-	if(ChairInFront != nullptr)
+	if(ChairInFront != nullptr && !bSit)
 	{
 		SitDown();
 		return;
 	}
-	if(bIsSitting)
+	if(bSit)
 	{
 		StandUp();
 		return;
@@ -150,39 +174,33 @@ void AGCCharacter::Interact()
 		CarryFood(FoodToPick);
 		return;
 	}
-}
+}*/
 
 void AGCCharacter::SitDown()
 {
-	bIsSitting = true;
-	if(ChairInFront != nullptr)
+	AChair* Chair = Cast<AChair>(CurrentInteractiveActor);
+	if(Chair != nullptr)
 	{
-		SetActorLocation(ChairInFront->GetSitLocation());
-		SetActorRotation(ChairInFront->GetSitRotation());
+		bSit = true;
+		GetCharacterMovement()->GravityScale = 0.f;
+		SetActorLocation(Chair->GetSitLocation());
+		SetActorRotation(Chair->GetSitRotation());
 	}
 }
 
 void AGCCharacter::StandUp()
 {
-	bIsSitting = false;
+	bSit = false;
+	GetCharacterMovement()->GravityScale = 1.f;
 }
 
-void AGCCharacter::StoreFood()
-{
-	CarriedFood->SetActorLocation(ChestInFront->GetValidStoredPosition());
-	CarriedFood->SetActorRotation(ChestInFront->GetActorRotation() + FRotator(90.f,0.f,0.f));
-	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(MainGameMode)
-		MainGameMode->IncrementStoredFood();
-}
-
-void AGCCharacter::DropFood()
+/*void AGCCharacter::DropFood()
 {
 	if(CarriedFood)
 	{
 		// Detach food from the hand socket
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
-		CarriedFood->GetFoodMesh()->DetachFromComponent(DetachmentTransformRules);
+		CarriedFood->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
 		// Change food state (Re-enable collisions,...)
 		if(ChestInFront)
 		{
@@ -190,10 +208,31 @@ void AGCCharacter::DropFood()
 			StoreFood();
 		}
 		else
+		{
 			CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
+		}
 		CarriedFood = nullptr;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 	}
+}*/
+
+void AGCCharacter::OnEnterActor(AActor* InteractiveActor)
+{
+	if(InteractiveActor != nullptr)
+	{
+		IInteractable* Interactable = Cast<IInteractable>(InteractiveActor);
+		if(Interactable != nullptr)
+		{
+			CurrentInteractiveActor = InteractiveActor;
+			CurrentInteractive = Interactable;
+		}
+	}
+}
+
+void AGCCharacter::OnLeaveActor()
+{
+	CurrentInteractive = nullptr;
+	CurrentInteractiveActor = nullptr;
 }
 
 bool AGCCharacter::IsCarryingFood() const

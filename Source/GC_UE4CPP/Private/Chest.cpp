@@ -7,17 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AChest::AChest()
+AChest::AChest():Super()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	// Setup scene component
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Food Parent")));
-	RootComponent = SceneComponent;	
-	// Setup Mesh Component
-	ChestMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Chest Mesh"));
-	ChestMesh->SetupAttachment(RootComponent);
-	ChestMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);	
+	SetItemProperties(EIS_Immovable);
 	// Setup food position in chest
 	FoodPlaceholder.Init(nullptr,5);
 	for(int i = 0; i < FoodPlaceholder.Num();i++)
@@ -25,7 +17,7 @@ AChest::AChest()
 		FString Name = TEXT("FoodPlaceholder");
 		Name.Append(FString::FromInt(i));
 		FoodPlaceholder[i] = CreateDefaultSubobject<USceneComponent>(FName(Name));
-		FoodPlaceholder[i]->SetupAttachment(SceneComponent);
+		FoodPlaceholder[i]->SetupAttachment(RootComponent);
 		FoodPlaceholder[i]->SetRelativeLocation(FVector(i*20,0.f,0.f));
 	}
 }
@@ -35,13 +27,6 @@ void AChest::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void AChest::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 FVector AChest::GetValidStoredPosition()
@@ -54,5 +39,14 @@ FVector AChest::GetValidStoredPosition()
 			return FoodPlaceholder[Index]->GetComponentLocation();
 	}
 	return GetActorLocation();
+}
+
+void AChest::OnInteract()
+{
+	Super::OnInteract();
+	if(Character->HasItem())
+	{
+		Character->StoreItem();
+	}
 }
 

@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#define COLLISION_TRANSPARENT ECC_GameTraceChannel1
 
 #include "FadeObjectsComponent.h"
 
@@ -15,7 +15,7 @@ UFadeObjectsComponent::UFadeObjectsComponent()
 
 	// ...
 	// Add first collision type
-	ObjectTypes.Add(ECC_WorldStatic);
+	ObjectTypes.Add(COLLISION_TRANSPARENT);
 }
 
 
@@ -70,7 +70,7 @@ void UFadeObjectsComponent::FadeObject()
 		GetOwner()->GetWorld()->LineTraceMultiByObjectType(HitArray, TraceStart, TraceEnd, TraceObjectTypes, TraceParams);
 		/*GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
 				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);*/
-
+		
 		for (int HitArrayIndex = 0; HitArrayIndex < HitArray.Num(); ++HitArrayIndex)
 		{
 			if (HitArray[HitArrayIndex].bBlockingHit && IsValid(HitArray[HitArrayIndex].GetComponent()) && !FadeObjectsHit.Contains(HitArray[HitArrayIndex].GetComponent()))

@@ -15,13 +15,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-private:
-	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* SceneComponent;
-
-	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category=Mesh)
 	UStaticMeshComponent* StaticMesh;
+
+public:	
+	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
+	
 };

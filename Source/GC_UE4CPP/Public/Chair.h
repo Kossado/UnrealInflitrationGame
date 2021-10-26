@@ -3,40 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "InteractiveItem.h"
 #include "Chair.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AChair : public AActor
+class GC_UE4CPP_API AChair : public AInteractiveItem
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AChair();
-
+	
 	UFUNCTION()
 	FVector GetSitLocation();
-
 	UFUNCTION()
 	FRotator GetSitRotation();
+
+	virtual void OnInteract() override;
+	
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool bUsed = false;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* SceneComponent;
-	
-	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(VisibleAnywhere, Category=Mesh, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* SitLocationComponent;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };
