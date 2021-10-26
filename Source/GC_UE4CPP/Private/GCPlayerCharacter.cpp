@@ -6,7 +6,7 @@
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 // Sets default values
-AGCPlayerCharacter::AGCPlayerCharacter()
+AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -129,33 +129,4 @@ void AGCPlayerCharacter::Interact()
 	{
 		CurrentInteractive->OnInteract();
 	}
-}
-
-void AGCPlayerCharacter::StoreFood()
-{
-	CarriedFood->SetActorLocation(ChestInFront->GetValidStoredPosition());
-	CarriedFood->SetActorRotation(ChestInFront->GetActorRotation() + FRotator(90.f,0.f,0.f));
-	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(MainGameMode)
-		MainGameMode->IncrementStoredFood();
-}
-
-void AGCPlayerCharacter::DropFood()
-{
-	if(CarriedFood == nullptr)
-	{
-		return;
-	}
-
-	AFood * FoodToDrop = CarriedFood;
-
-	Super::DropFood();
-
-	if(ChestInFront)
-	{
-		CarriedFood->SetFoodState(EFS_Stored);
-		StoreFood();
-	}
-	else
-		CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
 }

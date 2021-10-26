@@ -4,7 +4,7 @@
 #include "Food/SpotFood.h"
 
 // Sets default values
-ASpotFood::ASpotFood()
+ASpotFood::ASpotFood() : Super()
 {
 
 }

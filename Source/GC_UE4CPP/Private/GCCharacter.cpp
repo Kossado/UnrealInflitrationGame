@@ -5,6 +5,7 @@
 
 #include "Chair.h"
 #include "Chest.h"
+#include "GCGameMode.h"
 #include "InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
@@ -40,23 +41,6 @@ void AGCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-/*void AGCCharacter::CarryFood(AFood* FoodToCarry)
-{
-	if(FoodToCarry)
-	{
-		FoodToCarry->SetItemProperties(EIS_Interacting);
-		//Get the Hand Socket
-		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
-		if(HandSocket)
-		{
-			// Attach food to the hand socket
-			HandSocket->AttachActor(FoodToCarry,GetMesh());
-		}
-		CarriedFood = FoodToCarry;
-		ChangeCharacterSpeed(BaseWalkSpeed, CarryWalkSpeedMultiplicator);
-	}
-}*/
-
 void AGCCharacter::GrabItem(AInteractiveItem* InteractiveItem)
 {
 	if(InteractiveItem != nullptr)
@@ -87,11 +71,12 @@ void AGCCharacter::DropItem()
 	}
 }
 
+
 void AGCCharacter::StoreItem()
 {
 	ItemInHand->SetActorLocation(Cast<AChest>(CurrentInteractiveActor)->GetValidStoredPosition());
 	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
-	LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if(LevelGameMode)
 		LevelGameMode->IncrementStoredFood();
 }
@@ -103,78 +88,6 @@ void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator
 		GetCharacterMovement()->MaxWalkSpeed = NewSpeed * SpeedMultiplicator;
 	}
 }
-/*
-void AGCCharacter::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AFood* Food = Cast<AFood>(OtherActor);
-	if(Food && FoodToPick == nullptr)
-	{
-		FoodToPick = Food;
-		return;
-	}
-	AChest* Chest = Cast<AChest>(OtherActor);
-	if(Chest && ChestInFront == nullptr)
-	{
-		ChestInFront = Chest;
-		return;
-	}
-	AChair* Chair = Cast<AChair>(OtherActor);
-	if(Chair && ChairInFront==nullptr)
-	{
-		ChairInFront = Chair;
-		return;
-	}
-}
-
-void AGCCharacter::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AFood* Food = Cast<AFood>(OtherActor);
-	if(FoodToPick != nullptr && FoodToPick == Food)
-	{
-		FoodToPick = nullptr;
-		return;
-	}
-	AChest* Chest = Cast<AChest>(OtherActor);
-	if(ChestInFront != nullptr && Chest == ChestInFront)
-	{
-		ChestInFront = nullptr;
-		return;
-	}
-	AChair* Chair = Cast<AChair>(OtherActor);
-	if(ChairInFront != nullptr && Chair == ChairInFront)
-	{
-		ChairInFront = nullptr;
-		return;
-	}
-}
-
-void AGCCharacter::Interact()
-{
-	// When "E" key is pressed ...
-	if(ChairInFront != nullptr && !bSit)
-	{
-		SitDown();
-		return;
-	}
-	if(bSit)
-	{
-		StandUp();
-		return;
-	}
-	//... Drop food in hand if not empty handed ...
-	if(CarriedFood != nullptr)
-	{
-		DropFood();
-		return;
-	}
-	if(FoodToPick != nullptr)//... Pick food if there is in front of the character ...
-	{
-		CarryFood(FoodToPick);
-		return;
-	}
-}*/
 
 void AGCCharacter::SitDown()
 {
@@ -194,28 +107,6 @@ void AGCCharacter::StandUp()
 	GetCharacterMovement()->GravityScale = 1.f;
 }
 
-/*void AGCCharacter::DropFood()
-{
-	if(CarriedFood)
-	{
-		// Detach food from the hand socket
-		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
-		CarriedFood->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
-		// Change food state (Re-enable collisions,...)
-		if(ChestInFront)
-		{
-			CarriedFood->SetFoodState(EFS_Stored);
-			StoreFood();
-		}
-		else
-		{
-			CarriedFood->SetFoodState(EFoodState::EFS_Dropped);
-		}
-		CarriedFood = nullptr;
-		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
-	}
-}*/
-
 void AGCCharacter::OnEnterActor(AActor* InteractiveActor)
 {
 	if(InteractiveActor != nullptr)
@@ -233,11 +124,6 @@ void AGCCharacter::OnLeaveActor()
 {
 	CurrentInteractive = nullptr;
 	CurrentInteractiveActor = nullptr;
-}
-
-bool AGCCharacter::IsCarryingFood() const
-{
-	return CarriedFood != nullptr;
 }
 
 bool AGCCharacter::IsRotating() const

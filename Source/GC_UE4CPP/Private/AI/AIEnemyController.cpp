@@ -96,14 +96,14 @@ ETeamAttitude::Type AAIEnemyController::GetTeamAttitudeTowards(const AActor& Oth
 
 bool AAIEnemyController::IsCarryingFood() const
 {
-	return AICharacter->IsCarryingFood();
+	return AICharacter->HasItem();
 }
 
 void AAIEnemyController::CarryFood(AFood * FoodToCarry)
 {
 	if(FoodToCarry != nullptr)
 	{
-		AICharacter->CarryFood(FoodToCarry);
+		AICharacter->GrabItem(FoodToCarry);
 	}
 }
 
@@ -121,7 +121,7 @@ bool AAIEnemyController::PutFoodAtStand()
 
 void AAIEnemyController::DropFood()
 {
-	AICharacter->DropFood();
+	AICharacter->DropItem();
 }
 
 AAIEnemyManager* AAIEnemyController::GetAIEnemyManager() const

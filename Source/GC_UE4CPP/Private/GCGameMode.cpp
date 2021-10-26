@@ -6,7 +6,7 @@
 #include "PlayerControllerTeam.h"
 #include "Kismet/GameplayStatics.h"
 
-AGCGameMode::AGCGameMode()
+AGCGameMode::AGCGameMode() : Super()
 {
 	// Define default classes
 	GameStateClass = AGCGameState::StaticClass();

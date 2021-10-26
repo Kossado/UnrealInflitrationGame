@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "GCGameMode.h"
 #include "Interactable.h"
-
+#include "GameFramework/Character.h"
 #include "GCCharacter.generated.h"
 
 UCLASS()
@@ -32,6 +31,11 @@ public:
 	void OnEnterActor(AActor* InteractiveActor);
 	void OnLeaveActor();
 
+	
+	void BeginRotate();
+	void EndRotate();
+	bool IsRotating() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,7 +44,8 @@ protected:
 
 	AActor* CurrentInteractiveActor;
 	IInteractable* CurrentInteractive;
-	
+	AInteractiveItem* ItemInHand = nullptr;
+
 private:
 	/*// Food to pick = in Overlap
 	AFood* FoodToPick = nullptr;
@@ -56,10 +61,10 @@ private:
 	// Characters Speed when carrying food
 	float CarryWalkSpeedMultiplicator;
 	// Grabbed item
-	AInteractiveItem* ItemInHand = nullptr;
 
-	AGCGameMode* LevelGameMode;
 	bool bHasItem = false;
+
+	bool bRotate =false;
 
 	
 public:	

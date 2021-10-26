@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GCCharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "GameFramework/Character.h"
+#include "Food/SpotFood.h"
 #include "AIEnemyCharacter.generated.h"
 
 UCLASS()

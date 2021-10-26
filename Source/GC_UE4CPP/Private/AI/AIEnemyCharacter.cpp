@@ -40,14 +40,14 @@ void AAIEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AAIEnemyCharacter::StoreFood(ASpotFood * SpotFood)
 {
-	if(CarriedFood==nullptr || SpotFood == nullptr)
+	if(ItemInHand==nullptr || !ItemInHand->IsA(AFood::StaticClass()) || SpotFood == nullptr)
 	{
 		return;
 	}
 	
-	AFood * FoodToStore = CarriedFood;
+	AFood * FoodToStore = Cast<AFood>(ItemInHand);
 
-	Super::DropFood();
+	Super::DropItem();
 	
 	SpotFood->StoreFood(FoodToStore);
 }

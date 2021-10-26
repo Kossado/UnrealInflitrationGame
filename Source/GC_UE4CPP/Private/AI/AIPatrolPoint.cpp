@@ -1,6 +1,6 @@
 #include "AI/AIPatrolPoint.h"
 
-AAIPatrolPoint::AAIPatrolPoint()
+AAIPatrolPoint::AAIPatrolPoint() : Super()
 {
 	
 }

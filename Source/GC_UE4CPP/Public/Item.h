@@ -4,6 +4,14 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+UENUM()
+enum EItemState
+{
+	EIS_Movable,
+	EIS_Interacting,
+	EIS_Immovable
+};
+
 UCLASS()
 class GC_UE4CPP_API AItem : public AActor
 {
@@ -15,10 +23,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, Category=Mesh)
+	UPROPERTY(VisibleAnywhere, Category="Mesh")
 	UStaticMeshComponent* StaticMesh;
 
 public:	
 	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
-	
+	void SetItemProperties(EItemState State) ;
+	FORCEINLINE EItemState GetCurrentItemState() const { return CurrentItemState; }
+
+private:
+	EItemState CurrentItemState;
+
 };

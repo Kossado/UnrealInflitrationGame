@@ -6,7 +6,7 @@
 #include "Food/SpotFood.h"
 
 // Sets default values
-AFoodManager::AFoodManager()
+AFoodManager::AFoodManager() : Super()
 {
 
 }

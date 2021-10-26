@@ -9,7 +9,7 @@
 
 
 // Sets default values
-AAIEnemyManager::AAIEnemyManager()
+AAIEnemyManager::AAIEnemyManager() : Super()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -87,7 +87,7 @@ void AAIEnemyManager::SpawnPawn()
 					return;
 				}
 				
-				ActorCharacterRef->CarryFood(NewFood);
+				ActorCharacterRef->GrabItem(NewFood);
 			}
 			
 		}

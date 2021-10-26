@@ -15,8 +15,13 @@ public:
 	AFood();
 
 	virtual void OnInteract() override;
-
+	bool IsOnGround() const;
+	bool GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+
 };

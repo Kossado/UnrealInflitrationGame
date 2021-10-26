@@ -1,16 +1,18 @@
 #include "Torch.h"
 
-ATorch::ATorch()
+ATorch::ATorch() : Super()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Set up Scene Component
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Scene Component")));
-	RootComponent = SceneComponent;
+	// SceneComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Scene Component")));
+	// RootComponent = SceneComponent;
 
 	//Set up static mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("Static Mesh")));
-	StaticMesh->SetupAttachment(RootComponent);
+	RootComponent = StaticMesh;
+	// StaticMesh->SetupAttachment(RootComponent);
+	
 
 	//Set up light
 	LightMesh = CreateDefaultSubobject<UPointLightComponent>(FName(TEXT("Light Mesh")));

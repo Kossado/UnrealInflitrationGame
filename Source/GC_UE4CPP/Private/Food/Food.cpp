@@ -8,16 +8,22 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AFood::AFood() : Super()
+AFood::AFood():Super()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	SetItemProperties(EIS_Movable);
+}
 
-	//Set up Mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Static Mesh"));
-	SetRootComponent(StaticMesh);
-	//Set up food state
-	SetFoodState(EFS_Dropped);
+void AFood::OnInteract()
+{
+	Super::OnInteract();
+	if(Character != nullptr)
+	{
+		if(!Character->HasItem())
+		{
+			SetItemProperties(EIS_Interacting);
+			Character->GrabItem(this);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -27,12 +33,12 @@ void AFood::BeginPlay()
 
 	if(IsOnGround())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName().ToString()));
 	}
 
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName().ToString()));
 		FVector Origin = FVector::ZeroVector;
 		FVector BoxExtent = FVector::ZeroVector;
 		if(GetBoundsSupportFood(Origin, BoxExtent))
@@ -79,7 +85,7 @@ bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 	Origin = FVector::ZeroVector;
 	BoxExtent = FVector::ZeroVector;
 
-	if(FoodState != EFoodState::EFS_Dropped)
+	if(GetCurrentItemState() != EItemState::EIS_Movable)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Food isn't dropped"));
 
@@ -108,49 +114,3 @@ bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 	}
 	
 }
-
-void AFood::SetFoodProperties(EFoodState State)
-{
-	switch (State)
-	{
-		case EFoodState::EFS_PickedUp:
-			//Set mesh properties
-			StaticMesh->SetSimulatePhysics(false);
-			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-			StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			break;
-		case EFoodState::EFS_Dropped:
-			//Set mesh properties
-			StaticMesh->SetSimulatePhysics(true);
-			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-			StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
-			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			break;
-		case EFoodState::EFS_Stored:
-			StaticMesh->SetSimulatePhysics(false);
-			StaticMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-			StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			break;
-		default:
-			//Set mesh properties
-			StaticMesh->SetSimulatePhysics(true);
-			StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-			StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
-			StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			break;
-	}
-}
-
-// Called every frame
-void AFood::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void AFood::SetFoodState(EFoodState State)
-{
-	FoodState = State;
-	SetFoodProperties(State);
-}
-

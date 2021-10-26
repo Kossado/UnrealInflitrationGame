@@ -8,13 +8,7 @@
 
 #include "InteractiveItem.generated.h"
 
-UENUM()
-enum EItemState
-{
-	EIS_Movable,
-	EIS_Interacting,
-	EIS_Immovable
-};
+
 
 UCLASS()
 class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
@@ -24,24 +18,20 @@ class GC_UE4CPP_API AInteractiveItem : public AItem, public IInteractable
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveItem();
-	
-	void SetItemProperties(EItemState State) const;
-
-	//FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	/*UPROPERTY(VisibleAnywhere, Category=Mesh)
-	UStaticMeshComponent* StaticMesh;*/
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Trigger;
-	AGCCharacter* Character = nullptr;
 	UPROPERTY(EditAnywhere, Category="Item")
 	TSubclassOf<AActor> ItemClass;
 	UPROPERTY(EditAnywhere, Category="Item")
 	FName ItemName;
 
+	AGCCharacter* Character = nullptr;
+	
 	UFUNCTION()
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
