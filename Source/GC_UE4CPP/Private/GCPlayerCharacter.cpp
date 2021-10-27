@@ -60,14 +60,12 @@ AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 void AGCPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	//MapActionInteractiveItem.Add(AChest::StaticClass(), {1, StoreItem});
 }
 
 // Called every frame
 void AGCPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
 }
 
 // Called to bind functionality to input

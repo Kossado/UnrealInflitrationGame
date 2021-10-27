@@ -83,17 +83,4 @@ public:
 
 	/*UPROPERTY(EditAnywhere, Category = Materials)
 	UMaterial* BaseMaterial;*/
-
-protected:
-	// Called for forward/backward input
-	void MoveForward(float Value);
-	// Called for right/left input
-	void MoveRight(float Value);
-	// Called to setup the zoom's destination
-	void ZoomIn();	
-	void ZoomOut();
-	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
-	void SmoothZoom(float DeltaTime);
-	// Launch menu Pause
-	void InvokeMenu();
 };
