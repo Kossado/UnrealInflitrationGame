@@ -6,7 +6,7 @@
 #include "Food/FoodManager.h"
 #include "GCGameState.h"
 #include "GameFramework/GameMode.h"
-#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "HUD/InGameInterface.h"
 #include "GCGameMode.generated.h"
 
 /**
@@ -36,13 +36,15 @@ public:
 	void IncrementPickableFood();
 	// Checks
 	void CheckGameConditions();
-	void DisableCharacterInput();
+	void DisableCharacterInput(bool GameStatus);
 	// Pause
 	void LaunchMenuPause();
-	// UI
-	AGC_InGameInterface* InGameInterface;
+	
 
 private:
+	// UI
+	AInGameInterface* InGameInterface;
+
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY

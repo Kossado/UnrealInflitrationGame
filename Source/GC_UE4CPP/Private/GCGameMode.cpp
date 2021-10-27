@@ -30,7 +30,7 @@ void AGCGameMode::StartPlay()
 {
 	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
-	InGameInterface = Cast<AGC_InGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 void AGCGameMode::RestartGame()
@@ -74,6 +74,7 @@ void AGCGameMode::IncrementStoredFood()
 void AGCGameMode::LaunchMenuPause()
 {
 	if(InGameInterface)
+		SetCurrentGameState(EGS_PAUSE);
 		InGameInterface->Pause();
 }
 
@@ -87,17 +88,19 @@ void AGCGameMode::CheckGameConditions()
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{
 		SetCurrentGameState(EGS_VICTORY);
-		DisableCharacterInput();
+		DisableCharacterInput(true);
 	}
 	/*if(CharacterHitByAI)
 	{
 		SetCurrentGameState(EGS_DEFEAT);
-		DisableCharacterInput();
+		DisableCharacterInput(false);
 	}*/
 }
 
-void AGCGameMode::DisableCharacterInput()
+void AGCGameMode::DisableCharacterInput(bool GameStatus)
 {
 	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	if(InGameInterface)
+		InGameInterface->EndGame(GameStatus);
 }

@@ -40,18 +40,64 @@ private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraSpringArm;
+	
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraPortraitStick;
+	
 	// Camera that follow the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	USceneCaptureComponent2D* CameraPortraitComponent;
+	// Base turn rate for the right/left camera movement in deg/sec
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float BaseTurnRate;
+	// Base Lookup rate for the up/down camera movement in deg/sec
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float BaseLookUpRate;
+	// Minimum Length of the CameraStick
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float MinCameraDistance;
+	// Maximum Length of the CameraStick
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float MaxCameraDistance;
+	// Camera zoom speed
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float CameraZoomSpeed;
+	// How much the camera will move with one mouse wheel input
+	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
+	float CameraZoomSteps;
+	// Destination of the camera for the smooth zoom Should be equal to CameraStick->TargetArmLength at the beggining
+	float CamZoomDestination;
+
 	// Component that allow to see through objects
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UFadeObjectsComponent* FadeObjectsComponent;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FName> NameSocketDetectionByAI;
-
 	
 public:
 	// GETTERS / SETTERS
 	FORCEINLINE USpringArmComponent* GetCameraSpringArm() const {return CameraSpringArm;}
+
+	/*UPROPERTY(EditAnywhere, Category = Materials)
+	UMaterial* BaseMaterial;*/
+
+protected:
+	// Called for forward/backward input
+	void MoveForward(float Value);
+	// Called for right/left input
+	void MoveRight(float Value);
+	// Called to setup the zoom's destination
+	void ZoomIn();	
+	void ZoomOut();
+	// Called in Tick to zoom smoothly between the current zoom and the zoom's destination
+	void SmoothZoom(float DeltaTime);
+	// Launch menu Pause
+	void InvokeMenu();
+
+	virtual void SitDown() override;
+
+	virtual void StandUp() override;
 };

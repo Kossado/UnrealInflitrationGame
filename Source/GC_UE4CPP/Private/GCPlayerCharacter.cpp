@@ -1,12 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GCPlayerCharacter.h"
+
 #include "Food/Food.h"
 #include "Chair.h"
 #include "GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "HUD/InGameInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 // Sets default values
 AGCPlayerCharacter::AGCPlayerCharacter() : Super()
@@ -25,6 +28,20 @@ AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 	CameraComponent->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
 
+	// Create second camera stick
+	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Portrait Stick"));
+	CameraPortraitStick->SetupAttachment(RootComponent);
+	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 35.0f), FRotator(0.0f, 180.0f, 0.0f));
+	CameraPortraitStick->TargetArmLength = 80.f; // Distance between the camera and the character
+	CameraPortraitStick->bDoCollisionTest = false; // Disable collision camera
+	
+	// Create Camera that will follow the portrait character
+	CameraPortraitComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(FName("CameraPortrait"));
+	CameraPortraitComponent->SetupAttachment(CameraPortraitStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
+	CameraPortraitComponent->ShowOnlyActorComponents(this,false);
+	CameraPortraitComponent->FOVAngle = 75.f; // Update value of angle camera
+	CameraPortraitComponent->CaptureSource = ESceneCaptureSource::SCS_BaseColor; // Type of capture
+	
 	// Don't rotate when the controller rotates. The controller only affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
