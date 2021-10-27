@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GCGameState.h"
 #include "GameFramework/GameMode.h"
-#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "HUD/GC_InGameInterface.h"
 #include "GCGameMode.generated.h"
 
 /**

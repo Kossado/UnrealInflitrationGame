@@ -1,4 +1,4 @@
-#include "GC_PrincipalMenuInterface.h"
+#include "HUD/GC_PrincipalMenuInterface.h"
 
 AGC_PrincipalMenuInterface::AGC_PrincipalMenuInterface()
 {

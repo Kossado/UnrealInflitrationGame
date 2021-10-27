@@ -5,7 +5,7 @@
 
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "HUD/GC_InGameInterface.h"
 
 // Sets default values
 AGCPlayerCharacter::AGCPlayerCharacter():

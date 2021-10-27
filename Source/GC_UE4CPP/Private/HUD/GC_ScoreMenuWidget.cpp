@@ -1,4 +1,4 @@
-#include "GC_ScoreMenuWidget.h"
+#include "HUD/GC_ScoreMenuWidget.h"
 
 UGC_ScoreMenuWidget::UGC_ScoreMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {

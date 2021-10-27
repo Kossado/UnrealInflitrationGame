@@ -1,4 +1,4 @@
-#include "GC_PauseMenuWidget.h"
+#include "HUD/GC_PauseMenuWidget.h"
 #include "GCGameMode.h"
 #include "Components/Button.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"

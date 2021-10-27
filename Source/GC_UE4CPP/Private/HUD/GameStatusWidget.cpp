@@ -1,4 +1,5 @@
-#include "GameStatusWidget.h"
+#include "HUD/GameStatusWidget.h"
+
 #include "GCGameMode.h"
 #include "Components/Button.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"

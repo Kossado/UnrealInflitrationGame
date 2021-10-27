@@ -1,4 +1,4 @@
-#include "GC_MainMenuWidget.h"
+#include "HUD/GC_MainMenuWidget.h"
 #include "GCGameMode.h"
 
 UGC_MainMenuWidget::UGC_MainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

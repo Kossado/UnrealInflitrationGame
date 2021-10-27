@@ -1,4 +1,4 @@
-#include "GC_InGameInterface.h"
+#include "HUD/GC_InGameInterface.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 AGC_InGameInterface::AGC_InGameInterface()

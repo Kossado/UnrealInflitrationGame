@@ -1,4 +1,4 @@
-#include "GC_OptionsMenuWidget.h"
+#include "HUD/GC_OptionsMenuWidget.h"
 #include "GameFramework/InputSettings.h"
 #include "Components/InputKeySelector.h"
 #include "GameFramework/PlayerInput.h"
