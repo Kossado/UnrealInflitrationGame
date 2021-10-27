@@ -1,29 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GeneratorWall.h"
 
 // Sets default values
 AGeneratorWall::AGeneratorWall()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	// Création de la scène
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(FName("RootScene"));
     RootComponent = SceneComponent;	
 }
 
-// Called when the game starts or when spawned
-void AGeneratorWall::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 // Génération d'un mur depuis l'éditeur
 void AGeneratorWall::CreateWallFromEditor()
 {
-	
 	CreateWall(GetActorLocation());
 }
 
@@ -73,11 +60,4 @@ void AGeneratorWall::CreateWall(FVector positionDepart)
 		}
 		posZ += tailleComposant.Z;
 	}
-}
-
-// Called every frame
-void AGeneratorWall::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
