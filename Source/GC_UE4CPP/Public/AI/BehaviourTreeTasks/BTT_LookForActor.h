@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTT_TakeFood.generated.h"
+#include "BTT_LookForActor.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GC_UE4CPP_API UBTT_TakeFood : public UBTTask_BlackboardBase
+class GC_UE4CPP_API UBTT_LookForActor : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory) override;
 
 	public:
-	UBTT_TakeFood(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
+	UBTT_LookForActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

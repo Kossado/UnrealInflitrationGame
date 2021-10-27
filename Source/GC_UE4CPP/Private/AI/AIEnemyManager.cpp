@@ -87,7 +87,7 @@ void AAIEnemyManager::SpawnPawn()
 					return;
 				}
 				
-				ActorCharacterRef->GrabItem(NewFood);
+				ControllerAI->CarryFood(NewFood);
 			}
 			
 		}

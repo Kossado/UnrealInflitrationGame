@@ -15,5 +15,8 @@ class GC_UE4CPP_API APickableItem : public AInteractiveItem
 	GENERATED_BODY()
 public:
 	APickableItem();
-	
+	void GrabItem();
+
+	void DropItem();
+	void DisableItem();
 };

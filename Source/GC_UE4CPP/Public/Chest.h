@@ -14,6 +14,7 @@ public:
 	// Sets default values for this actor's properties
 	AChest();
 	FVector GetValidStoredPosition();
+	FRotator GetValidStoredRotation();
 
 protected:
 	// Called when the game starts or when spawned

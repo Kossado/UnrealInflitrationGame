@@ -6,3 +6,18 @@
 APickableItem::APickableItem():Super()
 {
 }
+
+void APickableItem::GrabItem()
+{
+	SetItemProperties(EIS_Interacting);
+}
+
+void APickableItem::DropItem()
+{
+	SetItemProperties(EIS_Movable);
+}
+
+void APickableItem::DisableItem()
+{
+	SetItemProperties(EIS_Disabled);
+}

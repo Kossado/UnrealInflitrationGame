@@ -9,7 +9,8 @@ enum EItemState
 {
 	EIS_Movable,
 	EIS_Interacting,
-	EIS_Immovable
+	EIS_Immovable,
+	EIS_Disabled,
 };
 
 UCLASS()
@@ -25,10 +26,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Mesh")
 	UStaticMeshComponent* StaticMesh;
+	virtual void SetItemProperties(EItemState State) ;
 
 public:	
 	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
-	void SetItemProperties(EItemState State) ;
 	FORCEINLINE EItemState GetCurrentItemState() const { return CurrentItemState; }
 
 private:

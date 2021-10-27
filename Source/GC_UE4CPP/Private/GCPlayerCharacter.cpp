@@ -135,9 +135,9 @@ void AGCPlayerCharacter::StoreItem(AChest* Chest)
 	// Detach item from the hand socket
 	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
-	ItemInHand->SetItemProperties(EIS_Interacting);
+	ItemInHand->DisableItem();
 	ItemInHand->SetActorLocation(Chest->GetValidStoredPosition());
-	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
+	ItemInHand->SetActorRotation(Chest->GetValidStoredRotation());
 	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if(LevelGameMode)
 		LevelGameMode->IncrementStoredFood();

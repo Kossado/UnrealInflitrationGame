@@ -32,6 +32,23 @@ void AInteractiveItem::BeginPlay()
 	
 }
 
+void AInteractiveItem::SetItemProperties(EItemState State)
+{
+	Super::SetItemProperties(State);
+
+	switch(State)
+	{
+		case EItemState::EIS_Disabled:
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Disable " + GetName());
+			DisableTrigger();
+			break;
+
+		default:
+			break;
+	}
+}
+
+
 void AInteractiveItem::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -34,7 +34,7 @@ void AGCCharacter::GrabItem(APickableItem* PickableItem)
 {
 	if(PickableItem != nullptr)
 	{
-		PickableItem->SetItemProperties(EIS_Interacting);
+		PickableItem->GrabItem();
 		//Get the Hand Socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
 		if(HandSocket)
@@ -55,7 +55,7 @@ void AGCCharacter::DropItem()
 		// Detach item from the hand socket
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
-		ItemInHand->SetItemProperties(EIS_Movable);
+		ItemInHand->DropItem();
 		ItemInHand = nullptr;
 		bHasItem = false;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
@@ -77,6 +77,7 @@ void AGCCharacter::SitDown(AChair* Chair)
 		if(!Chair->IsUsed())
 		{
 			bSit = true;
+			ChairUsed = Chair;
 			Chair->Use(this);
 			GetCharacterMovement()->GravityScale = 0.f;
 			SetActorLocation(Chair->GetSitLocation());
@@ -89,10 +90,11 @@ void AGCCharacter::SitDown(AChair* Chair)
 void AGCCharacter::StandUp()
 {
 	if(bSit && ChairUsed != nullptr)
-	{
-		bSit = false;
+	{		
 		GetCharacterMovement()->GravityScale = 1.f;
 		ChairUsed->Free(this);
+		bSit = false;
+		ChairUsed = nullptr;
 	}
 }
 
@@ -101,7 +103,7 @@ void AGCCharacter::OnEnterActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && !InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Add(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Add Interactive Actor");
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Add Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 
@@ -110,7 +112,7 @@ void AGCCharacter::OnLeaveActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Remove(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Remove Interactive Actor");
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Remove Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 
