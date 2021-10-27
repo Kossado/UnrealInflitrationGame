@@ -36,15 +36,38 @@ public:
 	void EndRotate();
 	bool IsRotating() const;
 
+	FORCEINLINE const USkeletalMeshSocket * GetSocketBaseCharacter() const { return SocketBaseCharacter; }
+	FORCEINLINE FVector GetSocketBaseCharacterLocation() const { return GetMesh()->GetSocketLocation(NameSocketBaseCharacter); }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Change speed according to the parameters
 	void ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator);
 
+<<<<<<< Updated upstream
 	AActor* CurrentInteractiveActor;
 	IInteractable* CurrentInteractive;
 	AInteractiveItem* ItemInHand = nullptr;
+=======
+	TArray<AInteractiveItem*> InteractiveItems;
+	/*AActor* CurrentInteractiveActor;
+	IInteractable* CurrentInteractive;*/
+	APickableItem* ItemInHand = nullptr;
+
+	bool bHasItem = false;
+	bool bSit = false;
+	AChair* ChairUsed = nullptr;
+	// Characters Speed handfree
+
+	float BaseWalkSpeed;
+>>>>>>> Stashed changes
+
+	//Socket which represent the character on the ground. By Example, the middle between two feet
+	UPROPERTY(EditAnywhere)
+	FName NameSocketBaseCharacter;
+
+	const USkeletalMeshSocket * SocketBaseCharacter = nullptr;
 
 private:
 	/*// Food to pick = in Overlap
@@ -59,10 +82,15 @@ private:
 	// Characters Speed handfree
 	float BaseWalkSpeed;
 	// Characters Speed when carrying food
+<<<<<<< Updated upstream
 	float CarryWalkSpeedMultiplicator;
 	// Grabbed item
 
 	bool bHasItem = false;
+=======
+	UPROPERTY(EditAnywhere)
+	float CarryWalkSpeedMultiplicator=0.5f;
+>>>>>>> Stashed changes
 
 	bool bRotate =false;
 

@@ -69,7 +69,8 @@ private:
 	unsigned int NbRetriesBeforeBack;
 	AAIEnemyManager* AIEnemyManager;
 
-	AActor* TargetChased;
+	bool bCurrentlySeeTarget = false;
+	AGCCharacter* TargetChased;
 	FVector LastLocationSeenTarget;
 	FVector LastDirectionSeenTarget;
 

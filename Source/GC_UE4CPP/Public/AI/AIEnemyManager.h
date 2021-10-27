@@ -44,8 +44,8 @@ private:
 	AAIPatrolPoint* SpawnAIPatrolPoint;
 	
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<AAIEnemyCharacter> BP_CharacterAI;
-
+		TArray<TSubclassOf<AAIEnemyCharacter>> List_BP_CharacterAI;
+		
 	UPROPERTY(EditAnywhere)
 		unsigned int NbRetriesSpotBeforeBack=2;
 

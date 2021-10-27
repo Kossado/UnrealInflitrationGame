@@ -3,11 +3,14 @@
 
 #include "AI/AIEnemyController.h"
 
+#include "BlueprintEditor.h"
 #include "ChaosInterfaceWrapperCore.h"
+#include "DrawDebugHelpers.h"
 #include "Food/SpotFood.h"
 #include "AI/AIEnemyManager.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Chaos/CollisionResolutionUtil.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -142,24 +145,93 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 {
 	bool HasSensedSomeone = FaiStimulus.WasSuccessfullySensed();
 
+<<<<<<< Updated upstream
 	if(HasSensedSomeone)
+=======
+
+	if(!UpdateActor->IsA(AGCCharacter::StaticClass()))
+>>>>>>> Stashed changes
 	{
+		return;
+	}
+
+	AGCCharacter * CharacterSeen = Cast<AGCCharacter>(UpdateActor);
+
+	if(CharacterSeen == nullptr)
+	{
+		return;		
+	}
+	
+	if(HasSensedSomeone)
+	{		
+		//Change current target only if distance with the seen player is less than previous target or if he doesn't see the previous target
+		//If it's the same target, we continue instruction to update positions
+		if(TargetChased != CharacterSeen)
+		{
+			if(bCurrentlySeeTarget && TargetChased != nullptr && ((CharacterSeen->GetActorLocation() - GetCharacter()->GetActorLocation()).SizeSquared()) > (TargetChased->GetActorLocation() - GetCharacter()->GetActorLocation()).SizeSquared())
+			{
+				return;
+			}
+		}
+		
+		TargetChased = CharacterSeen;
+		bCurrentlySeeTarget = true;
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Detection of %s"), ToCStr(UpdateActor->GetName())));
+<<<<<<< Updated upstream
 		Blackboard->SetValueAsBool("HaveSeenPlayer", true);
 		Blackboard->SetValueAsBool("HasLineOfSight", true);
 		Blackboard->SetValueAsObject("TargetChase", UpdateActor);
 		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
+=======
+		Blackboard->SetValueAsBool("bHasSeenPlayer", true);
+		Blackboard->SetValueAsBool("bHasLineOfSight", true);
+		Blackboard->SetValueAsObject("TargetChase", CharacterSeen);
+
+		if(CharacterSeen->GetSocketBaseCharacter() != nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Have socket");
+			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetSocketBaseCharacterLocation());
+			Blackboard->SetValueAsVector("LocationSearchPlayer", CharacterSeen->GetSocketBaseCharacterLocation());			
+
+			DrawDebugSphere(GetWorld(), CharacterSeen->GetSocketBaseCharacterLocation(), 1, 32, FColor::Blue, false, 5);
+		}
+
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Don't Have socket");
+			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetActorLocation());
+			Blackboard->SetValueAsVector("LocationSearchPlayer", CharacterSeen->GetActorLocation());
+		}
+>>>>>>> Stashed changes
 	}
-	else
+	else if(TargetChased == CharacterSeen)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Lost of %s"), ToCStr(UpdateActor->GetName())));
+<<<<<<< Updated upstream
 		Blackboard->SetValueAsBool("HasLineOfSight", false);
 		Blackboard->SetValueAsObject("TargetChase", nullptr);
 		const FVector PreviousLocationTarget = Blackboard->GetValueAsVector("LastLocationSawPlayer");
+=======
+		Blackboard->SetValueAsBool("bHasLineOfSight", false);
+		
+		if(CharacterSeen->GetSocketBaseCharacter() != nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Have socket");
+>>>>>>> Stashed changes
 
-		Blackboard->SetValueAsVector("DirectionTakenByTarget", UpdateActor->GetActorLocation() + (UpdateActor->GetActorLocation() - PreviousLocationTarget) * 500000);
+			Blackboard->SetValueAsVector("DirectionTakenByTarget", CharacterSeen->GetActorForwardVector());
+			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetSocketBaseCharacterLocation());
+		}
 
-		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Don't Have socket");
+
+			Blackboard->SetValueAsVector("DirectionTakenByTarget", CharacterSeen->GetActorForwardVector());
+			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetActorLocation());
+		}
+		
+		bCurrentlySeeTarget = false;
 
 	}
 }
@@ -182,9 +254,20 @@ void AAIEnemyController::Rotate(const FRotator NextRotation) const
 void AAIEnemyController::ForgetTarget()
 {	
 	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Forget target")));
+<<<<<<< Updated upstream
 	Blackboard->SetValueAsBool("HaveSeenPlayer", false);
 	Blackboard->SetValueAsBool("HasLineOfSight", false);	
 	Blackboard->SetValueAsObject("TargetChase", nullptr);	
+=======
+	Blackboard->SetValueAsBool("bHasSeenPlayer", false);
+	Blackboard->SetValueAsBool("bHasLineOfSight", false);	
+	Blackboard->SetValueAsObject("TargetChase", nullptr);
+	Blackboard->SetValueAsVector("DirectionTakenByTarget",FVector::ZeroVector);
+	Blackboard->SetValueAsVector("LastLocationSawPlayer", FVector::ZeroVector);
+
+	bCurrentlySeeTarget = false;
+	TargetChased = nullptr;
+>>>>>>> Stashed changes
 }
 
 void AAIEnemyController::SetNextTargetSpotFood(ASpotFood * NextSpotFoodTarget)

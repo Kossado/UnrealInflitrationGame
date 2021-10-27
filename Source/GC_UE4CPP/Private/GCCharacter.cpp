@@ -11,21 +11,26 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer),
-BaseWalkSpeed(300.f),
-CarryWalkSpeedMultiplicator(0.5f)
+AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
+<<<<<<< Updated upstream
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set Maximum movement speed of the character
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+=======
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+>>>>>>> Stashed changes
 }
 
 // Called when the game starts or when spawned
 void AGCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	// Set Maximum movement speed of the character
+	BaseWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	SocketBaseCharacter=GetMesh()->GetSocketByName(NameSocketBaseCharacter);
 }
 
 // Called every frame
