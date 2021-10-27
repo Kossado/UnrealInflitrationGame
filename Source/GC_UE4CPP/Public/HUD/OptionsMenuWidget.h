@@ -3,14 +3,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/InputSettings.h"
-//#include "Runtime/UMG/Public/UMG.h"
-#include "GC_OptionsMenuWidget.generated.h"
+#include "OptionsMenuWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class GC_UE4CPP_API UGC_OptionsMenuWidget : public UUserWidget
+class GC_UE4CPP_API UOptionsMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

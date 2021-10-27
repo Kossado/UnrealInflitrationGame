@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GCGameState.h"
 #include "GameFramework/GameMode.h"
-#include "HUD/GC_InGameInterface.h"
+#include "HUD/InGameInterface.h"
 #include "GCGameMode.generated.h"
 
 /**
@@ -39,7 +39,7 @@ public:
 	// Pause
 	void LaunchMenuPause();
 	// UI
-	AGC_InGameInterface* InGameInterface;
+	AInGameInterface* InGameInterface;
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY

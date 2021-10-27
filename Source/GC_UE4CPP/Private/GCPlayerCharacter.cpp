@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GCPlayerCharacter.h"
 
+#include "DrawDebugHelpers.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "HUD/GC_InGameInterface.h"
+#include "HUD/InGameInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 // Sets default values
 AGCPlayerCharacter::AGCPlayerCharacter():

@@ -2,11 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Runtime/UMG/Public/UMG.h"
-#include "GC_ScoreMenuWidget.generated.h"
+#include "ScoreMenuWidget.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API UGC_ScoreMenuWidget : public UUserWidget
+class GC_UE4CPP_API UScoreMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

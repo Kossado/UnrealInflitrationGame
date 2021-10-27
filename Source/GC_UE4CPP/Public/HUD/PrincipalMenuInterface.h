@@ -1,12 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GC_MainMenuWidget.h"
+#include "PrincipalMenuWidget.h"
 #include "GameFramework/HUD.h"
-#include "GC_PrincipalMenuInterface.generated.h"
+#include "PrincipalMenuInterface.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AGC_PrincipalMenuInterface : public AHUD
+class GC_UE4CPP_API APrincipalMenuInterface : public AHUD
 {
 	GENERATED_BODY()
 
@@ -19,5 +19,5 @@ public:
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 
 private:
-	UGC_MainMenuWidget* MainMenuWidget;
+	UPrincipalMenuWidget* MainMenuWidget;
 };

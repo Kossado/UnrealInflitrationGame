@@ -1,50 +1,51 @@
 // Import intern class
-#include "HUD/GC_PauseMenuWidget.h"
+#include "HUD/PauseMenuWidget.h"
 #include "GCGameMode.h"
 
 // Import extern class
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Constructor
-void UGC_PauseMenuWidget::NativeConstruct()
+void UPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
 	if(UIResume)
 	{
-		UIResume->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Resume);
+		UIResume->OnClicked.AddDynamic(this,&UPauseMenuWidget::Resume);
 	}
 	if(UIRestart)
 	{
-		UIRestart->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Restart);
+		UIRestart->OnClicked.AddDynamic(this,&UPauseMenuWidget::Restart);
 	}
 	if(UIOptions)
 	{
-		UIOptions->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Options);
+		UIOptions->OnClicked.AddDynamic(this,&UPauseMenuWidget::Options);
 	}
 	if(UIQuit)
 	{
-		UIQuit->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Quit);
+		UIQuit->OnClicked.AddDynamic(this,&UPauseMenuWidget::Quit);
 	}
 	if(UIQuitDesktop)
 	{
-		UIQuitDesktop->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::QuitDesktop);
+		UIQuitDesktop->OnClicked.AddDynamic(this,&UPauseMenuWidget::QuitDesktop);
 	}
 	if(UIQuitMainMenu)
 	{
-		UIQuitMainMenu->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::QuitMainMenu);
+		UIQuitMainMenu->OnClicked.AddDynamic(this,&UPauseMenuWidget::QuitMainMenu);
 	}
 }
 
 // Acquisition options widget
-void UGC_PauseMenuWidget::InitializeOptionsWidget(UWidget* optionsWidget)
+void UPauseMenuWidget::InitializeOptionsWidget(UWidget* optionsWidget)
 {
 	OptionsWidget = optionsWidget;
 }
 
 // Event OnCliked in UIResume
-void UGC_PauseMenuWidget::Resume()
+void UPauseMenuWidget::Resume()
 {
 	if(UIResume)
 	{
@@ -72,7 +73,7 @@ void UGC_PauseMenuWidget::Resume()
 }
 
 // Event OnCliked in UIRestart
-void UGC_PauseMenuWidget::Restart()
+void UPauseMenuWidget::Restart()
 {
 	if(UIRestart)
 	{
@@ -88,7 +89,7 @@ void UGC_PauseMenuWidget::Restart()
 }
 
 // Event OnCliked in UIOptions
-void UGC_PauseMenuWidget::Options()
+void UPauseMenuWidget::Options()
 {
 	if(UIOptions)
 	{
@@ -99,7 +100,7 @@ void UGC_PauseMenuWidget::Options()
 }
 
 // Event OnCliked in UIQuit
-void UGC_PauseMenuWidget::Quit()
+void UPauseMenuWidget::Quit()
 {
 	if(UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
@@ -116,7 +117,7 @@ void UGC_PauseMenuWidget::Quit()
 }
 
 // Event OnCliked in UIQuitDesktop
-void UGC_PauseMenuWidget::QuitDesktop()
+void UPauseMenuWidget::QuitDesktop()
 {
 	if(UIQuitDesktop)
 	{
@@ -126,7 +127,7 @@ void UGC_PauseMenuWidget::QuitDesktop()
 }
 
 // Event OnCliked in UIQuitMainMenu
-void UGC_PauseMenuWidget::QuitMainMenu()
+void UPauseMenuWidget::QuitMainMenu()
 {
 	if(UIQuitMainMenu)
 	{

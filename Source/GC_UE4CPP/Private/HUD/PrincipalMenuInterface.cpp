@@ -1,14 +1,14 @@
 // Import intern class
-#include "HUD/GC_PrincipalMenuInterface.h"
+#include "HUD/PrincipalMenuInterface.h"
 
 // Event begin play
-void AGC_PrincipalMenuInterface::BeginPlay()
+void APrincipalMenuInterface::BeginPlay()
 {
 	Super::BeginPlay();
 	// Create principal menu widget 
 	if (MainMenuWidgetClass)
 	{
-		MainMenuWidget = CreateWidget<UGC_MainMenuWidget>(GetWorld(), MainMenuWidgetClass);
+		MainMenuWidget = CreateWidget<UPrincipalMenuWidget>(GetWorld(), MainMenuWidgetClass);
 		if (MainMenuWidget)
 		{
 			MainMenuWidget->AddToViewport();
@@ -22,7 +22,7 @@ void AGC_PrincipalMenuInterface::BeginPlay()
 	}
 }
 
-void AGC_PrincipalMenuInterface::DrawHUD()
+void APrincipalMenuInterface::DrawHUD()
 {
 	Super::DrawHUD();
 }

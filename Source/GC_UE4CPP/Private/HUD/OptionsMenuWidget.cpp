@@ -1,5 +1,5 @@
 // Import intern class
-#include "HUD/GC_OptionsMenuWidget.h"
+#include "HUD/OptionsMenuWidget.h"
 
 // Import extern class
 #include "GameFramework/InputSettings.h"
@@ -8,17 +8,17 @@
 #include "Components/Button.h"
 
 // Constructor
-void UGC_OptionsMenuWidget::NativeConstruct()
+void UOptionsMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
 	if(UIBack)
 	{
-		UIBack->OnClicked.AddDynamic(this,&UGC_OptionsMenuWidget::Back);
+		UIBack->OnClicked.AddDynamic(this,&UOptionsMenuWidget::Back);
 	}
 	if(UIConfirm)
 	{
-		UIConfirm->OnClicked.AddDynamic(this,&UGC_OptionsMenuWidget::Confirm);
+		UIConfirm->OnClicked.AddDynamic(this,&UOptionsMenuWidget::Confirm);
 	}
 
 	// Acquisition input settings
@@ -54,37 +54,37 @@ void UGC_OptionsMenuWidget::NativeConstruct()
 	if(UIActionInteract)
 	{
 		UIActionInteract->SetSelectedKey(ActionArrayKeys[0].Key);
-		UIActionInteract->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyInteract);
+		UIActionInteract->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInteract);
 	}
 	if(UIActionInvokeMenu)
 	{
 		UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
-		UIActionInvokeMenu->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyInvokeMenu);
+		UIActionInvokeMenu->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInvokeMenu);
 	}
 	if(UIAxisMoveForward)
 	{
 		UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
-		UIAxisMoveForward->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveForward);
+		UIAxisMoveForward->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveForward);
 	}
 	if(UIAxisMoveBack)
 	{
 		UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
-		UIAxisMoveBack->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveBack);
+		UIAxisMoveBack->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveBack);
 	}
 	if(UIAxisMoveLeft)
 	{
 		UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
-		UIAxisMoveLeft->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveLeft);
+		UIAxisMoveLeft->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveLeft);
 	}
 	if(UIAxisMoveRight)
 	{
 		UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
-		UIAxisMoveRight->OnKeySelected.AddDynamic(this, &UGC_OptionsMenuWidget::ChangeKeyMoveRight);
+		UIAxisMoveRight->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveRight);
 	}
 }
 
 // Event OnKeySelected in UIActionInteract
-void UGC_OptionsMenuWidget::ChangeKeyInteract(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyInteract(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	ActionArrayKeysNext[0] = FInputActionKeyMapping("Interact",InputChord.Key);
@@ -92,7 +92,7 @@ void UGC_OptionsMenuWidget::ChangeKeyInteract(FInputChord InputChord)
 }
 
 // Event OnKeySelected in UIActionInvokeMenu
-void UGC_OptionsMenuWidget::ChangeKeyInvokeMenu(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyInvokeMenu(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	ActionArrayKeysNext[1] = FInputActionKeyMapping("InvokeMenu",InputChord.Key);
@@ -100,7 +100,7 @@ void UGC_OptionsMenuWidget::ChangeKeyInvokeMenu(FInputChord InputChord)
 }
 
 // Event OnKeySelected in UIAxisMoveForward
-void UGC_OptionsMenuWidget::ChangeKeyMoveForward(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyMoveForward(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	AxisArrayKeysNext[0] = FInputAxisKeyMapping("MoveForward",InputChord.Key, 1.0f);
@@ -108,7 +108,7 @@ void UGC_OptionsMenuWidget::ChangeKeyMoveForward(FInputChord InputChord)
 }
 
 // Event OnKeySelected in UIAxisMoveBack
-void UGC_OptionsMenuWidget::ChangeKeyMoveBack(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyMoveBack(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	AxisArrayKeysNext[1] = FInputAxisKeyMapping("MoveForward",InputChord.Key, -1.0f);
@@ -116,7 +116,7 @@ void UGC_OptionsMenuWidget::ChangeKeyMoveBack(FInputChord InputChord)
 }
 
 // Event OnKeySelected in UIAxisMoveLeft
-void UGC_OptionsMenuWidget::ChangeKeyMoveLeft(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyMoveLeft(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	AxisArrayKeysNext[2] = FInputAxisKeyMapping("MoveRight",InputChord.Key, 1.0f);
@@ -124,7 +124,7 @@ void UGC_OptionsMenuWidget::ChangeKeyMoveLeft(FInputChord InputChord)
 }
 
 // Event OnKeySelected in UIAxisMoveRight
-void UGC_OptionsMenuWidget::ChangeKeyMoveRight(FInputChord InputChord)
+void UOptionsMenuWidget::ChangeKeyMoveRight(FInputChord InputChord)
 {
 	// Save value who is need change, in apporiate array, and declare a changement
 	AxisArrayKeysNext[3] = FInputAxisKeyMapping("MoveRight",InputChord.Key, -1.0f);
@@ -132,13 +132,13 @@ void UGC_OptionsMenuWidget::ChangeKeyMoveRight(FInputChord InputChord)
 }
 
 // Acquisition pause widget
-void UGC_OptionsMenuWidget::InitializePauseWidget(UWidget* pauseWidget)
+void UOptionsMenuWidget::InitializePauseWidget(UWidget* pauseWidget)
 {
 	PauseWidget = pauseWidget;
 }
 
 // Event OnCliked in UIBack
-void UGC_OptionsMenuWidget::Back()
+void UOptionsMenuWidget::Back()
 {
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);
@@ -158,7 +158,7 @@ void UGC_OptionsMenuWidget::Back()
 }
 
 // Event OnCliked in UIConfirm
-void UGC_OptionsMenuWidget::Confirm()
+void UOptionsMenuWidget::Confirm()
 {
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);

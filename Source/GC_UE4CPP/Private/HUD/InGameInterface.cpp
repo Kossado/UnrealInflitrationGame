@@ -1,34 +1,38 @@
-// import class intern
-#include "HUD/GC_InGameInterface.h"
+// Import intern class
+#include "HUD/InGameInterface.h"
+
+// Import extern class
+#include "Kismet/GameplayStatics.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 // Event begin play
-void AGC_InGameInterface::BeginPlay()
+void AInGameInterface::BeginPlay()
 {
 	Super::BeginPlay();
 	// Create score menu widget 
 	if (ScoreWidgetClass)
 	{
-		ScoreWidget = CreateWidget<UGC_ScoreMenuWidget>(GetWorld(), ScoreWidgetClass);
+		ScoreWidget = CreateWidget<UScoreMenuWidget>(GetWorld(), ScoreWidgetClass);
 		if (ScoreWidget)
 		{
 			ScoreWidget->AddToViewport();
 		}
 	}
 	// Create pause menu widget 
-	if (MenuWidgetClass)
+	if (PauseWidgetClass)
 	{
-		MenuWidget = CreateWidget<UGC_PauseMenuWidget>(GetWorld(), MenuWidgetClass);
-		if (MenuWidget)
+		PauseWidget = CreateWidget<UPauseMenuWidget>(GetWorld(), PauseWidgetClass);
+		if (PauseWidget)
 		{
-			MenuWidget->AddToViewport();
+			PauseWidget->AddToViewport();
 			// Not visible to default
-			MenuWidget->SetVisibility(ESlateVisibility::Hidden);
+			PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	// Create options menu widget 
 	if (OptionsWidgetClass)
 	{
-		OptionsWidget = CreateWidget<UGC_OptionsMenuWidget>(GetWorld(), OptionsWidgetClass);
+		OptionsWidget = CreateWidget<UOptionsMenuWidget>(GetWorld(), OptionsWidgetClass);
 		if (OptionsWidget)
 		{
 			OptionsWidget->AddToViewport();
@@ -39,8 +43,8 @@ void AGC_InGameInterface::BeginPlay()
 	// Initialize to options menu and pause menu
 	if (OptionsWidget && OptionsWidget)
 	{
-		MenuWidget->InitializeOptionsWidget(OptionsWidget);
-		OptionsWidget->InitializePauseWidget(MenuWidget);
+		PauseWidget->InitializeOptionsWidget(OptionsWidget);
+		OptionsWidget->InitializePauseWidget(PauseWidget);
 	}
 	// Create game status menu widget 
 	if (GameStatusWidgetClass)
@@ -55,18 +59,18 @@ void AGC_InGameInterface::BeginPlay()
 	}
 }
 
-void AGC_InGameInterface::DrawHUD()
+void AInGameInterface::DrawHUD()
 {
 	Super::DrawHUD();
 }
 
 // Function to launch pause menu
-void AGC_InGameInterface::Pause()
+void AInGameInterface::Pause()
 {
-	if (MenuWidgetClass)
+	if (PauseWidgetClass)
 	{
 		// Update widget visibility 
-		MenuWidget->SetVisibility(ESlateVisibility::Visible);
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
 
 		// Pause play
 		UGameplayStatics::SetGamePaused(GetWorld(),true);
@@ -81,7 +85,7 @@ void AGC_InGameInterface::Pause()
 }
 
 // Function to launch game status menu
-void AGC_InGameInterface::EndGame(bool GameStatus)
+void AInGameInterface::EndGame(bool GameStatus)
 {
 	if (GameStatusWidgetClass)
 	{
@@ -107,7 +111,7 @@ void AGC_InGameInterface::EndGame(bool GameStatus)
 }
 
 // Function to update current food
-void AGC_InGameInterface::UpdateCurrentFood(int32 value)
+void AInGameInterface::UpdateCurrentFood(int32 value)
 {
 	if(ScoreWidget)
 	{

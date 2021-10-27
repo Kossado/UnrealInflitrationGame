@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "HUD/GC_PrincipalMenuInterface.h"
+#include "HUD/PrincipalMenuInterface.h"
 #include "MenuPrincipalGameMode.generated.h"
 
 /**
@@ -18,5 +18,5 @@ public:
 	
 	virtual void StartPlay() override;
 
-	AGC_PrincipalMenuInterface* MenuPrincipalInterface;
+	APrincipalMenuInterface* MenuPrincipalInterface;
 };

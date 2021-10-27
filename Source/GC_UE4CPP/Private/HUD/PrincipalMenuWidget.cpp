@@ -1,28 +1,28 @@
 // Import intern class
-#include "HUD/GC_MainMenuWidget.h"
-#include "GCGameMode.h"
+#include "HUD/PrincipalMenuWidget.h"
 
 // Import extern class
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 // Constructor
-void UGC_MainMenuWidget::NativeConstruct()
+void UPrincipalMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
 	if(UIPlay)
 	{
-		UIPlay->OnClicked.AddDynamic(this,&UGC_MainMenuWidget::Play);
+		UIPlay->OnClicked.AddDynamic(this,&UPrincipalMenuWidget::Play);
 	}
 	if(UIQuit)
 	{
-		UIQuit->OnClicked.AddDynamic(this,&UGC_MainMenuWidget::Quit);
+		UIQuit->OnClicked.AddDynamic(this,&UPrincipalMenuWidget::Quit);
 	}
 }
 
 // Event OnCliked in UIPlay
-void UGC_MainMenuWidget::Play()
+void UPrincipalMenuWidget::Play()
 {
 	if(UIPlay)
 	{
@@ -38,7 +38,7 @@ void UGC_MainMenuWidget::Play()
 }
 
 // Event OnCliked in UIQuit
-void UGC_MainMenuWidget::Quit()
+void UPrincipalMenuWidget::Quit()
 {
 	if(UIQuit)
 	{

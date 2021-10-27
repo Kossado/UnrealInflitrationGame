@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GC_PauseMenuWidget.generated.h"
+#include "PauseMenuWidget.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API UGC_PauseMenuWidget : public UUserWidget
+class GC_UE4CPP_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

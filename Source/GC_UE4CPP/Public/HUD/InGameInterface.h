@@ -2,15 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameStatusWidget.h"
-#include "GC_OptionsMenuWidget.h"
-#include "GC_PauseMenuWidget.h"
-#include "GC_ScoreMenuWidget.h"
+#include "OptionsMenuWidget.h"
+#include "PauseMenuWidget.h"
+#include "ScoreMenuWidget.h"
 #include "GameFramework/HUD.h"
-#include "Components/WidgetComponent.h"
-#include "GC_InGameInterface.generated.h"
+#include "InGameInterface.generated.h"
 
 UCLASS()
-class GC_UE4CPP_API AGC_InGameInterface : public AHUD
+class GC_UE4CPP_API AInGameInterface : public AHUD
 {
 	GENERATED_BODY()
 
@@ -32,7 +31,7 @@ public:
 	TSubclassOf<UUserWidget> ScoreWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
-	TSubclassOf<UUserWidget> MenuWidgetClass;
+	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> OptionsWidgetClass;
@@ -41,8 +40,8 @@ public:
 	TSubclassOf<UUserWidget> GameStatusWidgetClass;
 	
 private:
-	UGC_ScoreMenuWidget* ScoreWidget;
-	UGC_PauseMenuWidget* MenuWidget;
-	UGC_OptionsMenuWidget* OptionsWidget;
+	UScoreMenuWidget* ScoreWidget;
+	UPauseMenuWidget* PauseWidget;
+	UOptionsMenuWidget* OptionsWidget;
 	UGameStatusWidget* GameStatusWidget;
 };

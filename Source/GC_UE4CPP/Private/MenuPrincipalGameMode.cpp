@@ -8,6 +8,6 @@ AMenuPrincipalGameMode::AMenuPrincipalGameMode()
 void AMenuPrincipalGameMode::StartPlay()
 {
 	Super::StartPlay();
-	MenuPrincipalInterface = Cast<AGC_PrincipalMenuInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	MenuPrincipalInterface = Cast<APrincipalMenuInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
