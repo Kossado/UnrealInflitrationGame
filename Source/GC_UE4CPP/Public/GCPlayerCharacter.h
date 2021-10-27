@@ -34,7 +34,7 @@ protected:
 	virtual void SitDown(AChair* Chair) override;
 	// Called when the player try to stand up
 	virtual void StandUp() override;
-	void StoreItem(AChest* Chest);
+	void StoreItem(AInteractiveItem* InteractiveChest);
 
 private:
 	// Camera stick positioning the camera behind the character

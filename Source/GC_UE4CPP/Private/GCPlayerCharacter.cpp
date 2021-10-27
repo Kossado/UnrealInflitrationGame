@@ -157,53 +157,55 @@ void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 
 void AGCPlayerCharacter::Interact()
 {
-	if(InteractiveItems.Num() > 0)
-	{
-		AInteractiveItem* ItemToInteractWith = InteractiveItems[0];
-		// Select the item to interact with based on the distance with the character
-		for(AInteractiveItem* Item:InteractiveItems)
-		{
-			if(GetDistanceTo(ItemToInteractWith) > GetDistanceTo(Item))
-			{
-				ItemToInteractWith = Item;
-			}
-		}
-	}
-	
-	if(HasItem())
-	{
-		AChest* FoundChest;
-		int ChestIndex;
-		if(InteractiveItems.FindItemByClass<AChest>(&FoundChest, &ChestIndex))
-		{
-			StoreItem(FoundChest);
-		}
-		else
-		{
-			DropItem();
-		}
-	}
-	else if(bSit)
+	if(bSit)
 	{
 		StandUp();
+		return;
 	}
-	else if(InteractiveItems.Num() > 0)
+	// If There is items to interact with
+	if(InteractiveItems.Num() > 0)
 	{
-		AInteractiveItem* SelectedItem = InteractiveItems[0];
-		if(SelectedItem == nullptr)
+		// Select the item to interact with based on the distance with the character
+		AInteractiveItem* ItemToInteractWith = InteractiveItems[0];
+		if(ItemToInteractWith == nullptr)
 		{
 			return;
 		}
-		if(SelectedItem->IsA(AChair::StaticClass()))
+		for(AInteractiveItem* Item:InteractiveItems)
 		{
-			AChair* Chair = Cast<AChair>(SelectedItem);
-			SitDown(Chair);
+			if(Item != ItemInHand)
+			{
+				if(GetDistanceTo(ItemToInteractWith) > GetDistanceTo(Item) || ItemToInteractWith == ItemInHand)
+				{
+					ItemToInteractWith = Item;
+				}
+			}
 		}
-		else if(SelectedItem->IsA(APickableItem::StaticClass()))
+		// If the character has an item, Try to store it in a chest
+		if(HasItem())
 		{
-			APickableItem* PickableItem = Cast<APickableItem>(SelectedItem);
-			GrabItem(PickableItem);
+			if(ItemToInteractWith->IsA(AChest::StaticClass()))
+			{
+				StoreItem(ItemToInteractWith);
+			}
+			else
+			{
+				DropItem();
+			}
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Interact with Last Actor");
+		// If the character doesn't have an item, try to do the other interactions
+		else
+		{
+			if(ItemToInteractWith->IsA(AChair::StaticClass()))
+			{
+				AChair* Chair = Cast<AChair>(ItemToInteractWith);
+				SitDown(Chair);
+			}
+			else if(ItemToInteractWith->IsA(APickableItem::StaticClass()))
+			{
+				APickableItem* PickableItem = Cast<APickableItem>(ItemToInteractWith);
+				GrabItem(PickableItem);
+			}
+		}
 	}
 }
