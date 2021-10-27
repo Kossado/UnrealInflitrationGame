@@ -14,12 +14,10 @@ void AGC_PrincipalMenuInterface::BeginPlay()
 			MainMenuWidget->AddToViewport();
 
 			// Change input mode to UI only
-			APlayerController* Player = GetWorld()->GetFirstPlayerController();
-			FInputModeUIOnly InputMode;
-			Player->SetInputMode(InputMode);
+			GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
 
 			// Activate mouse
-			Player->bShowMouseCursor = true;
+			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 		}
 	}
 }

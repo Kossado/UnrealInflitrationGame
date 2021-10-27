@@ -73,8 +73,7 @@ void AGC_InGameInterface::Pause()
 
 		// Change input mode to UI only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeUIOnly InputMode;
-		Player->SetInputMode(InputMode);
+		Player->SetInputMode(FInputModeUIOnly());
 
 		// Activate mouse
 		Player->bShowMouseCursor = true;
@@ -100,8 +99,7 @@ void AGC_InGameInterface::EndGame(bool GameStatus)
 
 		// Change input mode to UI only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeUIOnly InputMode;
-		Player->SetInputMode(InputMode);
+		Player->SetInputMode(FInputModeUIOnly());
 
 		// Activate mouse
 		Player->bShowMouseCursor = true;

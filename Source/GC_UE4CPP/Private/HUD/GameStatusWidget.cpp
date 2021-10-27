@@ -35,9 +35,7 @@ void UGameStatusWidget::PlayAgain()
 	if(UIPlayAgain)
 	{
 		// Change input mode to game only
-		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeGameOnly InputMode;
-		Player->SetInputMode(InputMode);
+		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
 
 		// Restart game
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));

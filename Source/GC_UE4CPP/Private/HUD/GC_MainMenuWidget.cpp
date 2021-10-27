@@ -27,12 +27,10 @@ void UGC_MainMenuWidget::Play()
 	if(UIPlay)
 	{
 		// Change input mode to game only
-		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeGameOnly InputMode;
-		Player->SetInputMode(InputMode);
+		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
 		
 		// Disable mouse
-		Player->bShowMouseCursor = false;
+		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
 
 		// Open level map
 		UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
