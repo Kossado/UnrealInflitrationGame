@@ -4,10 +4,9 @@
 #include "Chair.h"
 #include "GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
-#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "HUD/InGameInterface.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "HUD/InGameInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneCaptureComponent2D.h"
 

@@ -96,8 +96,4 @@ protected:
 	void SmoothZoom(float DeltaTime);
 	// Launch menu Pause
 	void InvokeMenu();
-
-	virtual void SitDown() override;
-
-	virtual void StandUp() override;
 };
