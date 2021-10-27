@@ -10,8 +10,6 @@ class GC_UE4CPP_API UGameStatusWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UGameStatusWidget(const FObjectInitializer& ObjectInitializer);
-
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()

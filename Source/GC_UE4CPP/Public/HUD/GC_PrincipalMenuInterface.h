@@ -11,13 +11,9 @@ class GC_UE4CPP_API AGC_PrincipalMenuInterface : public AHUD
 	GENERATED_BODY()
 
 public:
-	AGC_PrincipalMenuInterface();
-
 	virtual void DrawHUD() override;
 
 	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;

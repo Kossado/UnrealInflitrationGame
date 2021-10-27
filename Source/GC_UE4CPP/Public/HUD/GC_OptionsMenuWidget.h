@@ -15,8 +15,6 @@ class GC_UE4CPP_API UGC_OptionsMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UGC_OptionsMenuWidget(const FObjectInitializer& ObjectInitializer);
-
 	virtual void NativeConstruct() override;
 
 	void InitializePauseWidget(UWidget*);

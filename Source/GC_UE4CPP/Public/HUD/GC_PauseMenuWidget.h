@@ -4,17 +4,12 @@
 #include "Blueprint/UserWidget.h"
 #include "GC_PauseMenuWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class GC_UE4CPP_API UGC_PauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
-	UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer);
-
 	virtual void NativeConstruct() override;
 
 	void InitializeOptionsWidget(UWidget*);

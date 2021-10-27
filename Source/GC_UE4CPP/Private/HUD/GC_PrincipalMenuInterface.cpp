@@ -1,13 +1,11 @@
+// Import intern class
 #include "HUD/GC_PrincipalMenuInterface.h"
 
-AGC_PrincipalMenuInterface::AGC_PrincipalMenuInterface()
-{
-	
-}
-
+// Event begin play
 void AGC_PrincipalMenuInterface::BeginPlay()
 {
 	Super::BeginPlay();
+	// Create principal menu widget 
 	if (MainMenuWidgetClass)
 	{
 		MainMenuWidget = CreateWidget<UGC_MainMenuWidget>(GetWorld(), MainMenuWidgetClass);
@@ -15,17 +13,15 @@ void AGC_PrincipalMenuInterface::BeginPlay()
 		{
 			MainMenuWidget->AddToViewport();
 
+			// Change input mode to UI only
 			APlayerController* Player = GetWorld()->GetFirstPlayerController();
 			FInputModeUIOnly InputMode;
 			Player->SetInputMode(InputMode);
+
+			// Activate mouse
 			Player->bShowMouseCursor = true;
 		}
 	}
-}
-
-void AGC_PrincipalMenuInterface::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AGC_PrincipalMenuInterface::DrawHUD()

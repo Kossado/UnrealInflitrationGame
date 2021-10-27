@@ -1,15 +1,13 @@
+// import class intern
 #include "HUD/GC_ScoreMenuWidget.h"
 
-UGC_ScoreMenuWidget::UGC_ScoreMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	
-}
-
+// Constructor
 void UGC_ScoreMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
+// Function to update current food in progress bar in score menu widget
 void UGC_ScoreMenuWidget::UpdateCurrentFood(int32 value)
 {
 	if(UIProgression)

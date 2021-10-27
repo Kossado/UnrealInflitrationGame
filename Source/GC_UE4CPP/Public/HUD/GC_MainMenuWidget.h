@@ -11,8 +11,6 @@ class GC_UE4CPP_API UGC_MainMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UGC_MainMenuWidget(const FObjectInitializer& ObjectInitializer);
-
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()

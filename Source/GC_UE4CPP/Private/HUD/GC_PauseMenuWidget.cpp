@@ -1,16 +1,16 @@
+// Import intern class
 #include "HUD/GC_PauseMenuWidget.h"
 #include "GCGameMode.h"
+
+// Import extern class
 #include "Components/Button.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
-UGC_PauseMenuWidget::UGC_PauseMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	
-}
-
+// Constructor
 void UGC_PauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	// Initialisation event OnClicked
 	if(UIResume)
 	{
 		UIResume->OnClicked.AddDynamic(this,&UGC_PauseMenuWidget::Resume);
@@ -37,23 +37,32 @@ void UGC_PauseMenuWidget::NativeConstruct()
 	}
 }
 
+// Acquisition options widget
 void UGC_PauseMenuWidget::InitializeOptionsWidget(UWidget* optionsWidget)
 {
 	OptionsWidget = optionsWidget;
 }
 
+// Event OnCliked in UIResume
 void UGC_PauseMenuWidget::Resume()
 {
 	if(UIResume)
 	{
+		// Update widget visibility 
 		this->SetVisibility(ESlateVisibility::Hidden);
+
+		// Resume play
 		UGameplayStatics::SetGamePaused(GetWorld(),false);
-		
+
+		// Change input mode to game only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
 		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
+
+		// Disable mouse
 		Player->bShowMouseCursor = false;
 
+		// Update button visibility
 		if (this->UIQuitDesktop->IsVisible())
 		{
 			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Hidden);
@@ -62,32 +71,39 @@ void UGC_PauseMenuWidget::Resume()
 	}
 }
 
+// Event OnCliked in UIRestart
 void UGC_PauseMenuWidget::Restart()
 {
 	if(UIRestart)
 	{
+		// Change input mode to game only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
 		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
-		
+
+		// Restart game
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->RestartGame();
 	}
 }
 
+// Event OnCliked in UIOptions
 void UGC_PauseMenuWidget::Options()
 {
 	if(UIOptions)
 	{
+		// Update widget visibility 
 		this->SetVisibility(ESlateVisibility::Hidden);
 		OptionsWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
+// Event OnCliked in UIQuit
 void UGC_PauseMenuWidget::Quit()
 {
 	if(UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
+		// Activation or desactivation visibilty for UIQuitDesktop and UIQuitMainMenu button
 		if (this->UIQuitDesktop->IsVisible())
 		{
 			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Hidden);
@@ -99,20 +115,26 @@ void UGC_PauseMenuWidget::Quit()
 	}
 }
 
+// Event OnCliked in UIQuitDesktop
 void UGC_PauseMenuWidget::QuitDesktop()
 {
 	if(UIQuitDesktop)
 	{
+		// Quit game
 		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
 	}
 }
 
+// Event OnCliked in UIQuitMainMenu
 void UGC_PauseMenuWidget::QuitMainMenu()
 {
 	if(UIQuitMainMenu)
 	{
+		// Update game state 
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->SetCurrentGameState(EGS_PLAYING);
+
+		// Open level principal menu
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
 	}
 }

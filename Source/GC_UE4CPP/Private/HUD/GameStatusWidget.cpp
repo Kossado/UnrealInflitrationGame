@@ -1,18 +1,16 @@
+// Import intern class
 #include "HUD/GameStatusWidget.h"
-
 #include "GCGameMode.h"
+
+// Import extern class
 #include "Components/Button.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-UGameStatusWidget::UGameStatusWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	
-}
-
+// Constructor
 void UGameStatusWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	// Initialisation event OnClicked
 	if(UIPlayAgain)
 	{
 		UIPlayAgain->OnClicked.AddDynamic(this,&UGameStatusWidget::PlayAgain);
@@ -31,23 +29,28 @@ void UGameStatusWidget::NativeConstruct()
 	}
 }
 
+// Event OnCliked in UIPlayAgain
 void UGameStatusWidget::PlayAgain()
 {
 	if(UIPlayAgain)
 	{
+		// Change input mode to game only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
 		FInputModeGameOnly InputMode;
 		Player->SetInputMode(InputMode);
-		
+
+		// Restart game
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->RestartGame();
 	}
 }
 
+// Event OnCliked in UIQuit
 void UGameStatusWidget::Quit()
 {
 	if(UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
+		// Activation or desactivation visibilty for UIQuitDesktop and UIQuitMainMenu button
 		if (this->UIQuitDesktop->IsVisible())
 		{
 			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Hidden);
@@ -59,18 +62,22 @@ void UGameStatusWidget::Quit()
 	}
 }
 
+// Event OnCliked in UIQuitDesktop
 void UGameStatusWidget::QuitDesktop()
 {
 	if(UIQuitDesktop)
 	{
+		// Quit game
 		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
 	}
 }
 
+// Event OnCliked in UIQuitMainMenu
 void UGameStatusWidget::QuitMainMenu()
 {
 	if(UIQuitMainMenu)
 	{
+		// Open level principal menu
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
 	}
 }

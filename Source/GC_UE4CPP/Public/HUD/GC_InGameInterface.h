@@ -15,13 +15,9 @@ class GC_UE4CPP_API AGC_InGameInterface : public AHUD
 	GENERATED_BODY()
 
 public:
-	AGC_InGameInterface();
-
 	virtual void DrawHUD() override;
 
 	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
 		void Pause();
