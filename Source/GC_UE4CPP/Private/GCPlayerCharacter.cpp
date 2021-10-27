@@ -5,6 +5,8 @@
 #include "GenericTeamAgentInterface.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
+
+
 // Sets default values
 AGCPlayerCharacter::AGCPlayerCharacter()
 {
@@ -39,6 +41,7 @@ AGCPlayerCharacter::AGCPlayerCharacter()
 void AGCPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	//MapActionInteractiveItem.Add(AChest::StaticClass(), {1, StoreItem});
 }
 
 // Called every frame
@@ -123,9 +126,55 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
+<<<<<<< Updated upstream
 void AGCPlayerCharacter::Interact()
 {
 	if(CurrentInteractive != nullptr)
+=======
+void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
+{
+	if(!ItemInHand->IsA(AFood::StaticClass()) || InteractiveChest == nullptr)
+	{
+		return;
+	}
+	AChest* Chest = Cast<AChest>(InteractiveChest);
+	if(Chest == nullptr)
+	{
+		return;
+	}
+	// Detach item from the hand socket
+	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+	ItemInHand->DisableItem();
+	ItemInHand->SetActorLocation(Chest->GetValidStoredPosition());
+	ItemInHand->SetActorRotation(Chest->GetValidStoredRotation());
+	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(LevelGameMode)
+		LevelGameMode->IncrementStoredFood();
+	ItemInHand = nullptr;
+	bHasItem = false;
+	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+}
+
+void AGCPlayerCharacter::Interact()
+{
+	if(InteractiveItems.Num() > 0)
+	{
+		AInteractiveItem* ItemToInteractWith = InteractiveItems[0];
+		// Select the item to interact with based on the distance with the character
+		for(AInteractiveItem* Item:InteractiveItems)
+		{
+			if(GetDistanceTo(ItemToInteractWith) > GetDistanceTo(Item))
+			{
+				ItemToInteractWith = Item;
+			}
+		}
+		//
+	}
+	
+	
+	if(HasItem())
+>>>>>>> Stashed changes
 	{
 		CurrentInteractive->OnInteract();
 	}
