@@ -2,13 +2,16 @@
 
 
 #include "GCPlayerCharacter.h"
+#include "Food/Food.h"
+#include "Chair.h"
+#include "GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
 
 
 
 // Sets default values
-AGCPlayerCharacter::AGCPlayerCharacter()
+AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -63,7 +66,7 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 
 	FHitResult HitResult;
 
-	auto sockets = NameSocketDetectionByIA;
+	auto sockets = NameSocketDetectionByAI;
 	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor);
 	CollisionQueryParams.AddIgnoredActor(this);
 	
@@ -105,9 +108,9 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
-void AGCPlayerCharacter::SitDown()
+void AGCPlayerCharacter::SitDown(AChair* Chair)
 {
-	Super::SitDown();
+	Super::SitDown(Chair);
 	// Disable Mouse and Keyboard inputs
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
@@ -126,11 +129,6 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
-<<<<<<< Updated upstream
-void AGCPlayerCharacter::Interact()
-{
-	if(CurrentInteractive != nullptr)
-=======
 void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 {
 	if(!ItemInHand->IsA(AFood::StaticClass()) || InteractiveChest == nullptr)
@@ -155,6 +153,7 @@ void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 	bHasItem = false;
 	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 }
+	
 
 void AGCPlayerCharacter::Interact()
 {
@@ -169,17 +168,42 @@ void AGCPlayerCharacter::Interact()
 				ItemToInteractWith = Item;
 			}
 		}
-		//
 	}
-	
 	
 	if(HasItem())
->>>>>>> Stashed changes
 	{
-		CurrentInteractive->OnInteract();
+		AChest* FoundChest;
+		int ChestIndex;
+		if(InteractiveItems.FindItemByClass<AChest>(&FoundChest, &ChestIndex))
+		{
+			StoreItem(FoundChest);
+		}
+		else
+		{
+			DropItem();
+		}
 	}
-	/*else if(HasItem())
+	else if(bSit)
 	{
-		DropItem();
-	}*/
+		StandUp();
+	}
+	else if(InteractiveItems.Num() > 0)
+	{
+		AInteractiveItem* SelectedItem = InteractiveItems[0];
+		if(SelectedItem == nullptr)
+		{
+			return;
+		}
+		if(SelectedItem->IsA(AChair::StaticClass()))
+		{
+			AChair* Chair = Cast<AChair>(SelectedItem);
+			SitDown(Chair);
+		}
+		else if(SelectedItem->IsA(APickableItem::StaticClass()))
+		{
+			APickableItem* PickableItem = Cast<APickableItem>(SelectedItem);
+			GrabItem(PickableItem);
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Interact with Last Actor");
+	}
 }

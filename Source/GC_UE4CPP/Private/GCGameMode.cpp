@@ -6,7 +6,7 @@
 #include "PlayerControllerTeam.h"
 #include "Kismet/GameplayStatics.h"
 
-AGCGameMode::AGCGameMode()
+AGCGameMode::AGCGameMode() : Super()
 {
 	// Define default classes
 	GameStateClass = AGCGameState::StaticClass();
@@ -100,10 +100,4 @@ void AGCGameMode::DisableCharacterInput()
 {
 	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-
-	// method to pause the game -> Will be useful for the menu, TO DELETE HERE
-	//UGameplayStatics::SetGamePaused(GetWorld(),true);
-	
-	// Method to restart the game Useful later // TO DELETE
-	//RestartGame();
 }

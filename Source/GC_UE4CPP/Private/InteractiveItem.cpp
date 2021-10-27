@@ -3,6 +3,7 @@
 
 #include "InteractiveItem.h"
 
+#include "GCCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -15,36 +16,6 @@ AInteractiveItem::AInteractiveItem():Super()
 	Trigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Trigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-}
-
-void AInteractiveItem::SetItemProperties(EItemState State) const
-{
-
-	switch (State)
-	{
-	case EIS_Interacting:
-		StaticMesh->SetSimulatePhysics(false);
-		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		break;
-	case EIS_Movable:
-		StaticMesh->SetSimulatePhysics(true);
-		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		break;
-	case EIS_Immovable:
-		StaticMesh->SetSimulatePhysics(false);
-		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-		break;
-	default:
-		StaticMesh->SetSimulatePhysics(false);
-		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-		break;
-	}
 }
 
 void AInteractiveItem::DisableTrigger()
@@ -61,40 +32,39 @@ void AInteractiveItem::BeginPlay()
 	
 }
 
+void AInteractiveItem::SetItemProperties(EItemState State)
+{
+	Super::SetItemProperties(State);
+
+	switch(State)
+	{
+		case EItemState::EIS_Disabled:
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Disable " + GetName());
+			DisableTrigger();
+			break;
+
+		default:
+			break;
+	}
+}
+
+
 void AInteractiveItem::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->IsA(AGCCharacter::StaticClass()))
+	AGCCharacter* Character = Cast<AGCCharacter>(OtherActor);
+	if(Character != nullptr)
 	{
-		Character = Cast<AGCCharacter>(OtherActor);
-		if(Character != nullptr)
-		{
-			Character->OnEnterActor(this);
-		}
+		Character->OnEnterActor(this);
 	}
 }
 
 void AInteractiveItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	AGCCharacter* Character = Cast<AGCCharacter>(OtherActor);
 	if(Character != nullptr)
 	{
 		Character->OnLeaveActor(this);
 	}
 }
-
-FName AInteractiveItem::GetName()
-{
-	return ItemName;
-}
-
-void AInteractiveItem::OnInteract()
-{
-	if(Character != nullptr)
-	{
-		// Rotate the character to face the object it is interacting with
-		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), GetActorLocation());
-		Character->SetActorRotation(FRotator(0.f,LookRotation.Yaw, 0.f));
-	}
-}
-

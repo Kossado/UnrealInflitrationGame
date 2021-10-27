@@ -3,7 +3,7 @@
 
 #include "GCGameState.h"
 
-AGCGameState::AGCGameState():
+AGCGameState::AGCGameState(): Super(),
 CurrentGameState(EGS_PLAYING),
 StoredFood(0),
 PickableFood(0),

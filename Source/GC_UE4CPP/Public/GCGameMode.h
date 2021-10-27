@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food/FoodManager.h"
 #include "GCGameState.h"
 #include "GameFramework/GameMode.h"
 #include "GC_UE4CPP/HUD/GC_InGameInterface.h"
@@ -40,9 +41,11 @@ public:
 	void LaunchMenuPause();
 	// UI
 	AGC_InGameInterface* InGameInterface;
+
+private:
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY
-// if Hit by IA : GameState = DEFEAT
+// if Hit by AI : GameState = DEFEAT
 // if Menu Open : GameState = PAUSE
 // DEFAULT : GameState = PLAYING 

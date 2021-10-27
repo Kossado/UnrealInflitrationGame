@@ -3,7 +3,7 @@
 
 #include "MenuPrincipalGameMode.h"
 
-AMenuPrincipalGameMode::AMenuPrincipalGameMode()
+AMenuPrincipalGameMode::AMenuPrincipalGameMode() : Super()
 {
 	
 }

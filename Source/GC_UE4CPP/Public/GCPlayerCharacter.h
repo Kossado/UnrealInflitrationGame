@@ -10,14 +10,6 @@
 
 #include "GCPlayerCharacter.generated.h"
 
-class AGCPlayerCharacter;
-
-typedef struct ActionInfo
-{
-	int Priority;
-	void (AGCPlayerCharacter::* Action)(AInteractiveItem* Item);
-} ActionInfo;
-
 UCLASS() 
 class GC_UE4CPP_API AGCPlayerCharacter : public AGCCharacter, public IAISightTargetInterface
 {
@@ -39,15 +31,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Called when the player try to sit down
-	virtual void SitDown() override;
+	virtual void SitDown(AChair* Chair) override;
 	// Called when the player try to stand up
 	virtual void StandUp() override;
-<<<<<<< Updated upstream
-	
-=======
-	void StoreItem(AInteractiveItem* InteractiveChest);
+	void StoreItem(AChest* Chest);
 
->>>>>>> Stashed changes
 private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
@@ -60,9 +48,9 @@ private:
 	UFadeObjectsComponent* FadeObjectsComponent;
 
 	UPROPERTY(EditAnywhere)
-	TArray<FName> NameSocketDetectionByIA;
+	TArray<FName> NameSocketDetectionByAI;
 
-	TMap<UClass*, ActionInfo> MapActionInteractiveItem;
+	
 public:
 	// GETTERS / SETTERS
 	FORCEINLINE USpringArmComponent* GetCameraSpringArm() const {return CameraSpringArm;}

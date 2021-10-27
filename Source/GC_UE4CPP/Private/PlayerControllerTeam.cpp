@@ -3,7 +3,7 @@
 
 #include "PlayerControllerTeam.h"
 
-APlayerControllerTeam::APlayerControllerTeam():
+APlayerControllerTeam::APlayerControllerTeam(): Super(),
 BaseTurnRate(45.f),
 BaseLookUpRate(45.f),
 MinCameraDistance(100.f),
