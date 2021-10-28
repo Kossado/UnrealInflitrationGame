@@ -44,11 +44,6 @@ void AItem::SetItemProperties(EItemState State)
 		StaticMesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);
 		StaticMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);		
 		break;
-	case EIS_Disabled:
-		StaticMesh->SetSimulatePhysics(false);
-		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-		break;
 	default:
 		StaticMesh->SetSimulatePhysics(false);
 		StaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);

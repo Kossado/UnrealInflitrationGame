@@ -6,6 +6,7 @@
 #include "BlueprintEditor.h"
 #include "ChaosInterfaceWrapperCore.h"
 #include "DrawDebugHelpers.h"
+#include "GCGameMode.h"
 #include "Food/SpotFood.h"
 #include "AI/AIEnemyManager.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -152,15 +153,7 @@ AAIEnemyManager* AAIEnemyController::GetAIEnemyManager() const
 	return AIEnemyManager;
 }
 
-///Mise à jour du sens de vue concernant un acteur de la scène
-///On vérifie si il s'agit d'une vue sur un nouveau joueur ou si c'est une perte de vision
-///
-///Si on voit un nouveau joueur, on vérifie qu'on en poursuit pas déjà un
-///Si on en poursuit un, on va sélectionner la cible la plus proche de l'IA et elle va devenir la nouvelle proie
-///Si on a perdu la vision sur l'ancienne cible, alors on switch directement
-///
-///Si c'est une perte de vision sur la cible en cours, alors on va à sa dernière position connue, puis on cours dans la
-///direction qu'avait prise le joueur
+
 void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus)
 {
 	bool HasSensedSomeone = FaiStimulus.WasSuccessfullySensed();
@@ -178,7 +171,7 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 	}
 	
 	if(HasSensedSomeone)
-	{		
+	{
 		//Change current target only if distance with the seen player is less than previous target or if he doesn't see the previous target
 		//If it's the same target, we continue instruction to update positions
 		if(TargetChased != CharacterSeen)
@@ -188,7 +181,7 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 				return;
 			}
 		}
-		
+
 		TargetChased = CharacterSeen;
 		bCurrentlySeeTarget = true;
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Detection of %s"), ToCStr(UpdateActor->GetName())));
@@ -250,6 +243,16 @@ void AAIEnemyController::EndRotation() const
 void AAIEnemyController::Rotate(const FRotator NextRotation) const
 {
 	AICharacter->SetActorRotation(NextRotation);
+}
+
+void AAIEnemyController::HasHitPlayer() const
+{
+	AGCGameMode * GameMode = Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
+
+	if(GameMode != nullptr)
+	{
+		GameMode->Defeat();
+	}
 }
 
 void AAIEnemyController::ForgetTarget()

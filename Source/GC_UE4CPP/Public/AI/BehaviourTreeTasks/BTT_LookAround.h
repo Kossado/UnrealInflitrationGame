@@ -31,18 +31,18 @@ class GC_UE4CPP_API UBTT_LookAround : public UBTTaskNode
 	public:
 
 	UPROPERTY(EditAnywhere)
-	bool LookTwoSidesSeparately;
+	bool LookTwoSidesSeparately = false;
 	
 	UPROPERTY(EditAnywhere, meta=(EditCondition="LookTwoSidesSeparately", ClampMin = "-180.0", ClampMax = "0.0", UIMin = "-180.0", UIMax = "0.0"))
-	float RangeLeft;
+	float RangeLeft = 90.f;
 
 	UPROPERTY(EditAnywhere, meta=(EditCondition="LookTwoSidesSeparately", ClampMin = "0.0", ClampMax = "180.0", UIMin = "0.0", UIMax = "180.0"))
-	float RangeRight;
+	float RangeRight = 90.f;
 
 	UPROPERTY(EditAnywhere, meta=(EditCondition="!LookTwoSidesSeparately", ClampMin = "0.0", ClampMax = "360.0", UIMin = "0.0", UIMax = "360.0"))
-	float Range;
+	float Range = 270.f;
 	
 	UPROPERTY(EditAnywhere)
-	float SpeedRotation;
+	float SpeedRotation =5.f;
 
 };

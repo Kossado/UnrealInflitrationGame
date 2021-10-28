@@ -3,16 +3,18 @@
 
 #include "PlayerControllerTeam.h"
 
+#include "GCGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 APlayerControllerTeam::APlayerControllerTeam(): Super(),
-BaseTurnRate(45.f),
-BaseLookUpRate(45.f),
-MinCameraDistance(100.f),
-MaxCameraDistance(900.f),
-CameraZoomSpeed(10.f),
-CameraZoomSteps(45.f)
+                                                BaseTurnRate(45.f),
+                                                BaseLookUpRate(45.f),
+                                                MinCameraDistance(100.f),
+                                                MaxCameraDistance(900.f),
+                                                CameraZoomSpeed(10.f),
+                                                CameraZoomSteps(45.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
 	
 	TeamId = FGenericTeamId(0);
 }
@@ -20,6 +22,7 @@ CameraZoomSteps(45.f)
 void APlayerControllerTeam::BeginPlay()
 {
 	Super::BeginPlay();
+	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	PlayerCharacter = Cast<AGCPlayerCharacter>(GetPawn());
 	if(PlayerCharacter)
 	{
@@ -59,6 +62,11 @@ void APlayerControllerTeam::SetupInputComponent()
 
 void APlayerControllerTeam::MoveForward(float Value)
 {
+	if(MainGameMode->GetCurrentGameState() != EGS_PLAYING)
+	{
+		return;
+	}
+	
 	if(PlayerCharacter && Value != 0.0f)
 	{
 		// Find out which way is forward
@@ -71,6 +79,11 @@ void APlayerControllerTeam::MoveForward(float Value)
 
 void APlayerControllerTeam::MoveRight(float Value)
 {
+	if(MainGameMode->GetCurrentGameState() != EGS_PLAYING)
+	{
+		return;
+	}
+	
 	if(PlayerCharacter && Value != 0.0f)
 	{
 		// Find out which way is right
@@ -83,16 +96,31 @@ void APlayerControllerTeam::MoveRight(float Value)
 
 void APlayerControllerTeam::ZoomIn()
 {
+	if(MainGameMode->GetCurrentGameState() != EGS_PLAYING)
+	{
+		return;
+	}
+	
 	CamZoomDestination = FMath::Clamp(PlayerCharacter->GetCameraSpringArm()->TargetArmLength - CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
 }
 
 void APlayerControllerTeam::ZoomOut()
 {
+	if(MainGameMode->GetCurrentGameState() != EGS_PLAYING)
+	{
+		return;
+	}
+	
 	CamZoomDestination = FMath::Clamp(PlayerCharacter->GetCameraSpringArm()->TargetArmLength + CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
 }
 
 void APlayerControllerTeam::SmoothZoom(float DeltaTime) const
 {
+	if(MainGameMode->GetCurrentGameState() != EGS_PLAYING)
+	{
+		return;
+	}
+	
 	if(!FMath::IsNearlyEqual(PlayerCharacter->GetCameraSpringArm()->TargetArmLength, CamZoomDestination, 0.5f))
 	{
 		// Smooth zoom over time

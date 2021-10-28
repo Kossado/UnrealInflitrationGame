@@ -20,18 +20,19 @@ public:
 	UBehaviorTree* BehaviourTree;
 
 	void StoreFood(ASpotFood * SpotFood);
+	void Defeat();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()    
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 private:
 	UCharacterMovementComponent * CharacterMovement;
 	
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

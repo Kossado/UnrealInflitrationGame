@@ -76,7 +76,6 @@ private:
 	// Characters Speed when carrying food
 	// Grabbed item
 
-	bool bHasItem = false;
 	UPROPERTY(EditAnywhere)
 	float CarryWalkSpeedMultiplicator=0.5f;
 

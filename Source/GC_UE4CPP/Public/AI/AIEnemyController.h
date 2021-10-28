@@ -47,6 +47,8 @@ public:
 	void BeginRotation() const;
 	void Rotate(FRotator NextRotation) const;
 	void EndRotation() const;
+
+	void HasHitPlayer() const;
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);

@@ -16,15 +16,7 @@ EBTNodeResult::Type UBTT_TakeFood::ExecuteTask(UBehaviorTreeComponent & OwnerCom
 	AFood * FoodToGrab=nullptr; 
 	if (BlackboardKey.SelectedKeyType == UBlackboardKeyType_Object::StaticClass())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Key ID is an object %s"), *(GetSelectedBlackboardKey().ToString()));
-
 		UObject* KeyValue = OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(BlackboardKey.GetSelectedKeyID());
-
-		if(KeyValue)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Key ID is an object %s"), *(KeyValue->GetName()));
-		}
-		
 		FoodToGrab= Cast<AFood>(KeyValue);
 	}
 

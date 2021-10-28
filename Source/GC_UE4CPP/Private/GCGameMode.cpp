@@ -85,22 +85,40 @@ void AGCGameMode::IncrementPickableFood()
 
 void AGCGameMode::CheckGameConditions()
 {
+	if(GetCurrentGameState() == EGS_DEFEAT)
+	{
+		return;	
+	}
+	
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{
 		SetCurrentGameState(EGS_VICTORY);
-		DisableCharacterInput(true);
-	}
-	/*if(CharacterHitByAI)
-	{
-		SetCurrentGameState(EGS_DEFEAT);
-		DisableCharacterInput(false);
-	}*/
+		DisableCharacterInput();
+		if(InGameInterface)
+		{
+			InGameInterface->EndGame(true);
+		}
+	}	
 }
 
-void AGCGameMode::DisableCharacterInput(bool GameStatus)
+void AGCGameMode::Defeat()
+{
+	if(GetCurrentGameState() == EGS_VICTORY)
+	{
+		return;	
+	}
+	
+	SetCurrentGameState(EGS_DEFEAT);
+	DisableCharacterInput();
+	if(InGameInterface)
+	{
+		InGameInterface->EndGame(false);
+	}
+}
+
+void AGCGameMode::DisableCharacterInput()
 {
 	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	if(InGameInterface)
-		InGameInterface->EndGame(GameStatus);
+	
 }

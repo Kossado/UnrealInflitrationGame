@@ -10,6 +10,11 @@ FTimerDelegate MyTestDel;
 
 EBTNodeResult::Type UBTT_LookAround::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
+	if(SpeedRotation == 0)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
 	if(AAIEnemyController * AIController = Cast<AAIEnemyController>(OwnerComp.GetAIOwner()))
 	{
 		GCFBTLookAroundTaskMemory * MyMemory = CastInstanceNodeMemory<GCFBTLookAroundTaskMemory>(NodeMemory);

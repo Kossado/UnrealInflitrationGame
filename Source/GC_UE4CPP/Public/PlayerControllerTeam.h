@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerControllerTeam.generated.h"
 
+class AGCGameMode;
 /**
  * 
  */
@@ -65,5 +66,6 @@ private:
 	FGenericTeamId TeamId;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	
-	
+	AGCGameMode* MainGameMode;
+
 };
