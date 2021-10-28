@@ -15,7 +15,8 @@ public:
 	
 	ESkinPlayer GetSkinPlayer() const;
 	void SetSkinPlayer(ESkinPlayer SkinPlayer);
-	
+
+private:
 	// Skin of player
 	ESkinPlayer SkinPlayer;
 };

@@ -22,6 +22,14 @@ class GC_UE4CPP_API AGeneratorWall : public AActor
 public:	
 	AGeneratorWall();
 
+	UFUNCTION(CallInEditor)
+	void CreateWallFromEditor();
+	
+	void CreateWallFromPlay();
+
+private:
+	USceneComponent* SceneComponent;
+
 	UPROPERTY(EditAnywhere)
 	int NumberWallX;
 
@@ -30,16 +38,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UInstancedStaticMeshComponent* WallPrefab;
-
-private:
-	USceneComponent* SceneComponent;
 	
 	void CreateWall(FVector positionDepart);
-	
-public:	
-	UFUNCTION(CallInEditor)
-	void CreateWallFromEditor();
-	
-	void CreateWallFromPlay();
-	
 };
