@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 
-#include "PlayerControllerTeam.h"
+#include "KnightPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 AGCGameMode::AGCGameMode() : Super()
 {
 	// Define default classes
 	GameStateClass = AGCGameState::StaticClass();
-	PlayerControllerClass = APlayerControllerTeam::StaticClass();
+	PlayerControllerClass = AKnightPlayerController::StaticClass();
 }
 
 void AGCGameMode::InitGameState()

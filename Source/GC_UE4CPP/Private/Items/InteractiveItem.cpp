@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractiveItem.h"
+#include "Items/InteractiveItem.h"
 
-#include "GCCharacter.h"
+#include "Characters/GCCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values

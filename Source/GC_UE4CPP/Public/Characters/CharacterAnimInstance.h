@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GCCharacter.h"
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 #include "Animation/AnimInstance.h"
 
 #include "CharacterAnimInstance.generated.h"

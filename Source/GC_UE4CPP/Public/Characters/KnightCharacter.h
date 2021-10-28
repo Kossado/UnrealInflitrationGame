@@ -8,16 +8,16 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AISightTargetInterface.h"
 
-#include "GCPlayerCharacter.generated.h"
+#include "KnightCharacter.generated.h"
 
 UCLASS() 
-class GC_UE4CPP_API AGCPlayerCharacter : public AGCCharacter, public IAISightTargetInterface
+class GC_UE4CPP_API AKnightCharacter : public AGCCharacter, public IAISightTargetInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AGCPlayerCharacter();
+	AKnightCharacter();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input

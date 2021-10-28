@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterAnimInstance.h"
+#include "Characters/CharacterAnimInstance.h"
 
 #include "AI/AIEnemyCharacter.h"
-#include "GCGameMode.h"
-#include "GCPlayerCharacter.h"
+#include "Managers/GCGameMode.h"
+#include "Characters/KnightCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
@@ -29,7 +29,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FVector Velocity = Character->GetVelocity();
 		Velocity.Z = 0;
 		Speed = Velocity.Size();
-		if(Character->IsA(AGCPlayerCharacter::StaticClass()) && MainGameMode)
+		if(Character->IsA(AKnightCharacter::StaticClass()) && MainGameMode)
 		{
 			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
 			{

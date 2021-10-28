@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GCCharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Characters/GCCharacter.h"
 #include "Food/SpotFood.h"
 #include "AIEnemyCharacter.generated.h"
 

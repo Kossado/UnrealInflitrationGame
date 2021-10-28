@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GCCharacter.h"
+#include "Characters/GCCharacter.h"
 
-#include "Chair.h"
-#include "Chest.h"
-#include "GCGameMode.h"
-#include "InteractiveItem.h"
+#include "Items/Chair.h"
+#include "Items/Chest.h"
+#include "Managers/GCGameMode.h"
+#include "Items/InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values

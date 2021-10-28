@@ -1,8 +1,8 @@
-#include "GCPlayerCharacter.h"
+#include "Characters/KnightCharacter.h"
 
 #include "Food/Food.h"
-#include "Chair.h"
-#include "GCGameMode.h"
+#include "Items/Chair.h"
+#include "Managers/GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
 #include "HUD/InGameInterface.h"
 #include "DrawDebugHelpers.h"
@@ -13,7 +13,7 @@
 
 
 // Sets default values
-AGCPlayerCharacter::AGCPlayerCharacter() : Super()
+AKnightCharacter::AKnightCharacter() : Super()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,19 +25,19 @@ AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 	CameraSpringArm->bUsePawnControlRotation = true; // Rotate based on the controller
 
 	// Create Camera that will follow the character
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName(TEXT("Camera")));
 	CameraComponent->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
 
 	// Create second camera stick
-	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Portrait Stick"));
+	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName(TEXT("Camera Portrait Stick")));
 	CameraPortraitStick->SetupAttachment(RootComponent);
 	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 35.0f), FRotator(0.0f, 180.0f, 0.0f));
 	CameraPortraitStick->TargetArmLength = 80.f; // Distance between the camera and the character
 	CameraPortraitStick->bDoCollisionTest = false; // Disable collision camera
 	
 	// Create Camera that will follow the portrait character
-	CameraPortraitComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(FName("CameraPortrait"));
+	CameraPortraitComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(FName(TEXT("CameraPortrait")));
 	CameraPortraitComponent->SetupAttachment(CameraPortraitStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraPortraitComponent->ShowOnlyActorComponents(this,false);
 	CameraPortraitComponent->FOVAngle = 75.f; // Update value of angle camera
@@ -57,24 +57,24 @@ AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 }
 
 // Called when the game starts or when spawned
-void AGCPlayerCharacter::BeginPlay()
+void AKnightCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame
-void AGCPlayerCharacter::Tick(float DeltaTime)
+void AKnightCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
-void AGCPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AKnightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
+bool AKnightCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
 {
 	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
 
@@ -122,7 +122,7 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
-void AGCPlayerCharacter::SitDown(AChair* Chair)
+void AKnightCharacter::SitDown(AChair* Chair)
 {
 	Super::SitDown(Chair);
 	// Disable Mouse and Keyboard inputs
@@ -133,7 +133,7 @@ void AGCPlayerCharacter::SitDown(AChair* Chair)
 	CameraSpringArm->SetRelativeRotation(FRotator(0.f,180.f,0.f));
 }
 
-void AGCPlayerCharacter::StandUp()
+void AKnightCharacter::StandUp()
 {
 	Super::StandUp();
 	// Enable Mouse and Keyboard inputs
@@ -143,7 +143,7 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
-void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
+void AKnightCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 {
 	if(!ItemInHand->IsA(AFood::StaticClass()) || InteractiveChest == nullptr)
 	{
@@ -169,7 +169,7 @@ void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 }
 	
 
-void AGCPlayerCharacter::Interact()
+void AKnightCharacter::Interact()
 {
 	if(bSit)
 	{
@@ -187,8 +187,10 @@ void AGCPlayerCharacter::Interact()
 		}
 		for(AInteractiveItem* Item:InteractiveItems)
 		{
+			// Exclude ItemInHand from the list
 			if(Item != ItemInHand)
 			{
+				// ItemToInteractWith can be the item in hand, so when it happens change it to an other item
 				if(GetDistanceTo(ItemToInteractWith) > GetDistanceTo(Item) || ItemToInteractWith == ItemInHand)
 				{
 					ItemToInteractWith = Item;

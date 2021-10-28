@@ -1,6 +1,6 @@
 // Import intern class
 #include "HUD/GameStatusWidget.h"
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 
 // Import extern class
 #include "Components/Button.h"

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Chest.h"
+#include "Items/Chest.h"
 
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

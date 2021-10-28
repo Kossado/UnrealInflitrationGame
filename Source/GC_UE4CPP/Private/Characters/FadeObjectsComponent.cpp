@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #define COLLISION_TRANSPARENT ECC_GameTraceChannel1
 
-#include "FadeObjectsComponent.h"
+#include "Characters/FadeObjectsComponent.h"
 
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"

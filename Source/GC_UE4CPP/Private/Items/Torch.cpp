@@ -1,4 +1,4 @@
-#include "Torch.h"
+#include "Items/Torch.h"
 
 ATorch::ATorch() : Super()
 {

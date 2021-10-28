@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Chest.h"
-#include "PickableItem.h"
+#include "Items/Chest.h"
+#include "Items/PickableItem.h"
 #include "GameFramework/Character.h"
 #include "GCCharacter.generated.h"
 

@@ -3,28 +3,29 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GCPlayerCharacter.h"
+#include "Managers/GCGameMode.h"
+#include "Characters/KnightCharacter.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/PlayerController.h"
-#include "PlayerControllerTeam.generated.h"
+#include "KnightPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GC_UE4CPP_API APlayerControllerTeam : public APlayerController, public IGenericTeamAgentInterface
+class GC_UE4CPP_API AKnightPlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
-	APlayerControllerTeam();
+	AKnightPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupInputComponent() override;
 
 protected:
 	virtual void BeginPlay() override;
 	// Reference to the player character
-	AGCPlayerCharacter* PlayerCharacter;
+	AKnightCharacter* PlayerCharacter = nullptr;
 	// Called for forward/backward input
 	void MoveForward(float Value);
 	// Called for right/left input
@@ -60,6 +61,8 @@ private:
 	float CameraZoomSteps;
 	// Destination of the camera for the smooth zoom Should be equal to CameraSpringArm->TargetArmLength at the beggining
 	float CamZoomDestination;
+
+	AGCGameMode* GameMode = nullptr;
 	
 	// Useless ? Need to see with Benjamin's code
 	FGenericTeamId TeamId;
