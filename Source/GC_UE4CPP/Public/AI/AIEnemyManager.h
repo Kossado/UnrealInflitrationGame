@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "AIEnemyCharacter.h"
 #include "AIPatrolPoint.h"
+#include "Characters/LinkSkeletalMeshAnimation.h"
 #include "AIEnemyManager.generated.h"
 
 
@@ -71,6 +72,6 @@ private:
 	void SpawnAIRandomTime(int TimeMin, int TimeMax);
 
 	int EnemyTeamId=1;
-	TArray<USkeletalMesh *> SkeletalMeshes;
+	TArray<LinkSkeletalMeshAnimation> SkeletalMeshesWithAnimation;
 	
 };

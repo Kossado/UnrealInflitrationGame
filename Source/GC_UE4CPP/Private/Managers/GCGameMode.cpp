@@ -5,6 +5,7 @@
 
 #include "KnightPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/GCGameInstance.h"
 
 AGCGameMode::AGCGameMode() : Super()
 {
@@ -16,11 +17,26 @@ AGCGameMode::AGCGameMode() : Super()
 void AGCGameMode::InitGameState()
 {
 	Super::InitGameState();
-	if(GetGameState<AGCGameState>())
+	AGCGameState * GCGameState = GetGameState<AGCGameState>();
+	if(GCGameState != nullptr)
 	{
-		GetGameState<AGCGameState>()->StoredFood = 0;
-		GetGameState<AGCGameState>()->PickableFood = 0;
-		GetGameState<AGCGameState>()->StoredFoodToWin = 5;
+		GCGameState->StoredFood = 0;
+		GCGameState->PickableFood = 0;
+		GCGameState->StoredFoodToWin = 5;
+
+		UGCGameInstance * GameInstance = Cast<UGCGameInstance>(GetGameInstance());
+		if(GameInstance != nullptr)
+		{
+			GCGameState->SkinPlayer = GameInstance->GetSkinPlayer();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("AGCGameMode::InitGameState - GameInstance is null"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::InitGameState - GameState is null"));
 	}
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"InitGameState");
@@ -28,16 +44,63 @@ void AGCGameMode::InitGameState()
 
 void AGCGameMode::StartPlay()
 {
-	TeamSkeletalMeshes={};
-	TeamSkeletalMeshes.Add(Team1SkeletalMeshes);
-	TeamSkeletalMeshes.Add(Team2SkeletalMeshes);
+	ListSkeletalMeshWithAnimations = {
+		{
+			SkeletalMeshKnight, AnimClassKnight		
+		},
+		{
+			SkeletalMeshMaleGoblin, AnimClassMaleGoblin		
+		},
+		{
+			SkeletalMeshFemaleGoblin, AnimClassFemaleGoblin		
+		}
+	};
+	
+	TeamSkeletalMeshes={{}, {}};
+
+	for(int i = 0; i < ListSkeletalMeshWithAnimations.Num(); i++)
+	{
+		if(Team1IdCharacter.Contains(i))
+		{			
+			TeamSkeletalMeshes[0].Add(ListSkeletalMeshWithAnimations[i]);
+		}
+
+		if(Team2IdCharacter.Contains(i))
+		{			
+			TeamSkeletalMeshes[1].Add(ListSkeletalMeshWithAnimations[i]);
+		}
+	}
+	
+
+	UGCGameInstance * GameInstance = Cast<UGCGameInstance>(GetGameInstance());
+
+	if(GameInstance != nullptr)
+	{
+		ESkinPlayer SkinChoosed = GameInstance->GetSkinPlayer();
+
+		switch (SkinChoosed)
+		{
+			case ESkinPlayer::EGS_KNIGHT:
+				PlayerTeamId = 0;
+			break;
+
+			case ESkinPlayer::EGS_GOBELIN_MALE:
+			case ESkinPlayer::EGS_GOBELIN_FEMALE:
+				PlayerTeamId=1;
+			break;
+			
+			default:
+				break;
+		}
+	}
+	
 	
 	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
-TArray<USkeletalMesh*> AGCGameMode::GetTeamSkeletalMeshes(int TeamId) const
+TArray<LinkSkeletalMeshAnimation> AGCGameMode::GetTeamSkeletalMeshes(int TeamId) const
 {
 	if(TeamId < 0 || TeamId >= TeamSkeletalMeshes.Num())
 	{
@@ -77,9 +140,95 @@ void AGCGameMode::SetCurrentGameState(EGameState CurrentGameState) const
 	GetGameState<AGCGameState>()->CurrentGameState = CurrentGameState;
 }
 
+ESkinPlayer AGCGameMode::GetSkinPlayer() const
+{
+	AGCGameState * GCGameState = GetGameState<AGCGameState>();
+
+	if(GCGameState != nullptr)
+	{
+		return GCGameState->SkinPlayer;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::SetSkinPlayer - GameState is null"));
+	}
+
+	return ESkinPlayer::EGS_NO_SKIN;
+}
+
+USkeletalMesh * AGCGameMode::GetSkeletalMeshChoosenByPlayer() const
+{
+	AGCGameState * GCGameState = GetGameState<AGCGameState>();
+
+	if(GCGameState != nullptr)
+	{
+		switch(GCGameState->SkinPlayer)
+		{
+			case ESkinPlayer::EGS_KNIGHT:
+				return SkeletalMeshKnight;
+
+			case ESkinPlayer::EGS_GOBELIN_MALE:
+				return SkeletalMeshMaleGoblin;
+
+			case ESkinPlayer::EGS_GOBELIN_FEMALE:
+				return SkeletalMeshFemaleGoblin;
+
+			default:
+				UE_LOG(LogTemp, Error, TEXT("AGCGameMode::GetSkeletalMeshChoosenByPlayer - No Skin choosen"));
+				return nullptr;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::GetSkeletalMeshChoosenByPlayer - GameState is null"));
+	}
+
+	return nullptr;
+}
+
+TSubclassOf<UAnimInstance> AGCGameMode::GetAnimationChoosenByPlayer() const
+{
+	AGCGameState * GCGameState = GetGameState<AGCGameState>();
+
+	if(GCGameState != nullptr)
+	{
+		switch(GCGameState->SkinPlayer)
+		{
+		case ESkinPlayer::EGS_KNIGHT:
+			return AnimClassKnight;
+
+		case ESkinPlayer::EGS_GOBELIN_MALE:
+			return AnimClassMaleGoblin;
+
+		case ESkinPlayer::EGS_GOBELIN_FEMALE:
+			return AnimClassFemaleGoblin;
+
+		default:
+			UE_LOG(LogTemp, Error, TEXT("AGCGameMode::GetAnimationChoosenByPlayer - No Skin choosen"));
+			return nullptr;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::GetAnimationChoosenByPlayer - GameState is null"));
+	}
+
+	return nullptr;
+}
+
 void AGCGameMode::SetSkinPlayer(ESkinPlayer SkinPlayer) const
 {
-	GetGameState<AGCGameState>()->SkinPlayer = SkinPlayer;
+	AGCGameState * GCGameState = GetGameState<AGCGameState>();
+
+	if(GCGameState != nullptr)
+	{
+		GCGameState->SkinPlayer = SkinPlayer;
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::SetSkinPlayer - GameState is null"));
+	}
 }
 
 void AGCGameMode::IncrementStoredFood()

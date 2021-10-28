@@ -86,6 +86,8 @@ void UChooseHeroMenuWidget::Confirm()
 	UGCGameInstance* GameInstance = Cast<UGCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (CurrentSkinPlayer != EGS_NO_SKIN  && GameInstance)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
+
 		GameInstance->SetSkinPlayer(CurrentSkinPlayer);
 	} else {
 		if (!GameInstance)

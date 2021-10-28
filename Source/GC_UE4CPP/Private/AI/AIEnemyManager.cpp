@@ -37,7 +37,7 @@ void AAIEnemyManager::BeginPlay()
 		}
 	}
 
-	SkeletalMeshes = GameMode->GetTeamSkeletalMeshes(EnemyTeamId);
+	SkeletalMeshesWithAnimation = GameMode->GetTeamSkeletalMeshes(EnemyTeamId);
 	
 	//Will call SpawnUsefulActor after the specified time
 	for(int i = 0; i < NbAIStartingGame; i++)
@@ -59,62 +59,89 @@ AFoodManager * AAIEnemyManager::GetFoodManager() const
 
 void AAIEnemyManager::SpawnPawn()
 {
-	if(SkeletalMeshes.Num()>0)
+	if(SpawnAIPatrolPoint == nullptr)
 	{
-		int indexMesh = FMath::RandRange(0, SkeletalMeshes.Num()-1);
+		UE_LOG(LogTemp, Error, TEXT("AAIEnemyManager::SpawnPawn - SpawnAIPatrolPoint is null"));
+		return;
+	}
+	
+	if(SkeletalMeshesWithAnimation.Num()>0)
+	{
+		int indexMesh = FMath::RandRange(0, SkeletalMeshesWithAnimation.Num()-1);
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		if(SkeletalMeshes[indexMesh] != nullptr)
+		AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(BP_CharacterAI, GetTransform(), SpawnParams);
+
+		if(ActorCharacterRef == nullptr)
 		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-			AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(BP_CharacterAI, GetTransform(), SpawnParams);
-			ActorCharacterRef->SetActorLocation(SpawnAIPatrolPoint->GetActorLocation());
-			ActorCharacterRef->SetActorRotation(SpawnAIPatrolPoint->GetActorRotation());
-			ActorCharacterRef->GetMesh()->SetSkeletalMesh(SkeletalMeshes[indexMesh]);
-			
-			// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
-			AController * ActorControllerRef =ActorCharacterRef->GetController(); 
-			if(ActorControllerRef == nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Controller is null"));
-				return;
-			}
-
-			else if(!ActorControllerRef->IsA(AAIEnemyController::StaticClass()))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Controller isn't in a good type"));
-				return;
-			}
-
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
-
-				AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
-				ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
-
-				if(ListAIControllerOnScene.Num() > 0 )
-				{
-					GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListAIControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerAI)));
-				}
-				ListAIControllerOnScene.Add(ControllerAI);
-
-				if(FoodManager->IsRemainingSlotFood())
-				{
-					AFood * NewFood = FoodManager->SpawnFood();
-
-					if(NewFood == nullptr)
-					{
-						UE_LOG(LogTemp, Error, TEXT("Fail to spawn food"));
-						return;
-					}
-
-					ControllerAI->CarryFood(NewFood);
-				}			
-			}
+			UE_LOG(LogTemp, Error, TEXT("AAIEnemyManager::SpawnPawn - ActorCharacterRef is null"));
+			return;
 		}
-	}	
+		
+		ActorCharacterRef->SetActorLocation(SpawnAIPatrolPoint->GetActorLocation());
+		ActorCharacterRef->SetActorRotation(SpawnAIPatrolPoint->GetActorRotation());
+
+		if(SkeletalMeshesWithAnimation[indexMesh].SkeletalMeshKnight != nullptr && SkeletalMeshesWithAnimation[indexMesh].Anim!=nullptr)
+		{
+			ActorCharacterRef->GetMesh()->SetSkeletalMesh(SkeletalMeshesWithAnimation[indexMesh].SkeletalMeshKnight);
+			ActorCharacterRef->GetMesh()->SetAnimClass(SkeletalMeshesWithAnimation[indexMesh].Anim);
+		}
+
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("AAIEnemyManager::SpawnPawn - SkeletalMeshKnight or Animation are null"));
+			return;
+		}
+		
+		// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
+		AController * ActorControllerRef =ActorCharacterRef->GetController(); 
+		if(ActorControllerRef == nullptr)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AAIEnemyManager::SpawnPawn - ActorControllerRef is null"));
+			return;
+		}
+
+		else if(!ActorControllerRef->IsA(AAIEnemyController::StaticClass()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Controller isn't in a good type"));
+			return;
+		}
+
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
+
+			AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
+			ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
+
+			if(ListAIControllerOnScene.Num() > 0 )
+			{
+				GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListAIControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerAI)));
+			}
+			ListAIControllerOnScene.Add(ControllerAI);
+
+			if(FoodManager->IsRemainingSlotFood())
+			{
+				AFood * NewFood = FoodManager->SpawnFood();
+
+				if(NewFood == nullptr)
+				{
+					UE_LOG(LogTemp, Error, TEXT("Fail to spawn food"));
+					return;
+				}
+
+				ControllerAI->CarryFood(NewFood);
+			}			
+		}
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AAIEnemyManager::SpawnPawn - No List of Skeletall Meshes"));
+		return;
+	}
 }
 
 

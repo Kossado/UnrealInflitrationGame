@@ -9,6 +9,7 @@
 #include "Managers/GCGameMode.h"
 #include "Items/InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
@@ -18,15 +19,6 @@ AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(Ob
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-}
-
-void AGCCharacter::UnSpawn()
-{
-	if(ItemInHand != nullptr)
-	{
-		ItemInHand->DestroyItem();
-		GetWorld()->DestroyActor(this);
-	}
 }
 
 // Called when the game starts or when spawned

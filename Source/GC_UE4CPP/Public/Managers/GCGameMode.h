@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GCGameState.h"
+#include "Characters/LinkSkeletalMeshAnimation.h"
 #include "GameFramework/GameMode.h"
 #include "HUD/InGameInterface.h"
 #include "GCGameMode.generated.h"
@@ -27,6 +28,8 @@ public:
 	virtual void StartPlay() override;
 	virtual void RestartGame() override;
 
+	FORCEINLINE bool IsRunning() const { return GetCurrentGameState() == EGS_PLAYING; }
+	
 	// Getters
 	EGameState GetCurrentGameState() const;
 	int GetStoredFood() const;
@@ -34,6 +37,10 @@ public:
 	int GetStoredFoodToWin() const;
 	// Setters
 	void SetCurrentGameState(EGameState CurrentGameState) const;
+	ESkinPlayer GetSkinPlayer() const;
+	USkeletalMesh* GetSkeletalMeshChoosenByPlayer() const;
+	TSubclassOf<UAnimInstance> GetAnimationChoosenByPlayer() const;
+
 	void SetSkinPlayer(ESkinPlayer SkinPlayer) const;
 	void IncrementStoredFood();
 	void IncrementPickableFood();
@@ -43,28 +50,48 @@ public:
 	void DisableCharacterInput();
 	// Pause
 	void LaunchMenuPause();
-
-	FORCEINLINE int GetSelectedMeshForPlayer() const { return GameState->PlayerMeshId;}
-	FORCEINLINE int GetPlayerTeamId() const { return GameState->PlayerTeamId;}
 	
-	TArray<USkeletalMesh*> GetTeamSkeletalMeshes(int TeamId) const;
+	int GetPlayerTeamId() const { return PlayerTeamId;}
+	
+	TArray<LinkSkeletalMeshAnimation> GetTeamSkeletalMeshes(int TeamId) const;
 	
 
 private:
 	// UI
 	AInGameInterface* InGameInterface;
 
-	TArray<TArray<USkeletalMesh*>> TeamSkeletalMeshes;
+	TArray<LinkSkeletalMeshAnimation> ListSkeletalMeshWithAnimations;
 	
-	UPROPERTY(EditAnywhere)
-	TArray<USkeletalMesh*> Team1SkeletalMeshes;
+	int PlayerTeamId;
+	TArray<TArray<LinkSkeletalMeshAnimation>> TeamSkeletalMeshes;
 
 	UPROPERTY(EditAnywhere)
-	TArray<USkeletalMesh*> Team2SkeletalMeshes;
+	USkeletalMesh* SkeletalMeshKnight;
+	
+	UPROPERTY(EditAnywhere)
+	class TSubclassOf<UAnimInstance> AnimClassKnight;
+	
+	UPROPERTY(EditAnywhere)
+	USkeletalMesh* SkeletalMeshMaleGoblin;
+
+	UPROPERTY(EditAnywhere)
+	class TSubclassOf<UAnimInstance> AnimClassMaleGoblin;
+	
+	UPROPERTY(EditAnywhere)
+	USkeletalMesh* SkeletalMeshFemaleGoblin;
+
+	UPROPERTY(EditAnywhere)
+	class TSubclassOf<UAnimInstance> AnimClassFemaleGoblin;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<int> Team1IdCharacter;
+
+	UPROPERTY(EditAnywhere)
+	TArray<int> Team2IdCharacter;
 
 	AFoodManager * FoodManager;
 	AAIEnemyManager * EnemyManager;
-	
+
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY
 // if Hit by AI : GameState = DEFEAT

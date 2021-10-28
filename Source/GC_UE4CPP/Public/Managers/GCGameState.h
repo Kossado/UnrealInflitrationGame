@@ -42,4 +42,6 @@ public:
 	int StoredFoodToWin;
 	// Skin of player
 	ESkinPlayer SkinPlayer;
+
+	int PlayerTeamId=0;
 };

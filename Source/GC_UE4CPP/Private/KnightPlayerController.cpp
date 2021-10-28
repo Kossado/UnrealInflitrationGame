@@ -23,10 +23,33 @@ void AKnightPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MainGameMode = Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
+
+	if(MainGameMode == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AKnightPlayerController::BeginPlay - MainGameMode is null"));
+		return;
+	}
+	
 	PlayerCharacter = Cast<AKnightCharacter>(GetPawn());
 	if(PlayerCharacter)
 	{
 		CamZoomDestination = PlayerCharacter->GetCameraSpringArm()->TargetArmLength;
+
+		USkeletalMesh * ChoosenSkeletalMesh = MainGameMode->GetSkeletalMeshChoosenByPlayer();
+		TSubclassOf<UAnimInstance> ChoosenAnimation = MainGameMode->GetAnimationChoosenByPlayer();
+		
+		if(ChoosenSkeletalMesh != nullptr /*&& ChoosenAnimation != nullptr*/)
+		{
+			PlayerCharacter->GetMesh()->SetSkeletalMesh(ChoosenSkeletalMesh);
+			PlayerCharacter->GetMesh()->SetAnimClass(ChoosenAnimation);
+		}
+
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("AKnightPlayerController::BeginPlay - Skeletal or Animation are null"));
+			return;
+		}
 	}
 }
 
@@ -62,6 +85,11 @@ void AKnightPlayerController::SetupInputComponent()
 
 void AKnightPlayerController::MoveForward(float Value)
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	if(PlayerCharacter && Value != 0.0f)
 	{
 		// Find out which way is forward
@@ -74,6 +102,11 @@ void AKnightPlayerController::MoveForward(float Value)
 
 void AKnightPlayerController::MoveRight(float Value)
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	if(PlayerCharacter && Value != 0.0f)
 	{
 		// Find out which way is right
@@ -86,16 +119,31 @@ void AKnightPlayerController::MoveRight(float Value)
 
 void AKnightPlayerController::ZoomIn()
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	CamZoomDestination = FMath::Clamp(PlayerCharacter->GetCameraSpringArm()->TargetArmLength - CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
 }
 
 void AKnightPlayerController::ZoomOut()
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	CamZoomDestination = FMath::Clamp(PlayerCharacter->GetCameraSpringArm()->TargetArmLength + CameraZoomSteps, MinCameraDistance,MaxCameraDistance);
 }
 
 void AKnightPlayerController::SmoothZoom(float DeltaTime) const
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	if(!FMath::IsNearlyEqual(PlayerCharacter->GetCameraSpringArm()->TargetArmLength, CamZoomDestination, 0.5f))
 	{
 		// Smooth zoom over time
@@ -119,6 +167,11 @@ void AKnightPlayerController::InvokeMenu()
 
 void AKnightPlayerController::Interact()
 {
+	if(MainGameMode != nullptr && !MainGameMode->IsRunning())
+	{
+		return;
+	}
+	
 	if(PlayerCharacter != nullptr)
 	{
 		PlayerCharacter->Interact();
