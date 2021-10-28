@@ -12,6 +12,11 @@ void APickableItem::GrabItem()
 	SetItemProperties(EIS_Interacting);
 }
 
+void APickableItem::DestroyItem()
+{
+	Destroy();
+}
+
 void APickableItem::DropItem()
 {
 	SetItemProperties(EIS_Movable);

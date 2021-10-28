@@ -15,25 +15,19 @@ class GC_UE4CPP_API AGCCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGCCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// Takes food and carry it
-	//void CarryFood(AFood* FoodToCarry);
-	// Grab an item
 	void GrabItem(class APickableItem* PickableItem);
-	// Drop an item
 	void DropItem();
-	//void DropFood();
 	virtual void SitDown(class AChair* Chair);
-
 	virtual void StandUp();
+	// Add InteractiveActor to the InteractiveActors List
 	void OnEnterActor(AInteractiveItem* InteractiveActor);
+	// Remove InteractiveActor from the InteractiveActors List
 	void OnLeaveActor(AInteractiveItem* InteractiveActor);
-
-	
 	void BeginRotate();
 	void EndRotate();
 	bool IsRotating() const;
+	// Remove character's possessions
+	void UnSpawn();
 
 	FORCEINLINE const USkeletalMeshSocket * GetSocketBaseCharacter() const { return SocketBaseCharacter; }
 	FORCEINLINE FVector GetSocketBaseCharacterLocation() const { return GetMesh()->GetSocketLocation(NameSocketBaseCharacter); }
@@ -43,13 +37,10 @@ protected:
 	virtual void BeginPlay() override;
 	// Change speed according to the parameters
 	void ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator);
-
+	// TArray of InteractiveItems in range
 	TArray<AInteractiveItem*> InteractiveItems;
-	/*AActor* CurrentInteractiveActor;
-	IInteractable* CurrentInteractive;*/
 	APickableItem* ItemInHand = nullptr;
-
-	bool bHasItem = false;
+	bool bCarryItem = false;
 	bool bSit = false;
 	AChair* ChairUsed = nullptr;
 	// Characters Speed handfree
@@ -64,28 +55,13 @@ protected:
 
 
 private:
-	/*// Food to pick = in Overlap
-	AFood* FoodToPick = nullptr;
-	// Carried food (might be null)
-	AFood* CarriedFood = nullptr;
-	// Chest to detect = in Overlap
-	AChest* ChestInFront = nullptr;
-	// Chair to detect in overlap
-	AChair* ChairInFront = nullptr;*/
-
 	// Characters Speed when carrying food
-	// Grabbed item
-
 	UPROPERTY(EditAnywhere)
 	float CarryWalkSpeedMultiplicator=0.5f;
-
-
 	bool bRotate =false;
 
-	
 public:	
-	//FORCEINLINE AFood* GetCarriedFood() const { return CarriedFood; }
 	FORCEINLINE bool IsSitting() const { return bSit; }
-	FORCEINLINE bool HasItem() const { return bHasItem; }
+	FORCEINLINE bool HasItem() const { return bCarryItem; }
 
 };

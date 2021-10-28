@@ -20,6 +20,7 @@ class GC_UE4CPP_API AItem : public AActor
 	
 public:	
 	AItem();
+	virtual void SetItemProperties(EItemState State);
 
 protected:
 	virtual void BeginPlay() override;

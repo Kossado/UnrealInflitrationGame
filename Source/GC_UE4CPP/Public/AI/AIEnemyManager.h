@@ -11,7 +11,7 @@
 #include "Characters/LinkSkeletalMeshAnimation.h"
 #include "AIEnemyManager.generated.h"
 
-
+class AGCGameMode;
 class AAIEnemyController;
 
 UCLASS()
@@ -22,7 +22,8 @@ class GC_UE4CPP_API AAIEnemyManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AAIEnemyManager();
-	
+	void Initialize();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -67,6 +68,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	AAIPatrolPoint* UnSpawnAIPatrolPoint = nullptr;
 
+	AGCGameMode * MainGameMode;
+	
 	virtual void SpawnPawn();
 
 	void SpawnAIRandomTime(int TimeMin, int TimeMax);

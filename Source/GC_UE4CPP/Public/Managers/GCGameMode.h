@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GCGameState.h"
 #include "Characters/LinkSkeletalMeshAnimation.h"
+#include "AI/AIEnemyManager.h"
 #include "GameFramework/GameMode.h"
 #include "HUD/InGameInterface.h"
 #include "GCGameMode.generated.h"
@@ -46,6 +47,7 @@ public:
 	void IncrementPickableFood();
 	// Checks
 	void CheckGameConditions();
+
 	void Defeat();
 	void DisableCharacterInput();
 	// Pause
@@ -58,7 +60,7 @@ public:
 
 private:
 	// UI
-	AInGameInterface* InGameInterface;
+	AInGameInterface* InGameInterface = nullptr;
 
 	TArray<LinkSkeletalMeshAnimation> ListSkeletalMeshWithAnimations;
 	
@@ -89,11 +91,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	TArray<int> Team2IdCharacter;
 
-	AFoodManager * FoodManager;
-	AAIEnemyManager * EnemyManager;
+	AFoodManager * FoodManager = nullptr;;
+	AAIEnemyManager * EnemyManager = nullptr;;
 
 };
-// if NourritureDansCachette >= QtéDef : GameState = VICTORY
-// if Hit by AI : GameState = DEFEAT
-// if Menu Open : GameState = PAUSE
-// DEFAULT : GameState = PLAYING 

@@ -5,8 +5,9 @@
 
 #include "AI/AIEnemyCharacter.h"
 #include "AI/AIEnemyController.h"
-#include "Managers/GCGameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
+#include "Managers/GCGameMode.h"
 
 // Sets default values
 AAIEnemyManager::AAIEnemyManager() : Super()
@@ -21,6 +22,16 @@ void AAIEnemyManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	if(MainGameMode != nullptr)
+	{
+		MainGameMode->AIManager = this;
+	}
+}
+
+void AAIEnemyManager::Initialize()
+{
 	FTimerHandle OutHandle;
 	AGCGameMode * GameMode = Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
 
@@ -170,6 +181,7 @@ void AAIEnemyManager::UnSpawnAI(AAIEnemyController* UnSpawnAI)
 		ListAIControllerOnScene.Remove(UnSpawnAI);	
 	}
 
+	UnSpawnAI->UnSpawn();
 	GetWorld()->DestroyActor(UnSpawnAI->GetCharacter());
 }
 

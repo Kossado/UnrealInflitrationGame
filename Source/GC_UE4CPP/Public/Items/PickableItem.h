@@ -16,7 +16,7 @@ class GC_UE4CPP_API APickableItem : public AInteractiveItem
 public:
 	APickableItem();
 	void GrabItem();
-
+	virtual void DestroyItem();
 	void DropItem();
 	void DisableItem();
 };

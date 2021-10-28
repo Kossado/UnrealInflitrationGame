@@ -18,6 +18,11 @@ AInteractiveItem::AInteractiveItem():Super()
 
 }
 
+void AInteractiveItem::EnableTrigger()
+{
+	Trigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
 void AInteractiveItem::DisableTrigger()
 {
 	Trigger->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -38,10 +43,18 @@ void AInteractiveItem::SetItemProperties(EItemState State)
 
 	switch(State)
 	{
-		case EItemState::EIS_Disabled:
+		case EIS_Interacting:
+			EnableTrigger();
+			break;
+		case EIS_Movable:
+			EnableTrigger();
+			break;
+		case EIS_Immovable:
+			EnableTrigger();
+			break;
+		case EIS_Disabled:
 			DisableTrigger();
 			break;
-
 		default:
 			break;
 	}

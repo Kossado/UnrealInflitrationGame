@@ -19,20 +19,17 @@ void AFood::BeginPlay()
 
 	if(IsOnGround())
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName().ToString()));
+		UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName()));
 	}
-
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName().ToString()));
+		UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName()));
 		FVector Origin = FVector::ZeroVector;
 		FVector BoxExtent = FVector::ZeroVector;
 		if(GetBoundsSupportFood(Origin, BoxExtent))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Center [ %s ] Dimension [ %s ]"), *(Origin.ToString()), *(BoxExtent.ToString()));
 		}
-
-		
 	}
 }
 
@@ -52,7 +49,6 @@ bool AFood::IsOnGround() const
 	{
 		return true;
 	}
-
 	else
 	{
 		if(bHitSocket)
@@ -91,10 +87,8 @@ bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 		HitResult.GetActor()->GetActorBounds(false, Origin, BoxExtent, true);
 		return true;
 	}
-
 	else
 	{
 		return false;
 	}
-	
 }

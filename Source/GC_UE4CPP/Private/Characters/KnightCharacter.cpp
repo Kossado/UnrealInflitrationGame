@@ -14,9 +14,6 @@
 // Sets default values
 AKnightCharacter::AKnightCharacter() : Super()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	// Create camera stick
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Stick"));
 	CameraSpringArm->SetupAttachment(RootComponent);
@@ -59,18 +56,6 @@ AKnightCharacter::AKnightCharacter() : Super()
 void AKnightCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-// Called every frame
-void AKnightCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void AKnightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 bool AKnightCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor, const bool* bWasVisible, int32* UserData) const
@@ -159,9 +144,13 @@ void AKnightCharacter::StoreItem(AInteractiveItem* InteractiveChest)
 	ItemInHand->SetActorRotation(Chest->GetValidStoredRotation());
 	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if(LevelGameMode)
+	{
 		LevelGameMode->IncrementStoredFood();
+		LevelGameMode->FoodManager->RemoveFoodInCounterFoodScene(Cast<AFood>(ItemInHand));
+	}
+	
 	ItemInHand = nullptr;
-	bHasItem = false;
+	bCarryItem = false;
 	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 }
 	
@@ -201,6 +190,12 @@ void AKnightCharacter::Interact()
 			{
 				StoreItem(ItemToInteractWith);
 			}
+			else if(ItemToInteractWith->IsA(ASpotFood::StaticClass()) && ItemInHand->IsA(AFood::StaticClass()))
+			{
+				APickableItem* TmpItem = ItemInHand;
+				DropItem();
+				Cast<ASpotFood>(ItemToInteractWith)->StoreFood(Cast<AFood>(TmpItem));
+			}
 			else
 			{
 				DropItem();
@@ -218,6 +213,11 @@ void AKnightCharacter::Interact()
 			{
 				APickableItem* PickableItem = Cast<APickableItem>(ItemToInteractWith);
 				GrabItem(PickableItem);
+			}
+			else if(ItemToInteractWith->IsA(ASpotFood::StaticClass()))
+			{
+				ASpotFood* SpotFood = Cast<ASpotFood>(ItemToInteractWith);
+				GrabItem(SpotFood->TakeFood());
 			}
 		}
 	}
