@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTT_MoveToFood::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		UObject* KeyValue = OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(BlackboardKey.GetSelectedKeyID());
 	
 		AFood* TargetFood = Cast<AFood>(KeyValue);
-		if (TargetFood /*&& !TargetFood->IsOnGround()*/)
+		if (TargetFood)
 		{
 			FVector Origin;
 			FVector Extents;
@@ -42,7 +42,7 @@ EBTNodeResult::Type UBTT_MoveToFood::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		{
 			ASpotFood * TargetFoodSpot = Cast<ASpotFood>(KeyValue);
 
-			if (TargetFoodSpot /*&& !TargetFoodSpot->IsOnGround()*/)
+			if (TargetFoodSpot)
 			{
 				FVector Origin;
 				FVector Extents;

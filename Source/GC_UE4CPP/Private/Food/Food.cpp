@@ -16,33 +16,15 @@ AFood::AFood():Super()
 void AFood::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if(IsOnGround())
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName().ToString()));
-	}
-
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName().ToString()));
-		FVector Origin = FVector::ZeroVector;
-		FVector BoxExtent = FVector::ZeroVector;
-		if(GetBoundsSupportFood(Origin, BoxExtent))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Center [ %s ] Dimension [ %s ]"), *(Origin.ToString()), *(BoxExtent.ToString()));
-		}
-
-		
-	}
 }
 
 bool AFood::IsOnGround() const
 {
-	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+	static const FName NAME_IsOnGroundLine = FName(TEXT("NAME_IsOnGroundLine"));
 
 	FHitResult HitResult;
 	
-	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_IsOnGroundLine, true, this);
 
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
@@ -55,10 +37,6 @@ bool AFood::IsOnGround() const
 
 	else
 	{
-		if(bHitSocket)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("support has name %s"), *HitResult.GetActor()->GetName());
-		}
 		return false;
 	}
 }
@@ -66,20 +44,18 @@ bool AFood::IsOnGround() const
 //Return bounds on object on what is landed
 bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 {
-	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+	static const FName NAME_IsOnSupportLine = FName(TEXT("NAME_IsOnSupportLine"));
 	Origin = FVector::ZeroVector;
 	BoxExtent = FVector::ZeroVector;
 
 	if(GetCurrentItemState() != EItemState::EIS_Movable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Food isn't dropped"));
-
 		return false;
 	}
 	
 	FHitResult HitResult;
 	
-	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_IsOnSupportLine, true, this);
 
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic))

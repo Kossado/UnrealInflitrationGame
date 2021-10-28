@@ -55,11 +55,11 @@ AFood * ASpotFood::TakeFood()
 
 bool ASpotFood::IsOnGround() const
 {
-	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+	static const FName NAME_IsOnGroundLine = FName(TEXT("NAME_IsOnGroundLine"));
 
 	FHitResult HitResult;
 	
-	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_IsOnGroundLine, true, this);
 
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
@@ -67,17 +67,11 @@ bool ASpotFood::IsOnGround() const
 
 	if(bHitSocket && HitResult.GetActor()->ActorHasTag("Ground"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ %s ] is on ground"));
-
 		return true;
 	}
 
 	else
 	{
-		if(bHitSocket)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("support has name %s"), *HitResult.GetActor()->GetName());
-		}
 		return false;
 	}
 }
@@ -85,14 +79,14 @@ bool ASpotFood::IsOnGround() const
 //Return bounds on object on what is landed
 bool ASpotFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 {
-	static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+	static const FName NAME_IsOnSupportLine = FName(TEXT("NAME_IsOnSupportLine"));
 	Origin = FVector::ZeroVector;
 	BoxExtent = FVector::ZeroVector;
 
 	
 	FHitResult HitResult;
 	
-	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
+	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_IsOnSupportLine, true, this);
 
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic))

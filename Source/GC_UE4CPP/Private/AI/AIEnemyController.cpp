@@ -111,7 +111,6 @@ void AAIEnemyController::CarryFood(AFood * FoodToCarry)
 		AICharacter->GrabItem(FoodToCarry);
 		GetBlackboardComponent()->SetValueAsObject("Food", AttributedFood);
 		GetBlackboardComponent()->SetValueAsBool("bCarryFood", true);
-		GetBlackboardComponent()->SetValueAsBool("bHasToPutFood", true);
 		GetBlackboardComponent()->SetValueAsBool("bHasDroppedFood", false);
 		GetBlackboardComponent()->SetValueAsVector("LocationDroppedFood", FVector::ZeroVector);
 

@@ -111,8 +111,6 @@ void AAIEnemyManager::SpawnPawn()
 
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
-
 			AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
 			ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
 

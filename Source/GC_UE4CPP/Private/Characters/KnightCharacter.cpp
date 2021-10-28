@@ -4,10 +4,13 @@
 #include "Items/Chair.h"
 #include "Managers/GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
+#include "AI/AIEnemyCharacter.h"
+#include "AI/AIEnemyController.h"
 #include "HUD/InGameInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "Components/CapsuleComponent.h"
 
 
 
@@ -222,3 +225,4 @@ void AKnightCharacter::Interact()
 		}
 	}
 }
+

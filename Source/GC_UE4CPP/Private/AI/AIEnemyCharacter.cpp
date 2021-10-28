@@ -7,6 +7,8 @@
 #include "AI/AIEnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Managers/GCGameMode.h"
+
 // Sets default values
 AAIEnemyCharacter::AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -22,8 +24,16 @@ AAIEnemyCharacter::AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer
 void AAIEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AAIEnemyCharacter::OnHit);
 
+	if(GetCapsuleComponent() != nullptr)
+	{
+		GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AAIEnemyCharacter::OnHit);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AKnightCharacter::BeginPlay - Capsule is null"));
+		return;
+	}
 }
 
 
@@ -50,7 +60,18 @@ void AAIEnemyCharacter::StoreFood(ASpotFood * SpotFood)
 
 void AAIEnemyCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	AGCGameMode * GameMode = Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
+
+	if(GameMode == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AAIEnemyCharacter::OnHit - GameMode is null"));
+		return; 
+	}
+
+	if(!GameMode->IsRunning())
+	{
+		return;
+	}
 
 	if(!OtherActor->IsA(AKnightCharacter::StaticClass()))
 	{

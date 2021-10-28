@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTT_FollowDirectionTarget::ExecuteTask(UBehaviorTreeCompone
 			return EBTNodeResult::Failed;
 		}
 		
-		static const FName NAME_AILineOfSight = FName(TEXT("LookNextPosition"));
+		static const FName NAME_LookNextPositionLine = FName(TEXT("LookNextPosition"));
 	
 		FHitResult HitResult;
 
@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTT_FollowDirectionTarget::ExecuteTask(UBehaviorTreeCompone
 		
 		bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, LocationLostTarget, LocationLostTarget+DirectionTarget*5000
 		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
-		, FCollisionQueryParams(NAME_AILineOfSight, true, OwnerComp.GetOwner()));
+		, FCollisionQueryParams(NAME_LookNextPositionLine, true, OwnerComp.GetOwner()));
 		
 		if (bHitSocket == true) {
 			OwnerComp.GetBlackboardComponent()->SetValueAsVector("LocationSearchPlayer", HitResult.Location-DirectionTarget*50);	
