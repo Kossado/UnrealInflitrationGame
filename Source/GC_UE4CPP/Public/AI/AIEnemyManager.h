@@ -23,6 +23,7 @@ public:
 	// Sets default values for this actor's properties
 	AAIEnemyManager();
 	void Initialize();
+	void EndGame();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

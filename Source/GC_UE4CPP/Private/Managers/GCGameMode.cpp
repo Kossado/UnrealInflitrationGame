@@ -264,13 +264,18 @@ void AGCGameMode::CheckGameConditions()
 	
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{
-		SetCurrentGameState(EGS_VICTORY);
-		DisableCharacterInput();
-		if(InGameInterface)
-		{
-			InGameInterface->EndGame(true);
-		}
+		Victory();
 	}	
+}
+
+void AGCGameMode::Victory()
+{
+	SetCurrentGameState(EGS_VICTORY);
+	EndGame();
+	if(InGameInterface)
+	{
+		InGameInterface->EndGame(true);
+	}
 }
 
 void AGCGameMode::Defeat()
@@ -281,10 +286,20 @@ void AGCGameMode::Defeat()
 	}
 	
 	SetCurrentGameState(EGS_DEFEAT);
-	DisableCharacterInput();
+	EndGame();
 	if(InGameInterface)
 	{
 		InGameInterface->EndGame(false);
+	}
+}
+
+void AGCGameMode::EndGame()
+{
+	DisableCharacterInput();
+
+	if(EnemyManager!= nullptr)
+	{
+		EnemyManager->EndGame();
 	}
 }
 

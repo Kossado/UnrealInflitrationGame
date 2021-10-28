@@ -48,7 +48,10 @@ public:
 	// Checks
 	void CheckGameConditions();
 
+	void Victory();
 	void Defeat();
+	void EndGame();
+
 	void DisableCharacterInput();
 	// Pause
 	void LaunchMenuPause();

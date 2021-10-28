@@ -30,6 +30,17 @@ void AAIEnemyManager::BeginPlay()
 	}
 }
 
+void AAIEnemyManager::EndGame()
+{
+	for(AAIEnemyController* AIController : ListAIControllerOnScene)
+	{
+		if(AIController != nullptr)
+		{
+			AIController->EndGame();
+		}
+	}
+}
+
 void AAIEnemyManager::Initialize()
 {
 	FTimerHandle OutHandle;

@@ -44,6 +44,15 @@ AAIEnemyController::AAIEnemyController(const FObjectInitializer & ObjectInitiali
 	}
 }
 
+void AAIEnemyController::EndGame()
+{
+	if(GetBlackboardComponent() != nullptr)
+	{
+		GetBlackboardComponent()->SetValueAsBool("bIsGameRunning", false);
+	}
+
+}
+
 
 // Called when the game starts or when spawned
 void AAIEnemyController::BeginPlay()
@@ -72,6 +81,7 @@ bool AAIEnemyController::Initialize(AAIEnemyManager* AIEnemyManagerSpawner, unsi
 		Blackboard->SetValueAsVector("LocationUnSpawn", AIEnemyManager->GetUnSpawnPoint()->GetActorLocation());
 		Blackboard->SetValueAsBool("NeedNewSpot", true);
 		Blackboard->SetValueAsObject("SelfActor", GetCharacter());
+		GetBlackboardComponent()->SetValueAsBool("bIsGameRunning", true);
 	}
 		
 	BehaviorComponent->StartTree(*AICharacter->BehaviourTree);

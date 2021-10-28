@@ -24,6 +24,8 @@ class GC_UE4CPP_API AAIEnemyController : public AAIController
 public:
 
 	AAIEnemyController(const FObjectInitializer & ObjectInitializer = FObjectInitializer::Get());
+
+	void EndGame();
 	
 	bool Initialize(AAIEnemyManager* AIEnemyManagerSpawner, unsigned int NbRetriesBeforeBackUnSpawn);
 	bool IsSpotHasFood();
