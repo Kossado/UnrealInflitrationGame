@@ -21,19 +21,20 @@ void UPrincipalMenuWidget::NativeConstruct()
 	}
 }
 
+// Acquisition choose hero menu widget
+void UPrincipalMenuWidget::InitializeChooseHeroMenuWidget(UWidget* chooseHeroMenuWidget)
+{
+	ChooseHeroMenuWidget = chooseHeroMenuWidget;
+}
+
 // Event OnCliked in UIPlay
 void UPrincipalMenuWidget::Play()
 {
 	if(UIPlay)
 	{
-		// Change input mode to game only
-		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
-		
-		// Disable mouse
-		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
-
-		// Open level map
-		UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
+		// Update widget visibility 
+		this->SetVisibility(ESlateVisibility::Hidden);
+		ChooseHeroMenuWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
