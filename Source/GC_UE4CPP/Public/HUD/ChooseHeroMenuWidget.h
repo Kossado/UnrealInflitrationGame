@@ -1,20 +1,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Managers/GCGameState.h"
 #include "Blueprint/UserWidget.h"
+#include "Managers/GCGameState.h"
 #include "ChooseHeroMenuWidget.generated.h"
 
 UCLASS()
 class GC_UE4CPP_API UChooseHeroMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void NativeConstruct() override;
 
+public:
 	void InitializePrincipalMenuWidget(UWidget*);
 
+protected:
+	virtual void NativeConstruct() override;
+	
+private:
 	UFUNCTION()
 	void Back();
 

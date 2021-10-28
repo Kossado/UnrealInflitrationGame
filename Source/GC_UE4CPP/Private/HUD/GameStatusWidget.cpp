@@ -3,30 +3,22 @@
 #include "Managers/GCGameMode.h"
 
 // Import extern class
-#include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Components/Button.h" // For UButton
+#include "Kismet/GameplayStatics.h" // For UGameplayStatics and UKismetSystemLibrary
 
 // Constructor
 void UGameStatusWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
-	if(UIPlayAgain)
+	if(UIPlayAgain && UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
 		UIPlayAgain->OnClicked.AddDynamic(this,&UGameStatusWidget::PlayAgain);
-	}
-	if(UIQuit)
-	{
 		UIQuit->OnClicked.AddDynamic(this,&UGameStatusWidget::Quit);
-	}
-	if(UIQuitDesktop)
-	{
 		UIQuitDesktop->OnClicked.AddDynamic(this,&UGameStatusWidget::QuitDesktop);
-	}
-	if(UIQuitMainMenu)
-	{
 		UIQuitMainMenu->OnClicked.AddDynamic(this,&UGameStatusWidget::QuitMainMenu);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::NativeConstruct - One or more UButton is/are null"));
 	}
 }
 
@@ -36,11 +28,24 @@ void UGameStatusWidget::PlayAgain()
 	if(UIPlayAgain)
 	{
 		// Change input mode to game only
-		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		if (Player)
+		{
+			Player->SetInputMode(FInputModeGameOnly());
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::PlayAgain - Player null"));
+		}
 
 		// Restart game
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		GameMode->RestartGame();
+		if (GameMode)
+		{
+			GameMode->RestartGame();
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::PlayAgain - GameMode null"));
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::PlayAgain - UIPlayAgain null"));
 	}
 }
 
@@ -58,6 +63,8 @@ void UGameStatusWidget::Quit()
 			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Visible);
 			this->UIQuitMainMenu->SetVisibility(ESlateVisibility::Visible);
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::Quit - UIQuit or/and UIQuitDesktop or/and UIQuitMainMenu null"));
 	}
 }
 
@@ -68,6 +75,8 @@ void UGameStatusWidget::QuitDesktop()
 	{
 		// Quit game
 		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::QuitDesktop - UIQuitDesktop null"));
 	}
 }
 
@@ -78,5 +87,7 @@ void UGameStatusWidget::QuitMainMenu()
 	{
 		// Open level principal menu
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UGameStatusWidget::QuitMainMenu - UIQuitMainMenu null"));
 	}
 }

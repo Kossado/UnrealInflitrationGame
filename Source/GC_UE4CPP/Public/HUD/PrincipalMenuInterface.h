@@ -16,13 +16,13 @@ public:
 
 	virtual void BeginPlay() override;
 
+private:
+	UPrincipalMenuWidget* MainMenuWidget;
+	UChooseHeroMenuWidget* ChooseHeroMenuWidget;
+
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> ChooseHeroMenuWidgetClass;
-
-private:
-	UPrincipalMenuWidget* MainMenuWidget;
-	UChooseHeroMenuWidget* ChooseHeroMenuWidget;
 };

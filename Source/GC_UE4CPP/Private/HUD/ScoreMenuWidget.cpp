@@ -2,7 +2,7 @@
 #include "HUD/ScoreMenuWidget.h"
 
 // Import extern class
-#include "Runtime/UMG/Public/UMG.h"
+#include "Runtime/UMG/Public/UMG.h" // For UProgressBar
 
 // Constructor
 void UScoreMenuWidget::NativeConstruct()
@@ -16,5 +16,7 @@ void UScoreMenuWidget::UpdateCurrentFood(int32 value)
 	if(UIProgression)
 	{
 		UIProgression->SetPercent(value * 0.20f);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UScoreMenuWidget::UpdateCurrentFood - UIProgression null"));
 	}
 }

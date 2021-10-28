@@ -2,8 +2,9 @@
 #include "HUD/InGameInterface.h"
 
 // Import extern class
-#include "Kismet/GameplayStatics.h"
-#include "Runtime/UMG/Public/UMG.h"
+#include "Kismet/GameplayStatics.h" //For UGameplayStatics
+#include "Components/TextBlock.h"
+//#include "Runtime/UMG/Public/UMG.h" //For UTextBlock
 
 // Event begin play
 void AInGameInterface::BeginPlay()
@@ -16,8 +17,13 @@ void AInGameInterface::BeginPlay()
 		if (ScoreWidget)
 		{
 			ScoreWidget->AddToViewport();
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - ScoreWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - ScoreWidgetClass null"));
 	}
+	
 	// Create pause menu widget 
 	if (PauseWidgetClass)
 	{
@@ -25,10 +31,15 @@ void AInGameInterface::BeginPlay()
 		if (PauseWidget)
 		{
 			PauseWidget->AddToViewport();
-			// Not visible to default
+			// Not visible by default
 			PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - PauseWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - PauseWidgetClass null"));
 	}
+	
 	// Create options menu widget 
 	if (OptionsWidgetClass)
 	{
@@ -36,16 +47,24 @@ void AInGameInterface::BeginPlay()
 		if (OptionsWidget)
 		{
 			OptionsWidget->AddToViewport();
-			// Not visible to default
+			// Not visible by default
 			OptionsWidget->SetVisibility(ESlateVisibility::Hidden);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - OptionsWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - OptionsWidgetClass null"));
 	}
+	
 	// Initialize to options menu and pause menu
-	if (OptionsWidget && OptionsWidget)
+	if (PauseWidget && OptionsWidget)
 	{
 		PauseWidget->InitializeOptionsWidget(OptionsWidget);
 		OptionsWidget->InitializePauseWidget(PauseWidget);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - PauseWidget or/and OptionsWidget null"));
 	}
+	
 	// Create game status menu widget 
 	if (GameStatusWidgetClass)
 	{
@@ -53,9 +72,13 @@ void AInGameInterface::BeginPlay()
 		if (GameStatusWidget)
 		{
 			GameStatusWidget->AddToViewport();
-			// Not visible to default
+			// Not visible by default
 			GameStatusWidget->SetVisibility(ESlateVisibility::Hidden);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - GameStatusWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::BeginPlay - GameStatusWidgetClass null"));
 	}
 }
 
@@ -75,12 +98,19 @@ void AInGameInterface::Pause()
 		// Pause play
 		UGameplayStatics::SetGamePaused(GetWorld(),true);
 
-		// Change input mode to UI only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		Player->SetInputMode(FInputModeUIOnly());
+		if (Player)
+		{
+			// Change input mode to UI only
+			Player->SetInputMode(FInputModeUIOnly());
 
-		// Activate mouse
-		Player->bShowMouseCursor = true;
+			// Activate mouse
+			Player->bShowMouseCursor = true;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::Pause - Player null"));
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::Pause - PauseWidgetClass null"));
 	}
 }
 
@@ -89,24 +119,41 @@ void AInGameInterface::EndGame(bool GameStatus)
 {
 	if (GameStatusWidgetClass)
 	{
-		// Update widget visibility 
-		ScoreWidget->SetVisibility(ESlateVisibility::Hidden);
-		GameStatusWidget->SetVisibility(ESlateVisibility::Visible);
-
-		// Update editable text in depends on the value provided as parameter of this function
-		if (GameStatus)
+		if (ScoreWidget && GameStatusWidget)
 		{
-			GameStatusWidget->UITitreVictory->SetVisibility(ESlateVisibility::Visible);
+			// Update widget visibility
+			ScoreWidget->SetVisibility(ESlateVisibility::Hidden);
+			GameStatusWidget->SetVisibility(ESlateVisibility::Visible);
+
+			// Update editable text in depends on the value provided as parameter of this function
+			if (GameStatusWidget->UITitreVictory && GameStatusWidget->UITitreDefeat)
+			{
+				if (GameStatus)
+				{
+					GameStatusWidget->UITitreVictory->SetVisibility(ESlateVisibility::Visible);
+				} else {
+					GameStatusWidget->UITitreDefeat->SetVisibility(ESlateVisibility::Visible);
+				}
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::EndGame - UITitreVictory or/and UITitreDefeat null"));
+			}
 		} else {
-			GameStatusWidget->UITitreDefeat->SetVisibility(ESlateVisibility::Visible);
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::EndGame - ScoreWidget or/and GameStatusWidget null"));
 		}
 
-		// Change input mode to UI only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		Player->SetInputMode(FInputModeUIOnly());
+		if (Player)
+		{
+			// Change input mode to UI only
+			Player->SetInputMode(FInputModeUIOnly());
 
-		// Activate mouse
-		Player->bShowMouseCursor = true;
+			// Activate mouse
+			Player->bShowMouseCursor = true;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::EndGame - Player null"));
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::EndGame - GameStatusWidgetClass null"));
 	}
 }
 
@@ -116,5 +163,7 @@ void AInGameInterface::UpdateCurrentFood(int32 value)
 	if(ScoreWidget)
 	{
 		ScoreWidget->UpdateCurrentFood(value);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("AInGameInterface::UpdateCurrentFood - ScoreWidget null"));
 	}
 }
