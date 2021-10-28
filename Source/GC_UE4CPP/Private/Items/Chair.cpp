@@ -9,7 +9,6 @@ AChair::AChair():Super()
 	//Set up Location to sit Component
 	SitLocationComponent = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Sit Location")));
 	SitLocationComponent->SetupAttachment(RootComponent);
-	SetItemProperties(EIS_Immovable);
 }
 
 FVector AChair::GetSitLocation()
@@ -56,4 +55,5 @@ bool AChair::IsUsed()
 void AChair::BeginPlay()
 {
 	Super::BeginPlay();
+	SetItemProperties(EIS_Immovable);
 }

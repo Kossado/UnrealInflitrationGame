@@ -13,12 +13,11 @@ class GC_UE4CPP_API AFood : public APickableItem
 public:	
 	// Sets default values for this actor's properties
 	AFood();
-	
-	bool IsOnGround() const;
 	bool GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent);
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool IsOnGround() const;
 
 };

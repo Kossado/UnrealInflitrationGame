@@ -19,31 +19,31 @@ class GC_UE4CPP_API UCharacterAnimInstance : public UAnimInstance
 
 public:
 	virtual void NativeInitializeAnimation() override;
-
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 private:
-	// Character's ref
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-	AGCCharacter* Character;
+	AGCCharacter* Character = nullptr;
 	// Character speed for the walk animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	float Speed;
-	// Condition for the Victory/Defeat dance
+	float Speed = 0.f;
+	// Condition for the Victory/Defeat animation
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bVictory;
+	bool bVictory = false;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bGameInProgress;
-	// Condition for the carry animation
+	bool bGameInProgress = true;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bCarryItem;
-	// Condition to sit in chair
+	bool bCarryItem = false;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bSit;
-
+	bool bSit = false;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly ,meta = (AllowPrivateAccess = "true"))
-	bool bRotate;
+	bool bRotate = false;
 	
-	AGCGameMode* MainGameMode;
+	AGCGameMode* GameMode = nullptr;
+
+	void CheckWalkAnimation();
+	void CheckWinOrDefeatAnimation();
+
+	
 	
 };

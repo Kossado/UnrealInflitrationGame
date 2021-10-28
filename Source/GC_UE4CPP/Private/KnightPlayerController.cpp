@@ -33,7 +33,6 @@ void AKnightPlayerController::BeginPlay()
 void AKnightPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
 	SmoothZoom(DeltaSeconds);
 }
 

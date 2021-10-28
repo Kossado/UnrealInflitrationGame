@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Food/FoodManager.h"
 #include "GCGameState.h"
+#include "AI/AIEnemyManager.h"
 #include "GameFramework/GameMode.h"
 #include "HUD/InGameInterface.h"
 #include "GCGameMode.generated.h"
@@ -36,18 +37,15 @@ public:
 	void IncrementPickableFood();
 	// Checks
 	void CheckGameConditions();
-	void DisableCharacterInput(bool GameStatus);
+	void DisableCharacterInput();
 	// Pause
 	void LaunchMenuPause();
-	
+	AFoodManager* FoodManager = nullptr;
+	AAIEnemyManager* AIManager = nullptr;
+
 
 private:
 	// UI
-	AInGameInterface* InGameInterface;
-
+	AInGameInterface* InGameInterface = nullptr;
 	
 };
-// if NourritureDansCachette >= QtéDef : GameState = VICTORY
-// if Hit by AI : GameState = DEFEAT
-// if Menu Open : GameState = PAUSE
-// DEFAULT : GameState = PLAYING 

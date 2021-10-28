@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Food.h"
-#include "GameFramework/Actor.h"
 #include "SpotFood.generated.h"
 
 class AFoodManager;
 
 UCLASS()
-class GC_UE4CPP_API ASpotFood : public AActor
+class GC_UE4CPP_API ASpotFood : public AInteractiveItem
 {
 	GENERATED_BODY()
 	
@@ -32,6 +31,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* FoodLocation;
 
 private:
 	AFoodManager * FoodManager;

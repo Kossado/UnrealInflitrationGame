@@ -4,10 +4,11 @@
 #include "Characters/GCCharacter.h"
 
 #include "Items/Chair.h"
-#include "Items/Chest.h"
 #include "Managers/GCGameMode.h"
 #include "Items/InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer),
@@ -24,12 +25,6 @@ void AGCCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-// Called to bind functionality to input
-void AGCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 void AGCCharacter::GrabItem(APickableItem* PickableItem)
 {
 	if(PickableItem != nullptr)
@@ -43,7 +38,7 @@ void AGCCharacter::GrabItem(APickableItem* PickableItem)
 			HandSocket->AttachActor(PickableItem,GetMesh());
 		}
 		ItemInHand = PickableItem;
-		bHasItem = true;
+		bCarryItem = true;
 		ChangeCharacterSpeed(BaseWalkSpeed, CarryWalkSpeedMultiplicator);
 	}
 }
@@ -57,7 +52,7 @@ void AGCCharacter::DropItem()
 		ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
 		ItemInHand->DropItem();
 		ItemInHand = nullptr;
-		bHasItem = false;
+		bCarryItem = false;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 	}
 }
@@ -82,7 +77,6 @@ void AGCCharacter::SitDown(AChair* Chair)
 			GetCharacterMovement()->GravityScale = 0.f;
 			SetActorLocation(Chair->GetSitLocation());
 			SetActorRotation(Chair->GetSitRotation());
-			
 		}
 	}
 }
@@ -103,7 +97,6 @@ void AGCCharacter::OnEnterActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && !InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Add(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Add Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 
@@ -112,13 +105,38 @@ void AGCCharacter::OnLeaveActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Remove(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Remove Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 
 bool AGCCharacter::IsRotating() const
 {
 	return  bRotate; 
+}
+
+void AGCCharacter::UnSpawn()
+{
+	if(ItemInHand)
+	{
+		AFood * FoodInHand = Cast<AFood>(ItemInHand);
+		if(FoodInHand != nullptr)
+		{
+			AGCGameMode * GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+			if(GameMode != nullptr)
+			{
+				if(GameMode->FoodManager == nullptr)
+				{
+					UE_LOG(LogTemp, Error, TEXT("Food Manager is Null"));
+					return;
+				}
+				GameMode->FoodManager->DestroyFood(FoodInHand);
+			}
+		}
+		else
+		{
+			ItemInHand->DestroyItem();
+		}
+	}
 }
 
 void AGCCharacter::BeginRotate()

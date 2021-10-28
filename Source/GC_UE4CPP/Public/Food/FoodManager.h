@@ -8,6 +8,8 @@
 #include "GameFramework/Actor.h"
 #include "FoodManager.generated.h"
 
+class AGCGameMode;
+
 UCLASS()
 class GC_UE4CPP_API AFoodManager : public AActor
 {
@@ -16,6 +18,7 @@ class GC_UE4CPP_API AFoodManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFoodManager();
+	void Initialize();
 
 	UFUNCTION(CallInEditor)
 	void SpawnFoodSpot();
@@ -58,5 +61,7 @@ private:
 	int MaxFoodInScene = 5;
 	
 	TArray<AFood*> ListExistingFood;
+
+	AGCGameMode * MainGameMode;
 	
 };

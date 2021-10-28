@@ -47,6 +47,7 @@ public:
 	void BeginRotation() const;
 	void Rotate(FRotator NextRotation) const;
 	void EndRotation() const;
+	void UnSpawn();
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);

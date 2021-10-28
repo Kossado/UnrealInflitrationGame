@@ -22,15 +22,16 @@ void AGCGameMode::InitGameState()
 		GetGameState<AGCGameState>()->PickableFood = 0;
 		GetGameState<AGCGameState>()->StoredFoodToWin = 5;
 	}
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"InitGameState");
 }
 
 void AGCGameMode::StartPlay()
 {
-	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
+	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	FoodManager->Initialize();
+	AIManager->Initialize();
+	UE_LOG(LogTemp, Error, TEXT("End Initialization"));
 }
 
 void AGCGameMode::RestartGame()
@@ -67,15 +68,19 @@ void AGCGameMode::IncrementStoredFood()
 {
 	GetGameState<AGCGameState>()->StoredFood++;
 	if(InGameInterface)
+	{
 		InGameInterface->UpdateCurrentFood(GetStoredFood());
+	}
 	CheckGameConditions();
 }
 
 void AGCGameMode::LaunchMenuPause()
 {
 	if(InGameInterface)
+	{
 		SetCurrentGameState(EGS_PAUSE);
 		InGameInterface->Pause();
+	}
 }
 
 void AGCGameMode::IncrementPickableFood()
@@ -88,7 +93,9 @@ void AGCGameMode::CheckGameConditions()
 	if(GetStoredFood() >= GetStoredFoodToWin())
 	{
 		SetCurrentGameState(EGS_VICTORY);
-		DisableCharacterInput(true);
+		DisableCharacterInput();
+		if(InGameInterface)
+			InGameInterface->EndGame(true);
 	}
 	/*if(CharacterHitByAI)
 	{
@@ -97,10 +104,7 @@ void AGCGameMode::CheckGameConditions()
 	}*/
 }
 
-void AGCGameMode::DisableCharacterInput(bool GameStatus)
+void AGCGameMode::DisableCharacterInput()
 {
-	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	if(InGameInterface)
-		InGameInterface->EndGame(GameStatus);
 }

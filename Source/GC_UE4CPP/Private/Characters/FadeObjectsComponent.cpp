@@ -9,11 +9,6 @@
 // Sets default values for this component's properties
 UFadeObjectsComponent::UFadeObjectsComponent() : Super()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 	// Add first collision type
 	ObjectTypes.Add(COLLISION_TRANSPARENT);
 }
@@ -32,14 +27,7 @@ void UFadeObjectsComponent::BeginPlay()
 	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(ObjectComputeTimer);
 	GetOwner()->GetWorld()->GetTimerManager().PauseTimer(AddFadeObjectsTimer);
 
-	SetActivate(bIsActivate);
-}
-
-
-// Called every frame
-void UFadeObjectsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	SetActivate(bActivated);
 }
 
 void UFadeObjectsComponent::FadeObject()
@@ -68,6 +56,7 @@ void UFadeObjectsComponent::FadeObject()
 		}
 		// Check distance between camera and player for new object to fade, and add this in array
 		GetOwner()->GetWorld()->LineTraceMultiByObjectType(HitArray, TraceStart, TraceEnd, TraceObjectTypes, TraceParams);
+		// Use code below if needed to do it with the entire capsule component and not with the center of the actor
 		/*GetOwner()->GetWorld()->SweepMultiByObjectType(HitArray, TraceStart, TraceEnd, ActorQuat, TraceObjectTypes,
 				FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight), TraceParams);*/
 		
@@ -168,9 +157,9 @@ void UFadeObjectsComponent::UnFadeObject()
 
 void UFadeObjectsComponent::SetActivate(bool bActivate)
 {
-	bIsActivate = bActivate;
+	bActivated = bActivate;
 
-	if (!bIsActivate)
+	if (!bActivated)
 	{
 		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(ObjectComputeTimer);
 		GetOwner()->GetWorld()->GetTimerManager().PauseTimer(AddFadeObjectsTimer);
@@ -184,5 +173,5 @@ void UFadeObjectsComponent::SetActivate(bool bActivate)
 
 void UFadeObjectsComponent::SetEnable(bool bEnable)
 {
-	bIsEnabled = bEnable;
+	bEnabled = bEnable;
 }

@@ -30,7 +30,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	bool bUsed = false;
-	AGCCharacter* UserCharacter;
+	AGCCharacter* UserCharacter = nullptr;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category=Mesh, meta = (AllowPrivateAccess = "true"))

@@ -9,7 +9,6 @@
 // Sets default values
 AChest::AChest():Super()
 {
-	SetItemProperties(EIS_Immovable);
 	// Setup food position in chest
 	FoodPlaceholder.Init(nullptr,5);
 	for(int i = 0; i < FoodPlaceholder.Num();i++)
@@ -26,7 +25,7 @@ AChest::AChest():Super()
 void AChest::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetItemProperties(EIS_Immovable);	
 }
 
 FVector AChest::GetValidStoredPosition()

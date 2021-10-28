@@ -194,6 +194,11 @@ void AAIEnemyController::EndRotation() const
 	AICharacter->EndRotate();
 }
 
+void AAIEnemyController::UnSpawn()
+{
+	AICharacter->UnSpawn();
+}
+
 void AAIEnemyController::Rotate(const FRotator NextRotation) const
 {
 	AICharacter->SetActorRotation(NextRotation);
