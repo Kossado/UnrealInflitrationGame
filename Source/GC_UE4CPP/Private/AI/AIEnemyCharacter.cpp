@@ -3,7 +3,7 @@
 
 #include "AI/AIEnemyCharacter.h"
 
-#include "GCPlayerCharacter.h"
+#include "Characters/KnightCharacter.h"
 #include "AI/AIEnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -52,12 +52,12 @@ void AAIEnemyCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 {
 	UE_LOG(LogTemp, Warning, TEXT("Hit"));
 
-	if(!OtherActor->IsA(AGCPlayerCharacter::StaticClass()))
+	if(!OtherActor->IsA(AKnightCharacter::StaticClass()))
 	{
 		return;
 	}
 
-	AGCPlayerCharacter * PlayerCharacter = Cast<AGCPlayerCharacter>(OtherActor);
+	AKnightCharacter * PlayerCharacter = Cast<AKnightCharacter>(OtherActor);
 
 	if(PlayerCharacter == nullptr)
 	{

@@ -6,7 +6,7 @@
 #include "BlueprintEditor.h"
 #include "ChaosInterfaceWrapperCore.h"
 #include "DrawDebugHelpers.h"
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 #include "Food/SpotFood.h"
 #include "AI/AIEnemyManager.h"
 #include "BehaviorTree/BlackboardComponent.h"
