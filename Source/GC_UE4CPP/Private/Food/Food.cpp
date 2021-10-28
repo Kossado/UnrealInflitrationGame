@@ -34,7 +34,6 @@ bool AFood::IsOnGround() const
 	{
 		return true;
 	}
-
 	else
 	{
 		return false;
@@ -67,10 +66,8 @@ bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 		HitResult.GetActor()->GetActorBounds(false, Origin, BoxExtent, true);
 		return true;
 	}
-
 	else
 	{
 		return false;
 	}
-	
 }

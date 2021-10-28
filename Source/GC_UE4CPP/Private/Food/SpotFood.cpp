@@ -6,7 +6,10 @@
 // Sets default values
 ASpotFood::ASpotFood() : Super()
 {
-
+	FoodLocation = CreateDefaultSubobject<USceneComponent>(FName(TEXT("Food Location")));
+	FoodLocation->SetupAttachment(RootComponent);
+	FoodLocation->SetRelativeLocation(FVector::ZeroVector);
+	FoodLocation->SetRelativeRotation(FRotator::ZeroRotator);
 }
 
 void ASpotFood::Initialize(AFoodManager * FoodManagerSpawner)
@@ -34,9 +37,10 @@ bool ASpotFood::StoreFood(AFood * FoodToStore)
 		return false;
 	}
 	
-	FoodToStore->SetActorLocation(this->GetActorLocation());
-	FoodToStore->SetActorRotation(this->GetActorRotation());
+	FoodToStore->SetActorLocation(FoodLocation->GetComponentLocation());
+	FoodToStore->SetActorRotation(FoodLocation->GetComponentRotation());
 	StoredFood = FoodToStore;
+	StoredFood->SetItemProperties(EIS_Disabled);
 	return true;
 }
 

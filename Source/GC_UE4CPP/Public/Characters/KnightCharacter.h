@@ -18,12 +18,8 @@ class GC_UE4CPP_API AKnightCharacter : public AGCCharacter, public IAISightTarge
 public:
 	// Sets default values for this character's properties
 	AKnightCharacter();
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr, const bool* bWasVisible = nullptr, int32* UserData = nullptr) const override;
-	
 	UFUNCTION()
 	void Interact();
 
@@ -40,10 +36,8 @@ private:
 	// Camera stick positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraSpringArm;
-	
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraPortraitStick;
-	
 	// Camera that follow the character
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComponent;
@@ -73,14 +67,10 @@ private:
 	// Component that allow to see through objects
 	UPROPERTY(VisibleAnywhere, Category=Camera, meta = (AllowPrivateAccess = "true"))
 	UFadeObjectsComponent* FadeObjectsComponent;
-
+	// Array of the different socket's name to be detected by the AI
 	UPROPERTY(EditAnywhere)
 	TArray<FName> NameSocketDetectionByAI;
 	
 public:
-	// GETTERS / SETTERS
 	FORCEINLINE USpringArmComponent* GetCameraSpringArm() const {return CameraSpringArm;}
-
-	/*UPROPERTY(EditAnywhere, Category = Materials)
-	UMaterial* BaseMaterial;*/
 };
