@@ -57,8 +57,7 @@ void UPauseMenuWidget::Resume()
 
 		// Change input mode to game only
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		FInputModeGameOnly InputMode;
-		Player->SetInputMode(InputMode);
+		Player->SetInputMode(FInputModeGameOnly());
 
 		// Disable mouse
 		Player->bShowMouseCursor = false;
