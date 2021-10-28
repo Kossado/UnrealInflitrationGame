@@ -1,14 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "GCGameState.generated.h"
 
-/**
- * 
- */
 UENUM()
 enum EGameState
 {
@@ -16,6 +11,14 @@ enum EGameState
 	EGS_DEFEAT,
 	EGS_PAUSE,
 	EGS_PLAYING
+};
+
+UENUM()
+enum ESkinPlayer
+{
+	EGS_KNIGHT,
+	EGS_GOBELIN_MALE,
+	EGS_GOBELIN_FEMALE,
 };
 
 UCLASS()
@@ -36,4 +39,6 @@ public:
 	// Quantity of food needed to win the game
 	UPROPERTY(VisibleAnywhere, Category=GameData)
 	int StoredFoodToWin;
+	// Skin of player
+	ESkinPlayer SkinPlayer;
 };

@@ -32,6 +32,7 @@ public:
 	int GetStoredFoodToWin() const;
 	// Setters
 	void SetCurrentGameState(EGameState CurrentGameState) const;
+	void SetSkinPlayer(ESkinPlayer SkinPlayer) const;
 	void IncrementStoredFood();
 	void IncrementPickableFood();
 	// Checks

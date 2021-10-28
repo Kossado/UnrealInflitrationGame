@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ChooseHeroMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "PrincipalMenuWidget.generated.h"
 
@@ -11,6 +12,8 @@ class GC_UE4CPP_API UPrincipalMenuWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+
+	void InitializeChooseHeroMenuWidget(UWidget*);
 
 	UFUNCTION()
 	void Play();
@@ -23,4 +26,6 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuit;
+
+	UWidget* ChooseHeroMenuWidget;
 };

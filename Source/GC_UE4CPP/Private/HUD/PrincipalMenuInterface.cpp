@@ -20,6 +20,23 @@ void APrincipalMenuInterface::BeginPlay()
 			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 		}
 	}
+	if (ChooseHeroMenuWidgetClass)
+	{
+		ChooseHeroMenuWidget = CreateWidget<UChooseHeroMenuWidget>(GetWorld(), ChooseHeroMenuWidgetClass);
+		if (ChooseHeroMenuWidget)
+		{
+			ChooseHeroMenuWidget->AddToViewport();
+			ChooseHeroMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+
+			ChooseHeroMenuWidget->InitializePrincipalMenuWidget(MainMenuWidget);
+		}
+	}
+	// Initialize to choose hero menu and principal menu
+	if (ChooseHeroMenuWidget && MainMenuWidget)
+	{
+		ChooseHeroMenuWidget->InitializePrincipalMenuWidget(MainMenuWidget);
+		MainMenuWidget->InitializeChooseHeroMenuWidget(ChooseHeroMenuWidget);
+	}
 }
 
 void APrincipalMenuInterface::DrawHUD()
