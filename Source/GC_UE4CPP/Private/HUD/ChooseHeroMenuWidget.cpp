@@ -1,9 +1,10 @@
 #include "HUD/ChooseHeroMenuWidget.h"
 
-#include "GCGameMode.h"
+#include "Managers/GCGameMode.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/GCGameInstance.h"
 
 void UChooseHeroMenuWidget::NativeConstruct()
 {
@@ -81,12 +82,13 @@ void UChooseHeroMenuWidget::Back()
 // Event OnCliked in UIConfirm
 void UChooseHeroMenuWidget::Confirm()
 {
-	// Save choose of player : update game state
-	AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (CurrentSkinPlayer)
+	// Update game instance (to use the choose of player in other level)
+	UGCGameInstance* GameInstance = Cast<UGCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (CurrentSkinPlayer != EGS_NO_SKIN  && GameInstance)
 	{
-		GameMode->SetSkinPlayer(CurrentSkinPlayer);
+		GameInstance->SetSkinPlayer(CurrentSkinPlayer);
 	} else {
+		UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
 		return; // Error of player : No item selected
 	}
 	

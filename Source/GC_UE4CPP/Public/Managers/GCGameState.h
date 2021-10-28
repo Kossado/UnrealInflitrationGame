@@ -16,6 +16,7 @@ enum EGameState
 UENUM()
 enum ESkinPlayer
 {
+	EGS_NO_SKIN,
 	EGS_KNIGHT,
 	EGS_GOBELIN_MALE,
 	EGS_GOBELIN_FEMALE,

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GCGameState.h"
+#include "Managers/GCGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "ChooseHeroMenuWidget.generated.h"
 
