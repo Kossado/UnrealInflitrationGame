@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GCGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "ChooseHeroMenuWidget.generated.h"
 
@@ -20,6 +21,15 @@ public:
 	UFUNCTION()
 	void Confirm();
 
+	UFUNCTION()
+	void CheckHero(bool IsCheck);
+
+	UFUNCTION()
+	void CheckGobelinMale(bool IsCheck);
+
+	UFUNCTION()
+	void CheckGobelinFemale(bool IsCheck);
+
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIBack;
 
@@ -36,5 +46,6 @@ public:
 	class UCheckBox* UIPersonnageGobelinFemale;
 
 	UWidget* PrincipalMenuWidget;
+	ESkinPlayer CurrentSkinPlayer;
 	
 };
