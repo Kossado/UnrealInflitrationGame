@@ -3,7 +3,6 @@
 
 #include "AI/AIEnemyController.h"
 
-#include "BlueprintEditor.h"
 #include "ChaosInterfaceWrapperCore.h"
 #include "Managers/GCGameMode.h"
 #include "Food/SpotFood.h"

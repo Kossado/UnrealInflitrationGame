@@ -3,13 +3,11 @@
 
 #include "Characters/GCCharacter.h"
 
-#include "IDetailTreeNode.h"
 #include "Items/Chair.h"
 #include "Managers/GCGameMode.h"
 #include "Items/InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)

@@ -3,16 +3,21 @@
 #include "Managers/GCGameMode.h"
 
 // Import extern class
+#include "KnightPlayerController.h"
 #include "Components/Button.h" // For UButton
 #include "Kismet/GameplayStatics.h" // For UGameplayStatics and UKismetSystemLibrary
 
 // Constructor
 void UPauseMenuWidget::NativeConstruct()
 {
+	UE_LOG(LogTemp, Warning, TEXT("native"));
+
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
 	if(UIResume && UIRestart && UIOptions && UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("dyna"));
+
 		UIResume->OnClicked.AddDynamic(this,&UPauseMenuWidget::Resume);
 		UIRestart->OnClicked.AddDynamic(this,&UPauseMenuWidget::Restart);
 		UIOptions->OnClicked.AddDynamic(this,&UPauseMenuWidget::Options);
@@ -46,13 +51,19 @@ void UPauseMenuWidget::Resume()
 		// Resume play
 		UGameplayStatics::SetGamePaused(GetWorld(),false);
 
+		AGCGameMode * GameMode= Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
+
+		if(GameMode != nullptr)
+		{
+			GameMode->ResumeGame();
+		}
 		
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
 		if (Player)
 		{
 			// Change input mode to game only
 			Player->SetInputMode(FInputModeGameOnly());
-
+			
 			// Disable mouse
 			Player->bShowMouseCursor = false;
 		} else {

@@ -55,7 +55,8 @@ public:
 	void DisableCharacterInput();
 	// Pause
 	void LaunchMenuPause();
-	
+	void ResumeGame();
+
 	int GetPlayerTeamId() const { return PlayerTeamId;}
 	
 	TArray<LinkSkeletalMeshAnimation> GetTeamSkeletalMeshes(int TeamId) const;
