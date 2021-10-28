@@ -3,7 +3,6 @@
 
 #include "AI/BehaviourTreeTasks/BTT_FollowDirectionTarget.h"
 
-#include "DrawDebugHelpers.h"
 #include "AI/AIEnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -23,16 +22,12 @@ EBTNodeResult::Type UBTT_FollowDirectionTarget::ExecuteTask(UBehaviorTreeCompone
 
 		FVector LocationLostTarget = OwnerComp.GetBlackboardComponent()->GetValueAsVector("LastLocationSawPlayer");
 		FVector DirectionTarget = OwnerComp.GetBlackboardComponent()->GetValueAsVector("DirectionTakenByTarget");
-
-		DrawDebugLine(GetWorld(), LocationLostTarget, LocationLostTarget+DirectionTarget*5000, FColor::Blue, false, 5);
 		
 		bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, LocationLostTarget, LocationLostTarget+DirectionTarget*5000
 		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
 		, FCollisionQueryParams(NAME_AILineOfSight, true, OwnerComp.GetOwner()));
 		
 		if (bHitSocket == true) {
-			DrawDebugLine(GetWorld(), LocationLostTarget, HitResult.Location-DirectionTarget*50, FColor::Red, false, 5);
-			DrawDebugSphere(GetWorld(), HitResult.Location-DirectionTarget*50, 5, 32, FColor::Red, false, 5);
 			OwnerComp.GetBlackboardComponent()->SetValueAsVector("LocationSearchPlayer", HitResult.Location-DirectionTarget*50);	
 		}
 	}

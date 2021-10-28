@@ -5,7 +5,6 @@
 
 #include "BlueprintEditor.h"
 #include "ChaosInterfaceWrapperCore.h"
-#include "DrawDebugHelpers.h"
 #include "Managers/GCGameMode.h"
 #include "Food/SpotFood.h"
 #include "AI/AIEnemyManager.h"
@@ -184,43 +183,34 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 
 		TargetChased = CharacterSeen;
 		bCurrentlySeeTarget = true;
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Detection of %s"), ToCStr(UpdateActor->GetName())));
 		Blackboard->SetValueAsBool("bHasSeenPlayer", true);
 		Blackboard->SetValueAsBool("bHasLineOfSight", true);
 		Blackboard->SetValueAsObject("TargetChase", CharacterSeen);
 
 		if(CharacterSeen->GetSocketBaseCharacter() != nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Have socket");
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetSocketBaseCharacterLocation());
 			Blackboard->SetValueAsVector("LocationSearchPlayer", CharacterSeen->GetSocketBaseCharacterLocation());			
-
-			DrawDebugSphere(GetWorld(), CharacterSeen->GetSocketBaseCharacterLocation(), 1, 32, FColor::Blue, false, 5);
 		}
 
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Don't Have socket");
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetActorLocation());
 			Blackboard->SetValueAsVector("LocationSearchPlayer", CharacterSeen->GetActorLocation());
 		}
 	}
 	else if(TargetChased == CharacterSeen)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Lost of %s"), ToCStr(UpdateActor->GetName())));
 		Blackboard->SetValueAsBool("bHasLineOfSight", false);
 		
 		if(CharacterSeen->GetSocketBaseCharacter() != nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Have socket");
 			Blackboard->SetValueAsVector("DirectionTakenByTarget", CharacterSeen->GetActorForwardVector());
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetSocketBaseCharacterLocation());
 		}
 
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Don't Have socket");
-
 			Blackboard->SetValueAsVector("DirectionTakenByTarget", CharacterSeen->GetActorForwardVector());
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetActorLocation());
 		}
@@ -257,7 +247,6 @@ void AAIEnemyController::HasHitPlayer() const
 
 void AAIEnemyController::ForgetTarget()
 {	
-	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Forget target")));
 	Blackboard->SetValueAsBool("bHasSeenPlayer", false);
 	Blackboard->SetValueAsBool("bHasLineOfSight", false);	
 	Blackboard->SetValueAsObject("TargetChase", nullptr);

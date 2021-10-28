@@ -2,8 +2,6 @@
 
 
 #include "AI/BehaviourTreeTasks/BTT_MoveToFood.h"
-
-#include "DrawDebugHelpers.h"
 #include "Food/Food.h"
 #include "Food/SpotFood.h"
 #include "BehaviorTree/BlackboardComponent.h"

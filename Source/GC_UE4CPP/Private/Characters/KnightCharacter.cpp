@@ -5,7 +5,6 @@
 #include "Managers/GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
 #include "HUD/InGameInterface.h"
-#include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneCaptureComponent2D.h"
@@ -95,8 +94,6 @@ bool AKnightCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector& O
 		NumberOfLoSChecksPerformed++;
 
 		if (bHitSocket == false) {
-			DrawDebugLine(GetWorld(), ObserverLocation, SocketLocation, FColor::Green, false, 1);
-			
 			OutSeenLocation = SocketLocation;
 			OutSightStrength = 1;
 

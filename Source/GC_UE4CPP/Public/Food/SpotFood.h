@@ -34,11 +34,11 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	AFoodManager * FoodManager;
+	AFoodManager * FoodManager= nullptr;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AFood> BP_Food;
 
-	AFood * StoredFood;
+	AFood * StoredFood= nullptr;
 	
 };

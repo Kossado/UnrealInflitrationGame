@@ -3,7 +3,6 @@
 
 #include "Food/Food.h"
 
-#include "DrawDebugHelpers.h"
 #include "Chaos/CollisionResolutionUtil.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -45,7 +44,6 @@ bool AFood::IsOnGround() const
 	
 	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
 
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() - FVector::UpVector * 100, FColor::Red, true);
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
 			, CollisionQueryParams);
@@ -83,7 +81,6 @@ bool AFood::GetBoundsSupportFood(FVector& Origin, FVector& BoxExtent)
 	
 	FCollisionQueryParams CollisionQueryParams = FCollisionQueryParams(NAME_AILineOfSight, true, this);
 
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() - FVector::UpVector * 100, FColor::Red, true);
 	const bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, GetActorLocation(), GetActorLocation() - FVector::UpVector * 100
 			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic))
 			, CollisionQueryParams);

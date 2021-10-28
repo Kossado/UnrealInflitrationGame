@@ -38,8 +38,6 @@ void AGCGameMode::InitGameState()
 	{
 		UE_LOG(LogTemp, Error, TEXT("AGCGameMode::InitGameState - GameState is null"));
 	}
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"InitGameState");
 }
 
 void AGCGameMode::StartPlay()

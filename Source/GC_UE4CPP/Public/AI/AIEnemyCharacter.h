@@ -17,7 +17,7 @@ public:
 	// Sets default values for this character's properties
 	AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	UPROPERTY(EditAnywhere)
-	UBehaviorTree* BehaviourTree;
+	UBehaviorTree* BehaviourTree = nullptr;
 
 	void StoreFood(ASpotFood * SpotFood);
 	void Defeat();
@@ -30,7 +30,7 @@ protected:
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 private:
-	UCharacterMovementComponent * CharacterMovement;
+	UCharacterMovementComponent * CharacterMovement = nullptr;
 	
 public:	
 

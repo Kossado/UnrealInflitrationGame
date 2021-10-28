@@ -38,11 +38,11 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-	 AFoodManager * FoodManager;
+	 AFoodManager * FoodManager = nullptr;
 	
 	
 	UPROPERTY(EditAnywhere)
-	AAIPatrolPoint* SpawnAIPatrolPoint;
+	AAIPatrolPoint* SpawnAIPatrolPoint = nullptr;
 	
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AAIEnemyCharacter> BP_CharacterAI;
@@ -65,7 +65,7 @@ private:
 	TArray<AAIEnemyController*> ListAIControllerOnScene;
 
 	UPROPERTY(EditAnywhere)
-	AAIPatrolPoint* UnSpawnAIPatrolPoint;
+	AAIPatrolPoint* UnSpawnAIPatrolPoint = nullptr;
 
 	virtual void SpawnPawn();
 

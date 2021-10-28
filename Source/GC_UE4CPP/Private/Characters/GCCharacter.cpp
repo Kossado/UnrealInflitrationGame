@@ -109,7 +109,6 @@ void AGCCharacter::OnEnterActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && !InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Add(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Add Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 
@@ -118,7 +117,6 @@ void AGCCharacter::OnLeaveActor(AInteractiveItem* InteractiveActor)
 	if(InteractiveActor != nullptr && InteractiveItems.Contains(InteractiveActor))
 	{
 		InteractiveItems.Remove(InteractiveActor);
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Remove Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 

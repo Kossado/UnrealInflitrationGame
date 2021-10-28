@@ -116,10 +116,6 @@ void AAIEnemyManager::SpawnPawn()
 			AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
 			ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
 
-			if(ListAIControllerOnScene.Num() > 0 )
-			{
-				GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListAIControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerAI)));
-			}
 			ListAIControllerOnScene.Add(ControllerAI);
 
 			if(FoodManager->IsRemainingSlotFood())

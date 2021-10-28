@@ -39,7 +39,6 @@ void AInteractiveItem::SetItemProperties(EItemState State)
 	switch(State)
 	{
 		case EItemState::EIS_Disabled:
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Disable " + GetName());
 			DisableTrigger();
 			break;
 

@@ -64,16 +64,16 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere)
-	UBehaviorTreeComponent * BehaviorComponent;
+	UBehaviorTreeComponent * BehaviorComponent = nullptr;
 	
 	UPROPERTY(EditAnywhere)
 	FGenericTeamId TeamID;
 	
 	unsigned int NbRetriesBeforeBack;
-	AAIEnemyManager* AIEnemyManager;
+	AAIEnemyManager* AIEnemyManager = nullptr;
 
 	bool bCurrentlySeeTarget = false;
-	AGCCharacter* TargetChased;
+	AGCCharacter* TargetChased = nullptr;
 	FVector LastLocationSeenTarget;
 	FVector LastDirectionSeenTarget;
 
@@ -83,10 +83,10 @@ private:
 	FTimerHandle OutHandle;
 	float CurrentAngle;
 
-	AAIEnemyCharacter * AICharacter;
+	AAIEnemyCharacter * AICharacter = nullptr;
 
 	bool bCarryFood;
-	AFood * AttributedFood;
+	AFood * AttributedFood = nullptr;
 	
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionComponent* AI_PerceptionComponent;

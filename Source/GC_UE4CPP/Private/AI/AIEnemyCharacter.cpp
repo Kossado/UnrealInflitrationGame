@@ -64,8 +64,6 @@ void AAIEnemyCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 		return;
 	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Hit");
-
 	AAIEnemyController * AIEnemyController = Cast<AAIEnemyController>(GetController());
 
 	if(AIEnemyController != nullptr)
