@@ -88,7 +88,13 @@ void UChooseHeroMenuWidget::Confirm()
 	{
 		GameInstance->SetSkinPlayer(CurrentSkinPlayer);
 	} else {
-		UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
+		if (!GameInstance)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
+		} else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No item selected"));
+		}
 		return; // Error of player : No item selected
 	}
 	
