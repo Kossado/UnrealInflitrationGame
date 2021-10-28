@@ -43,7 +43,7 @@ void AAIEnemyCharacter::StoreFood(ASpotFood * SpotFood)
 	
 	AFood * FoodToStore = Cast<AFood>(ItemInHand);
 
-	Super::DropItem();
+	DropItem();
 	
 	SpotFood->StoreFood(FoodToStore);
 }

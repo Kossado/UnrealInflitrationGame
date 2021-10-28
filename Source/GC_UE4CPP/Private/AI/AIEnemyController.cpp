@@ -289,3 +289,10 @@ void AAIEnemyController::WillNeedNewDestination()
 		Blackboard->SetValueAsBool("GoUnSpawn", true);
 	}
 }
+
+void AAIEnemyController::UnSpawn()
+{
+	
+	AIEnemyManager->UnSpawnAIAndPrepareRespawn(this);
+}
+

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Food/FoodManager.h"
 #include "GCGameState.h"
 #include "GameFramework/GameMode.h"
 #include "HUD/InGameInterface.h"
@@ -12,6 +11,9 @@
 /**
  * 
  */
+
+class AFoodManager;
+class AAIEnemyManager;
 
 UCLASS()
 class GC_UE4CPP_API AGCGameMode : public AGameMode
@@ -40,12 +42,27 @@ public:
 	void DisableCharacterInput();
 	// Pause
 	void LaunchMenuPause();
+
+	FORCEINLINE int GetSelectedMeshForPlayer() const { return GameState->PlayerMeshId;}
+	FORCEINLINE int GetPlayerTeamId() const { return GameState->PlayerTeamId;}
+	
+	TArray<USkeletalMesh*> GetTeamSkeletalMeshes(int TeamId) const;
 	
 
 private:
 	// UI
 	AInGameInterface* InGameInterface;
 
+	TArray<TArray<USkeletalMesh*>> TeamSkeletalMeshes;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<USkeletalMesh*> Team1SkeletalMeshes;
+
+	UPROPERTY(EditAnywhere)
+	TArray<USkeletalMesh*> Team2SkeletalMeshes;
+
+	AFoodManager * FoodManager;
+	AAIEnemyManager * EnemyManager;
 	
 };
 // if NourritureDansCachette >= QtéDef : GameState = VICTORY

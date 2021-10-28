@@ -44,7 +44,7 @@ private:
 	AAIPatrolPoint* SpawnAIPatrolPoint;
 	
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<AAIEnemyCharacter>> List_BP_CharacterAI;
+		TSubclassOf<AAIEnemyCharacter> BP_CharacterAI;
 		
 	UPROPERTY(EditAnywhere)
 		unsigned int NbRetriesSpotBeforeBack=2;
@@ -70,5 +70,7 @@ private:
 
 	void SpawnAIRandomTime(int TimeMin, int TimeMax);
 
+	int EnemyTeamId=1;
+	TArray<USkeletalMesh *> SkeletalMeshes;
 	
 };

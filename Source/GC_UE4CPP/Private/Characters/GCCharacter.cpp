@@ -3,6 +3,7 @@
 
 #include "Characters/GCCharacter.h"
 
+#include "IDetailTreeNode.h"
 #include "Items/Chair.h"
 #include "Items/Chest.h"
 #include "Managers/GCGameMode.h"
@@ -17,6 +18,15 @@ AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(Ob
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+}
+
+void AGCCharacter::UnSpawn()
+{
+	if(ItemInHand != nullptr)
+	{
+		ItemInHand->DestroyItem();
+		GetWorld()->DestroyActor(this);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -134,3 +144,4 @@ void AGCCharacter::EndRotate()
 {
 	bRotate = false;
 }
+

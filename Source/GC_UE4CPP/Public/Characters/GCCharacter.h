@@ -38,6 +38,7 @@ public:
 	FORCEINLINE const USkeletalMeshSocket * GetSocketBaseCharacter() const { return SocketBaseCharacter; }
 	FORCEINLINE FVector GetSocketBaseCharacterLocation() const { return GetMesh()->GetSocketLocation(NameSocketBaseCharacter); }
 
+	void UnSpawn();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

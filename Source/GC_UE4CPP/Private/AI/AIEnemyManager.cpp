@@ -5,8 +5,8 @@
 
 #include "AI/AIEnemyCharacter.h"
 #include "AI/AIEnemyController.h"
+#include "Managers/GCGameMode.h"
 #include "Math/UnrealMathUtility.h"
-
 
 // Sets default values
 AAIEnemyManager::AAIEnemyManager() : Super()
@@ -22,8 +22,23 @@ void AAIEnemyManager::BeginPlay()
 	Super::BeginPlay();
 
 	FTimerHandle OutHandle;
-	GLog->Log("launch timer");
+	AGCGameMode * GameMode = Cast<AGCGameMode>(GetWorld()->GetAuthGameMode());
 
+	if(GameMode != nullptr)
+	{
+		if(GameMode->GetPlayerTeamId() == 0)
+		{
+			EnemyTeamId = 1;
+		}
+
+		else
+		{
+			EnemyTeamId = 0;
+		}
+	}
+
+	SkeletalMeshes = GameMode->GetTeamSkeletalMeshes(EnemyTeamId);
+	
 	//Will call SpawnUsefulActor after the specified time
 	for(int i = 0; i < NbAIStartingGame; i++)
 	{
@@ -44,16 +59,20 @@ AFoodManager * AAIEnemyManager::GetFoodManager() const
 
 void AAIEnemyManager::SpawnPawn()
 {
-	if(List_BP_CharacterAI.Num()>0)
+	if(SkeletalMeshes.Num()>0)
 	{
-		int indexBP = FMath::RandRange(0, List_BP_CharacterAI.Num()-1);
+		int indexMesh = FMath::RandRange(0, SkeletalMeshes.Num()-1);
 
-		if(List_BP_CharacterAI[indexBP] != nullptr)
+		if(SkeletalMeshes[indexMesh] != nullptr)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(List_BP_CharacterAI[indexBP], SpawnAIPatrolPoint->GetTransform(), SpawnParams);
+			AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(BP_CharacterAI, GetTransform(), SpawnParams);
+			ActorCharacterRef->SetActorLocation(SpawnAIPatrolPoint->GetActorLocation());
+			ActorCharacterRef->SetActorRotation(SpawnAIPatrolPoint->GetActorRotation());
+			ActorCharacterRef->GetMesh()->SetSkeletalMesh(SkeletalMeshes[indexMesh]);
+			
 			// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
 			AController * ActorControllerRef =ActorCharacterRef->GetController(); 
 			if(ActorControllerRef == nullptr)

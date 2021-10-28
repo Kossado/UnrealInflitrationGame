@@ -28,9 +28,23 @@ void AGCGameMode::InitGameState()
 
 void AGCGameMode::StartPlay()
 {
+	TeamSkeletalMeshes={};
+	TeamSkeletalMeshes.Add(Team1SkeletalMeshes);
+	TeamSkeletalMeshes.Add(Team2SkeletalMeshes);
+	
 	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+}
+
+TArray<USkeletalMesh*> AGCGameMode::GetTeamSkeletalMeshes(int TeamId) const
+{
+	if(TeamId < 0 || TeamId >= TeamSkeletalMeshes.Num())
+	{
+		return {};
+	}
+
+	return TeamSkeletalMeshes[TeamId];
 }
 
 void AGCGameMode::RestartGame()
