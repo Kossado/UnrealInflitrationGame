@@ -87,6 +87,18 @@ void UChooseHeroMenuWidget::CheckGobelinFemale(bool IsCheck)
 // Event OnCliked in UIBack
 void UChooseHeroMenuWidget::Back()
 {
+	// Update game instance (to use the choose of player in other level)
+	UGCGameInstance* GameInstance = Cast<UGCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance && UIPersonnageHero && UIPersonnageGobelinMale && UIPersonnageGobelinFemale)
+	{
+		CurrentSkinPlayer = EGS_NO_SKIN;
+		UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
+		UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
+		UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Back - A object is null"));
+	}
+	
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);
 	if (PrincipalMenuWidget)
@@ -107,33 +119,33 @@ void UChooseHeroMenuWidget::Confirm()
 		if (CurrentSkinPlayer != EGS_NO_SKIN)
 		{
 			GameInstance->SetSkinPlayer(CurrentSkinPlayer);
+
+			// Update widget visibility 
+			this->SetVisibility(ESlateVisibility::Hidden);
+			if (PrincipalMenuWidget)
+			{
+				PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - PrincipalMenuWidget null"));
+			}
+
+			APlayerController* Player = GetWorld()->GetFirstPlayerController();
+			if (Player)
+			{
+				// Change input mode to game only
+				Player->SetInputMode(FInputModeGameOnly());
+		
+				// Disable mouse
+				Player->bShowMouseCursor = false;
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - Player null"));
+			}
+
+			// Open level map
+			UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
 		}
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - GameInstance null"));
 	}
-	
-	// Update widget visibility 
-	this->SetVisibility(ESlateVisibility::Hidden);
-	if (PrincipalMenuWidget)
-	{
-		PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
-	} else {
-		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - PrincipalMenuWidget null"));
-	}
-
-	APlayerController* Player = GetWorld()->GetFirstPlayerController();
-	if (Player)
-	{
-		// Change input mode to game only
-		Player->SetInputMode(FInputModeGameOnly());
-		
-		// Disable mouse
-		Player->bShowMouseCursor = false;
-	} else {
-		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - Player null"));
-	}
-
-	// Open level map
-	UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
 }
 
