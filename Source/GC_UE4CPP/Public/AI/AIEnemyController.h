@@ -81,6 +81,9 @@ private:
 	float CurrentAngle;
 
 	AAIEnemyCharacter * AICharacter;
+
+	bool bCarryFood;
+	AFood * AttributedFood;
 	
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionComponent* AI_PerceptionComponent;

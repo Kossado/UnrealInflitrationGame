@@ -1,9 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GCPlayerCharacter.h"
+
+#include "Food/Food.h"
+#include "Chair.h"
+#include "GCGameMode.h"
 #include "GenericTeamAgentInterface.h"
-#include "GC_UE4CPP/HUD/GC_InGameInterface.h"
+#include "HUD/InGameInterface.h"
+#include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SceneCaptureComponent2D.h"
+
+
 
 // Sets default values
 AGCPlayerCharacter::AGCPlayerCharacter() : Super()
@@ -22,6 +29,20 @@ AGCPlayerCharacter::AGCPlayerCharacter() : Super()
 	CameraComponent->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName); // Attach Camera to end on the stick
 	CameraComponent->bUsePawnControlRotation = false; // Camera doesn't rotate relative to arm
 
+	// Create second camera stick
+	CameraPortraitStick = CreateDefaultSubobject<USpringArmComponent>(FName("Camera Portrait Stick"));
+	CameraPortraitStick->SetupAttachment(RootComponent);
+	CameraPortraitStick->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 35.0f), FRotator(0.0f, 180.0f, 0.0f));
+	CameraPortraitStick->TargetArmLength = 80.f; // Distance between the camera and the character
+	CameraPortraitStick->bDoCollisionTest = false; // Disable collision camera
+	
+	// Create Camera that will follow the portrait character
+	CameraPortraitComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(FName("CameraPortrait"));
+	CameraPortraitComponent->SetupAttachment(CameraPortraitStick, USpringArmComponent::SocketName); // Attach Camera to end on the stick
+	CameraPortraitComponent->ShowOnlyActorComponents(this,false);
+	CameraPortraitComponent->FOVAngle = 75.f; // Update value of angle camera
+	CameraPortraitComponent->CaptureSource = ESceneCaptureSource::SCS_BaseColor; // Type of capture
+	
 	// Don't rotate when the controller rotates. The controller only affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -45,7 +66,6 @@ void AGCPlayerCharacter::BeginPlay()
 void AGCPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
 }
 
 // Called to bind functionality to input
@@ -102,9 +122,9 @@ bool AGCPlayerCharacter::CanBeSeenFrom(const FVector& ObserverLocation, FVector&
 	return false;
 }
 
-void AGCPlayerCharacter::SitDown()
+void AGCPlayerCharacter::SitDown(AChair* Chair)
 {
-	Super::SitDown();
+	Super::SitDown(Chair);
 	// Disable Mouse and Keyboard inputs
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreLookInput(true);
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetIgnoreMoveInput(true);
@@ -123,14 +143,83 @@ void AGCPlayerCharacter::StandUp()
 	CameraSpringArm->bUsePawnControlRotation = true;
 }
 
+void AGCPlayerCharacter::StoreItem(AInteractiveItem* InteractiveChest)
+{
+	if(!ItemInHand->IsA(AFood::StaticClass()) || InteractiveChest == nullptr)
+	{
+		return;
+	}
+	AChest* Chest = Cast<AChest>(InteractiveChest);
+	if(Chest == nullptr)
+	{
+		return;
+	}
+	// Detach item from the hand socket
+	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
+	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
+	ItemInHand->DisableItem();
+	ItemInHand->SetActorLocation(Chest->GetValidStoredPosition());
+	ItemInHand->SetActorRotation(Chest->GetValidStoredRotation());
+	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(LevelGameMode)
+		LevelGameMode->IncrementStoredFood();
+	ItemInHand = nullptr;
+	bHasItem = false;
+	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
+}
+	
+
 void AGCPlayerCharacter::Interact()
 {
-	if(CurrentInteractive != nullptr)
+	if(bSit)
 	{
-		CurrentInteractive->OnInteract();
+		StandUp();
+		return;
 	}
-	/*else if(HasItem())
+	// If There is items to interact with
+	if(InteractiveItems.Num() > 0)
 	{
-		DropItem();
-	}*/
+		// Select the item to interact with based on the distance with the character
+		AInteractiveItem* ItemToInteractWith = InteractiveItems[0];
+		if(ItemToInteractWith == nullptr)
+		{
+			return;
+		}
+		for(AInteractiveItem* Item:InteractiveItems)
+		{
+			if(Item != ItemInHand)
+			{
+				if(GetDistanceTo(ItemToInteractWith) > GetDistanceTo(Item) || ItemToInteractWith == ItemInHand)
+				{
+					ItemToInteractWith = Item;
+				}
+			}
+		}
+		// If the character has an item, Try to store it in a chest
+		if(HasItem())
+		{
+			if(ItemToInteractWith->IsA(AChest::StaticClass()))
+			{
+				StoreItem(ItemToInteractWith);
+			}
+			else
+			{
+				DropItem();
+			}
+		}
+		// If the character doesn't have an item, try to do the other interactions
+		else
+		{
+			if(ItemToInteractWith->IsA(AChair::StaticClass()))
+			{
+				AChair* Chair = Cast<AChair>(ItemToInteractWith);
+				SitDown(Chair);
+			}
+			else if(ItemToInteractWith->IsA(APickableItem::StaticClass()))
+			{
+				APickableItem* PickableItem = Cast<APickableItem>(ItemToInteractWith);
+				GrabItem(PickableItem);
+			}
+		}
+	}
 }

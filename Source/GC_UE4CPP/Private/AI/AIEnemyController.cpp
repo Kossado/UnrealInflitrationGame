@@ -19,7 +19,7 @@ AAIEnemyController::AAIEnemyController(const FObjectInitializer & ObjectInitiali
 {
 	Blackboard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoard"));
 	BehaviorComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviourTree");
-
+	
 	bStartAILogicOnPossess=true;
 	bStopAILogicOnUnposses=true;
 
@@ -59,8 +59,6 @@ bool AAIEnemyController::Initialize(AAIEnemyManager* AIEnemyManagerSpawner, unsi
 	AICharacter = Cast<AAIEnemyCharacter>(GetCharacter());
 	AIEnemyManager = AIEnemyManagerSpawner;
 	this->NbRetriesBeforeBack = NbRetriesBeforeBackUnSpawn; 
-	Blackboard->SetValueAsBool("NeedNewSpot", true);
-	Blackboard->SetValueAsObject("SelfActor", GetCharacter());
 
 	if(AICharacter == nullptr)
 	{
@@ -72,6 +70,8 @@ bool AAIEnemyController::Initialize(AAIEnemyManager* AIEnemyManagerSpawner, unsi
 	{
 		Blackboard->InitializeBlackboard(*(AICharacter)->BehaviourTree->BlackboardAsset);
 		Blackboard->SetValueAsVector("LocationUnSpawn", AIEnemyManager->GetUnSpawnPoint()->GetActorLocation());
+		Blackboard->SetValueAsBool("NeedNewSpot", true);
+		Blackboard->SetValueAsObject("SelfActor", GetCharacter());
 	}
 		
 	BehaviorComponent->StartTree(*AICharacter->BehaviourTree);
@@ -104,9 +104,17 @@ bool AAIEnemyController::IsCarryingFood() const
 
 void AAIEnemyController::CarryFood(AFood * FoodToCarry)
 {
-	if(FoodToCarry != nullptr)
+	if(!bCarryFood && FoodToCarry != nullptr)
 	{
+		bCarryFood = true;		
+		AttributedFood = FoodToCarry;
 		AICharacter->GrabItem(FoodToCarry);
+		GetBlackboardComponent()->SetValueAsObject("Food", AttributedFood);
+		GetBlackboardComponent()->SetValueAsBool("bCarryFood", true);
+		GetBlackboardComponent()->SetValueAsBool("bHasToPutFood", true);
+		GetBlackboardComponent()->SetValueAsBool("bHasDroppedFood", false);
+		GetBlackboardComponent()->SetValueAsVector("LocationDroppedFood", FVector::ZeroVector);
+
 	}
 }
 
@@ -118,13 +126,25 @@ bool AAIEnemyController::PutFoodAtStand()
 	}
 	
 	AICharacter->StoreFood(CurrentSpotFoodTarget);
+	GetBlackboardComponent()->SetValueAsBool("bCarryFood", false);
+	GetBlackboardComponent()->SetValueAsBool("bHasToPutFood", false);
+	GetBlackboardComponent()->SetValueAsObject("Food", nullptr);
+	GetBlackboardComponent()->SetValueAsBool("bHasDroppedFood", false);
+	GetBlackboardComponent()->SetValueAsVector("LocationDroppedFood", FVector::ZeroVector);
 	return true;
 }
 
 
 void AAIEnemyController::DropFood()
 {
-	AICharacter->DropItem();
+	if(bCarryFood && AttributedFood != nullptr)
+	{
+		bCarryFood = false;
+		AICharacter->DropItem();
+		GetBlackboardComponent()->SetValueAsBool("bCarryFood", false);
+		GetBlackboardComponent()->SetValueAsBool("bHasDroppedFood", true);
+		GetBlackboardComponent()->SetValueAsVector("LocationDroppedFood", GetCharacter()->GetActorLocation());
+	}
 }
 
 AAIEnemyManager* AAIEnemyController::GetAIEnemyManager() const
@@ -145,12 +165,7 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 {
 	bool HasSensedSomeone = FaiStimulus.WasSuccessfullySensed();
 
-<<<<<<< Updated upstream
-	if(HasSensedSomeone)
-=======
-
 	if(!UpdateActor->IsA(AGCCharacter::StaticClass()))
->>>>>>> Stashed changes
 	{
 		return;
 	}
@@ -177,12 +192,6 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 		TargetChased = CharacterSeen;
 		bCurrentlySeeTarget = true;
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Detection of %s"), ToCStr(UpdateActor->GetName())));
-<<<<<<< Updated upstream
-		Blackboard->SetValueAsBool("HaveSeenPlayer", true);
-		Blackboard->SetValueAsBool("HasLineOfSight", true);
-		Blackboard->SetValueAsObject("TargetChase", UpdateActor);
-		Blackboard->SetValueAsVector("LastLocationSawPlayer", UpdateActor->GetActorLocation());
-=======
 		Blackboard->SetValueAsBool("bHasSeenPlayer", true);
 		Blackboard->SetValueAsBool("bHasLineOfSight", true);
 		Blackboard->SetValueAsObject("TargetChase", CharacterSeen);
@@ -202,23 +211,15 @@ void AAIEnemyController::SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulu
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetActorLocation());
 			Blackboard->SetValueAsVector("LocationSearchPlayer", CharacterSeen->GetActorLocation());
 		}
->>>>>>> Stashed changes
 	}
 	else if(TargetChased == CharacterSeen)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Lost of %s"), ToCStr(UpdateActor->GetName())));
-<<<<<<< Updated upstream
-		Blackboard->SetValueAsBool("HasLineOfSight", false);
-		Blackboard->SetValueAsObject("TargetChase", nullptr);
-		const FVector PreviousLocationTarget = Blackboard->GetValueAsVector("LastLocationSawPlayer");
-=======
 		Blackboard->SetValueAsBool("bHasLineOfSight", false);
 		
 		if(CharacterSeen->GetSocketBaseCharacter() != nullptr)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Have socket");
->>>>>>> Stashed changes
-
 			Blackboard->SetValueAsVector("DirectionTakenByTarget", CharacterSeen->GetActorForwardVector());
 			Blackboard->SetValueAsVector("LastLocationSawPlayer", CharacterSeen->GetSocketBaseCharacterLocation());
 		}
@@ -254,11 +255,6 @@ void AAIEnemyController::Rotate(const FRotator NextRotation) const
 void AAIEnemyController::ForgetTarget()
 {	
 	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Green, FString::Printf(TEXT("Forget target")));
-<<<<<<< Updated upstream
-	Blackboard->SetValueAsBool("HaveSeenPlayer", false);
-	Blackboard->SetValueAsBool("HasLineOfSight", false);	
-	Blackboard->SetValueAsObject("TargetChase", nullptr);	
-=======
 	Blackboard->SetValueAsBool("bHasSeenPlayer", false);
 	Blackboard->SetValueAsBool("bHasLineOfSight", false);	
 	Blackboard->SetValueAsObject("TargetChase", nullptr);
@@ -267,7 +263,6 @@ void AAIEnemyController::ForgetTarget()
 
 	bCurrentlySeeTarget = false;
 	TargetChased = nullptr;
->>>>>>> Stashed changes
 }
 
 void AAIEnemyController::SetNextTargetSpotFood(ASpotFood * NextSpotFoodTarget)

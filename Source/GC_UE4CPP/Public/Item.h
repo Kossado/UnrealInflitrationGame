@@ -26,12 +26,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Mesh")
 	UStaticMeshComponent* StaticMesh;
+	
 	EItemState CurrentItemState;
-
+	virtual void SetItemProperties(EItemState State) ;
 
 public:	
 	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}
-	void SetItemProperties(EItemState State) ;
 	FORCEINLINE EItemState GetCurrentItemState() const { return CurrentItemState; }
 
 private:

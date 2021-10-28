@@ -41,12 +41,15 @@ FVector AChest::GetValidStoredPosition()
 	return GetActorLocation();
 }
 
-void AChest::OnInteract()
+FRotator AChest::GetValidStoredRotation()
 {
-	Super::OnInteract();
-	if(Character->HasItem())
+	AGCGameMode* MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(MainGameMode)
 	{
-		Character->StoreItem();
+		int Index = MainGameMode->GetStoredFood();
+		if(FoodPlaceholder.IsValidIndex(Index))
+			return FoodPlaceholder[Index]->GetComponentRotation();
 	}
+	return GetActorRotation();
 }
 

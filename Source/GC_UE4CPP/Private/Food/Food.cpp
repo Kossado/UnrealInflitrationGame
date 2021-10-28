@@ -13,19 +13,6 @@ AFood::AFood():Super()
 	SetItemProperties(EIS_Movable);
 }
 
-void AFood::OnInteract()
-{
-	Super::OnInteract();
-	if(Character != nullptr)
-	{
-		if(!Character->HasItem())
-		{
-			SetItemProperties(EIS_Interacting);
-			Character->GrabItem(this);
-		}
-	}
-}
-
 // Called when the game starts or when spawned
 void AFood::BeginPlay()
 {
@@ -33,12 +20,12 @@ void AFood::BeginPlay()
 
 	if(IsOnGround())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName().ToString()));
+		//UE_LOG(LogTemp, Warning, TEXT("%s is on ground"), *(GetName().ToString()));
 	}
 
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName().ToString()));
+		//UE_LOG(LogTemp, Warning, TEXT("%s isn't on ground"), *(GetName().ToString()));
 		FVector Origin = FVector::ZeroVector;
 		FVector BoxExtent = FVector::ZeroVector;
 		if(GetBoundsSupportFood(Origin, BoxExtent))

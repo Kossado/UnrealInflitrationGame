@@ -90,15 +90,9 @@ void AAIEnemyManager::SpawnPawn()
 						UE_LOG(LogTemp, Error, TEXT("Fail to spawn food"));
 						return;
 					}
-				
-<<<<<<< Updated upstream
-				ActorCharacterRef->GrabItem(NewFood);
-			}
-=======
+
 					ControllerAI->CarryFood(NewFood);
-				}
->>>>>>> Stashed changes
-			
+				}			
 			}
 		}
 	}	

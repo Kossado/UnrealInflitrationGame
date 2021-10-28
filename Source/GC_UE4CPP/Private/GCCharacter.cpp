@@ -8,20 +8,15 @@
 #include "GCGameMode.h"
 #include "InteractiveItem.h"
 #include "Engine/SkeletalMeshSocket.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGCCharacter::AGCCharacter(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
-<<<<<<< Updated upstream
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set Maximum movement speed of the character
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-=======
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
->>>>>>> Stashed changes
 }
 
 // Called when the game starts or when spawned
@@ -33,32 +28,25 @@ void AGCCharacter::BeginPlay()
 	SocketBaseCharacter=GetMesh()->GetSocketByName(NameSocketBaseCharacter);
 }
 
-// Called every frame
-void AGCCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 // Called to bind functionality to input
 void AGCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AGCCharacter::GrabItem(AInteractiveItem* InteractiveItem)
+void AGCCharacter::GrabItem(APickableItem* PickableItem)
 {
-	if(InteractiveItem != nullptr)
+	if(PickableItem != nullptr)
 	{
-		InteractiveItem->SetItemProperties(EIS_Interacting);
+		PickableItem->GrabItem();
 		//Get the Hand Socket
 		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("HandSocket"));
 		if(HandSocket)
 		{
 			// Attach Item to the hand socket
-			HandSocket->AttachActor(InteractiveItem,GetMesh());
+			HandSocket->AttachActor(PickableItem,GetMesh());
 		}
-		ItemInHand = InteractiveItem;
+		ItemInHand = PickableItem;
 		bHasItem = true;
 		ChangeCharacterSpeed(BaseWalkSpeed, CarryWalkSpeedMultiplicator);
 	}
@@ -66,33 +54,16 @@ void AGCCharacter::GrabItem(AInteractiveItem* InteractiveItem)
 
 void AGCCharacter::DropItem()
 {
-	if(ItemInHand)
+	if(ItemInHand != nullptr)
 	{
 		// Detach item from the hand socket
 		const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
 		ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
-		ItemInHand->SetItemProperties(EIS_Movable);
+		ItemInHand->DropItem();
 		ItemInHand = nullptr;
 		bHasItem = false;
 		ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 	}
-}
-
-
-void AGCCharacter::StoreItem()
-{
-	// Detach item from the hand socket
-	const FDetachmentTransformRules DetachmentTransformRules(EDetachmentRule::KeepWorld, true);
-	ItemInHand->GetItemMesh()->DetachFromComponent(DetachmentTransformRules);
-	ItemInHand->SetItemProperties(EIS_Interacting);
-	ItemInHand->SetActorLocation(Cast<AChest>(CurrentInteractiveActor)->GetValidStoredPosition());
-	ItemInHand->SetActorRotation(ItemInHand->GetActorRotation() + FRotator(90.f,0.f,0.f));
-	AGCGameMode * LevelGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(LevelGameMode)
-		LevelGameMode->IncrementStoredFood();
-	ItemInHand = nullptr;
-	bHasItem = false;
-	ChangeCharacterSpeed(BaseWalkSpeed, 1.f);
 }
 
 void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator)
@@ -103,55 +74,49 @@ void AGCCharacter::ChangeCharacterSpeed(float NewSpeed, float SpeedMultiplicator
 	}
 }
 
-void AGCCharacter::SitDown()
+void AGCCharacter::SitDown(AChair* Chair)
 {
-	AChair* Chair = Cast<AChair>(CurrentInteractiveActor);
-	if(Chair != nullptr)
+	if(!bSit && Chair != nullptr)
 	{
-		bSit = true;
-		GetCharacterMovement()->GravityScale = 0.f;
-		SetActorLocation(Chair->GetSitLocation());
-		SetActorRotation(Chair->GetSitRotation());
+		if(!Chair->IsUsed())
+		{
+			bSit = true;
+			ChairUsed = Chair;
+			Chair->Use(this);
+			GetCharacterMovement()->GravityScale = 0.f;
+			SetActorLocation(Chair->GetSitLocation());
+			SetActorRotation(Chair->GetSitRotation());
+			
+		}
 	}
 }
 
 void AGCCharacter::StandUp()
 {
-	bSit = false;
-	GetCharacterMovement()->GravityScale = 1.f;
-}
-
-void AGCCharacter::OnEnterActor(AActor* InteractiveActor)
-{
-	if(InteractiveActor != nullptr)
-	{
-		IInteractable* Interactable = Cast<IInteractable>(InteractiveActor);
-		if(Interactable != nullptr)
-		{
-			CurrentInteractiveActor = InteractiveActor;
-			CurrentInteractive = Interactable;
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Enter Actor");
-		}
+	if(bSit && ChairUsed != nullptr)
+	{		
+		GetCharacterMovement()->GravityScale = 1.f;
+		ChairUsed->Free(this);
+		bSit = false;
+		ChairUsed = nullptr;
 	}
 }
 
-void AGCCharacter::OnLeaveActor(AActor* InteractiveActor)
+void AGCCharacter::OnEnterActor(AInteractiveItem* InteractiveActor)
 {
-	if(InteractiveActor == CurrentInteractiveActor)
+	if(InteractiveActor != nullptr && !InteractiveItems.Contains(InteractiveActor))
 	{
-		CurrentInteractive = nullptr;
-		CurrentInteractiveActor = nullptr;
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Leave Actor");
+		InteractiveItems.Add(InteractiveActor);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Add Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
-	if(ItemInHand != nullptr)
+}
+
+void AGCCharacter::OnLeaveActor(AInteractiveItem* InteractiveActor)
+{
+	if(InteractiveActor != nullptr && InteractiveItems.Contains(InteractiveActor))
 	{
-		IInteractable* Interactable = Cast<IInteractable>(ItemInHand);
-		if(Interactable != nullptr)
-		{
-			CurrentInteractiveActor = ItemInHand;
-			CurrentInteractive = ItemInHand;
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, "Re-enable Food in hand after Leaving previous actor");
-		}
+		InteractiveItems.Remove(InteractiveActor);
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White,  FString::Printf(TEXT("Remove Interactive Item %s"), *(InteractiveActor->GetName())));
 	}
 }
 

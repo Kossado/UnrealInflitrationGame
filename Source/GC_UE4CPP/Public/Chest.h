@@ -14,7 +14,7 @@ public:
 	// Sets default values for this actor's properties
 	AChest();
 	FVector GetValidStoredPosition();
-	virtual void OnInteract() override;
+	FRotator GetValidStoredRotation();
 
 protected:
 	// Called when the game starts or when spawned
