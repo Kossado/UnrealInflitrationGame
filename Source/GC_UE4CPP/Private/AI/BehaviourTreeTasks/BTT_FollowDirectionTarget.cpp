@@ -22,24 +22,18 @@ EBTNodeResult::Type UBTT_FollowDirectionTarget::ExecuteTask(UBehaviorTreeCompone
 		FHitResult HitResult;
 
 		FVector LocationLostTarget = OwnerComp.GetBlackboardComponent()->GetValueAsVector("LastLocationSawPlayer");
-		FVector EndDirectionTarget = OwnerComp.GetBlackboardComponent()->GetValueAsVector("DirectionTakenByTarget");
+		FVector DirectionTarget = OwnerComp.GetBlackboardComponent()->GetValueAsVector("DirectionTakenByTarget");
 
-		DrawDebugLine(GetWorld(), LocationLostTarget, EndDirectionTarget, FColor::Blue, false, 5);
+		DrawDebugLine(GetWorld(), LocationLostTarget, LocationLostTarget+DirectionTarget*5000, FColor::Blue, false, 5);
 		
-		bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, LocationLostTarget, EndDirectionTarget
-			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
-			, FCollisionQueryParams(NAME_AILineOfSight, true, OwnerComp.GetOwner()));
+		bool bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, LocationLostTarget, LocationLostTarget+DirectionTarget*5000
+		, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
+		, FCollisionQueryParams(NAME_AILineOfSight, true, OwnerComp.GetOwner()));
 		
 		if (bHitSocket == true) {
-			bHitSocket = GetWorld()->LineTraceSingleByObjectType(HitResult, HitResult.Location, HitResult.Location-FVector::UpVector*500
-			, FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic))
-			, FCollisionQueryParams(NAME_AILineOfSight, true, HitResult.GetActor()));
-
-			if(bHitSocket == true)
-			{
-				DrawDebugLine(GetWorld(), LocationLostTarget, HitResult.Location + (LocationLostTarget - HitResult.Location).GetSafeNormal() * 100, FColor::Red, false, 5);
-				OwnerComp.GetBlackboardComponent()->SetValueAsVector("LocationSearchPlayer", HitResult.Location + (LocationLostTarget - HitResult.Location).GetSafeNormal() * 100);	
-			}
+			DrawDebugLine(GetWorld(), LocationLostTarget, HitResult.Location-DirectionTarget*50, FColor::Red, false, 5);
+			DrawDebugSphere(GetWorld(), HitResult.Location-DirectionTarget*50, 5, 32, FColor::Red, false, 5);
+			OwnerComp.GetBlackboardComponent()->SetValueAsVector("LocationSearchPlayer", HitResult.Location-DirectionTarget*50);	
 		}
 	}
 	

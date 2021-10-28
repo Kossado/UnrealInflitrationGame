@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KnightPlayerController.generated.h"
 
+class AGCGameMode;
 /**
  * 
  */
@@ -68,5 +69,6 @@ private:
 	FGenericTeamId TeamId;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	
-	
+	AGCGameMode* MainGameMode;
+
 };

@@ -44,52 +44,56 @@ AFoodManager * AAIEnemyManager::GetFoodManager() const
 
 void AAIEnemyManager::SpawnPawn()
 {
-	if(BP_CharacterAI)
+	if(List_BP_CharacterAI.Num()>0)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		int indexBP = FMath::RandRange(0, List_BP_CharacterAI.Num()-1);
 
-		AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(BP_CharacterAI, SpawnAIPatrolPoint->GetTransform(), SpawnParams);
-		// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
-		AController * ActorControllerRef =ActorCharacterRef->GetController(); 
-		if(ActorControllerRef == nullptr)
+		if(List_BP_CharacterAI[indexBP] != nullptr)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Controller is null"));
-			return;
-		}
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		else if(!ActorControllerRef->IsA(AAIEnemyController::StaticClass()))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Controller isn't in a good type"));
-			return;
-		}
-
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
-
-			AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
-			ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
-
-			if(ListAIControllerOnScene.Num() > 0 )
+			AAIEnemyCharacter* ActorCharacterRef = GetWorld()->SpawnActor<AAIEnemyCharacter>(List_BP_CharacterAI[indexBP], SpawnAIPatrolPoint->GetTransform(), SpawnParams);
+			// ActorControllerRef->Initialize(this, ActorRef, ListSpotFood, UnSpawnAIPatrolPoint);
+			AController * ActorControllerRef =ActorCharacterRef->GetController(); 
+			if(ActorControllerRef == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListAIControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerAI)));
+				UE_LOG(LogTemp, Warning, TEXT("Controller is null"));
+				return;
 			}
-			ListAIControllerOnScene.Add(ControllerAI);
 
-			if(FoodManager->IsRemainingSlotFood())
+			else if(!ActorControllerRef->IsA(AAIEnemyController::StaticClass()))
 			{
-				AFood * NewFood = FoodManager->SpawnFood();
+				UE_LOG(LogTemp, Warning, TEXT("Controller isn't in a good type"));
+				return;
+			}
 
-				if(NewFood == nullptr)
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Controller is valid"));
+
+				AAIEnemyController * ControllerAI = dynamic_cast<AAIEnemyController*>(ActorControllerRef);
+				ControllerAI->Initialize(this, NbRetriesSpotBeforeBack);
+
+				if(ListAIControllerOnScene.Num() > 0 )
 				{
-					UE_LOG(LogTemp, Error, TEXT("Fail to spawn food"));
-					return;
+					GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red,  FString::Printf(TEXT("attitude %d"), ListAIControllerOnScene[0]->GetTeamAttitudeTowards(*ControllerAI)));
 				}
-				
-				ControllerAI->CarryFood(NewFood);
+				ListAIControllerOnScene.Add(ControllerAI);
+
+				if(FoodManager->IsRemainingSlotFood())
+				{
+					AFood * NewFood = FoodManager->SpawnFood();
+
+					if(NewFood == nullptr)
+					{
+						UE_LOG(LogTemp, Error, TEXT("Fail to spawn food"));
+						return;
+					}
+
+					ControllerAI->CarryFood(NewFood);
+				}			
 			}
-			
 		}
 	}	
 }

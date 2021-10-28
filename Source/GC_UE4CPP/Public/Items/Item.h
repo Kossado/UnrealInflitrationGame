@@ -26,6 +26,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Mesh")
 	UStaticMeshComponent* StaticMesh;
+	
+	EItemState CurrentItemState;
 	virtual void SetItemProperties(EItemState State) ;
 
 public:	
@@ -33,6 +35,5 @@ public:
 	FORCEINLINE EItemState GetCurrentItemState() const { return CurrentItemState; }
 
 private:
-	EItemState CurrentItemState;
 
 };

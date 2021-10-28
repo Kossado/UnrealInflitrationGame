@@ -47,6 +47,8 @@ public:
 	void BeginRotation() const;
 	void Rotate(FRotator NextRotation) const;
 	void EndRotation() const;
+
+	void HasHitPlayer() const;
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
@@ -69,7 +71,8 @@ private:
 	unsigned int NbRetriesBeforeBack;
 	AAIEnemyManager* AIEnemyManager;
 
-	AActor* TargetChased;
+	bool bCurrentlySeeTarget = false;
+	AGCCharacter* TargetChased;
 	FVector LastLocationSeenTarget;
 	FVector LastDirectionSeenTarget;
 

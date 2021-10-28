@@ -3,8 +3,10 @@
 
 #include "AI/AIEnemyCharacter.h"
 
+#include "GCPlayerCharacter.h"
+#include "AI/AIEnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "Components/CapsuleComponent.h"
 // Sets default values
 AAIEnemyCharacter::AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -12,8 +14,7 @@ AAIEnemyCharacter::AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer
 	// GetCharacterMovement()->SetAvoidanceEnabled(true);
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	
-	PrimaryActorTick.bCanEverTick = true;
+	GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 }
 
 
@@ -21,15 +22,10 @@ AAIEnemyCharacter::AAIEnemyCharacter(const FObjectInitializer& ObjectInitializer
 void AAIEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AAIEnemyCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AAIEnemyCharacter::OnHit);
 
 }
+
 
 // Called to bind functionality to input
 void AAIEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -51,4 +47,31 @@ void AAIEnemyCharacter::StoreFood(ASpotFood * SpotFood)
 	
 	SpotFood->StoreFood(FoodToStore);
 }
+
+void AAIEnemyCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+
+	if(!OtherActor->IsA(AGCPlayerCharacter::StaticClass()))
+	{
+		return;
+	}
+
+	AGCPlayerCharacter * PlayerCharacter = Cast<AGCPlayerCharacter>(OtherActor);
+
+	if(PlayerCharacter == nullptr)
+	{
+		return;
+	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Hit");
+
+	AAIEnemyController * AIEnemyController = Cast<AAIEnemyController>(GetController());
+
+	if(AIEnemyController != nullptr)
+	{
+		AIEnemyController->HasHitPlayer();
+	}
+}
+
 

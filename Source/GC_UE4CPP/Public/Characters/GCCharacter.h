@@ -35,6 +35,9 @@ public:
 	void EndRotate();
 	bool IsRotating() const;
 
+	FORCEINLINE const USkeletalMeshSocket * GetSocketBaseCharacter() const { return SocketBaseCharacter; }
+	FORCEINLINE FVector GetSocketBaseCharacterLocation() const { return GetMesh()->GetSocketLocation(NameSocketBaseCharacter); }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,7 +53,15 @@ protected:
 	bool bSit = false;
 	AChair* ChairUsed = nullptr;
 	// Characters Speed handfree
+
 	float BaseWalkSpeed;
+
+	//Socket which represent the character on the ground. By Example, the middle between two feet
+	UPROPERTY(EditAnywhere)
+	FName NameSocketBaseCharacter;
+
+	const USkeletalMeshSocket * SocketBaseCharacter = nullptr;
+
 
 private:
 	/*// Food to pick = in Overlap
@@ -63,7 +74,11 @@ private:
 	AChair* ChairInFront = nullptr;*/
 
 	// Characters Speed when carrying food
-	float CarryWalkSpeedMultiplicator;
+	// Grabbed item
+
+	UPROPERTY(EditAnywhere)
+	float CarryWalkSpeedMultiplicator=0.5f;
+
 
 	bool bRotate =false;
 
