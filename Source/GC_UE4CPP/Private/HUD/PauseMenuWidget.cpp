@@ -3,45 +3,36 @@
 #include "Managers/GCGameMode.h"
 
 // Import extern class
-#include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Components/Button.h" // For UButton
+#include "Kismet/GameplayStatics.h" // For UGameplayStatics and UKismetSystemLibrary
 
 // Constructor
 void UPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
-	if(UIResume)
+	if(UIResume && UIRestart && UIOptions && UIQuit && UIQuitDesktop && UIQuitMainMenu)
 	{
 		UIResume->OnClicked.AddDynamic(this,&UPauseMenuWidget::Resume);
-	}
-	if(UIRestart)
-	{
 		UIRestart->OnClicked.AddDynamic(this,&UPauseMenuWidget::Restart);
-	}
-	if(UIOptions)
-	{
 		UIOptions->OnClicked.AddDynamic(this,&UPauseMenuWidget::Options);
-	}
-	if(UIQuit)
-	{
 		UIQuit->OnClicked.AddDynamic(this,&UPauseMenuWidget::Quit);
-	}
-	if(UIQuitDesktop)
-	{
 		UIQuitDesktop->OnClicked.AddDynamic(this,&UPauseMenuWidget::QuitDesktop);
-	}
-	if(UIQuitMainMenu)
-	{
 		UIQuitMainMenu->OnClicked.AddDynamic(this,&UPauseMenuWidget::QuitMainMenu);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::NativeConstruct - One or more UButton is/are null"));
 	}
 }
 
 // Acquisition options widget
 void UPauseMenuWidget::InitializeOptionsWidget(UWidget* optionsWidget)
 {
-	OptionsWidget = optionsWidget;
+	if (optionsWidget)
+	{
+		OptionsWidget = optionsWidget;
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::InitializeOptionsWidget - optionsWidget null"));
+	}
 }
 
 // Event OnCliked in UIResume
@@ -55,19 +46,33 @@ void UPauseMenuWidget::Resume()
 		// Resume play
 		UGameplayStatics::SetGamePaused(GetWorld(),false);
 
-		// Change input mode to game only
+		
 		APlayerController* Player = GetWorld()->GetFirstPlayerController();
-		Player->SetInputMode(FInputModeGameOnly());
+		if (Player)
+		{
+			// Change input mode to game only
+			Player->SetInputMode(FInputModeGameOnly());
 
-		// Disable mouse
-		Player->bShowMouseCursor = false;
+			// Disable mouse
+			Player->bShowMouseCursor = false;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Resume - Player null"));
+		}
+		
 
 		// Update button visibility
-		if (this->UIQuitDesktop->IsVisible())
+		if (UIQuitDesktop && UIQuitMainMenu)
 		{
-			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Hidden);
-			this->UIQuitMainMenu->SetVisibility(ESlateVisibility::Hidden);
+			if (this->UIQuitDesktop->IsVisible())
+			{
+				this->UIQuitDesktop->SetVisibility(ESlateVisibility::Hidden);
+				this->UIQuitMainMenu->SetVisibility(ESlateVisibility::Hidden);
+			}
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Resume - UIQuitDesktop or/and UIQuitMainMenu null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Resume - UIResume null"));
 	}
 }
 
@@ -77,22 +82,32 @@ void UPauseMenuWidget::Restart()
 	if(UIRestart)
 	{
 		// Change input mode to game only
-		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+		APlayerController* Player = GetWorld()->GetFirstPlayerController();
+		if (Player)
+		{
+			Player->SetInputMode(FInputModeGameOnly());
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Restart - Player null"));
+		}
 
 		// Restart game
 		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->RestartGame();
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Restart - UIRestart null"));
 	}
 }
 
 // Event OnCliked in UIOptions
 void UPauseMenuWidget::Options()
 {
-	if(UIOptions)
+	if(UIOptions && OptionsWidget)
 	{
 		// Update widget visibility 
 		this->SetVisibility(ESlateVisibility::Hidden);
 		OptionsWidget->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Options - UIOptions or/and OptionsWidget null"));
 	}
 }
 
@@ -110,29 +125,30 @@ void UPauseMenuWidget::Quit()
 			this->UIQuitDesktop->SetVisibility(ESlateVisibility::Visible);
 			this->UIQuitMainMenu->SetVisibility(ESlateVisibility::Visible);
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::Quit - UIQuit or/and UIQuitDesktop or/and UIQuitMainMenu null"));
 	}
 }
 
 // Event OnCliked in UIQuitDesktop
 void UPauseMenuWidget::QuitDesktop()
 {
-	if(UIQuitDesktop)
-	{
-		// Quit game
-		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
-	}
+	// Quit game
+	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
 }
 
 // Event OnCliked in UIQuitMainMenu
 void UPauseMenuWidget::QuitMainMenu()
 {
-	if(UIQuitMainMenu)
+	// Update game state 
+	AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GameMode)
 	{
-		// Update game state 
-		AGCGameMode* GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		GameMode->SetCurrentGameState(EGS_PLAYING);
 
 		// Open level principal menu
 		UGameplayStatics::OpenLevel(this, FName(FString("MenuPrincipal")), false);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPauseMenuWidget::QuitMainMenu - GameMode null"));
 	}
 }

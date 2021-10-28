@@ -17,16 +17,17 @@ public:
 	virtual void DrawHUD() override;
 
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-		void Pause();
-
-	UFUNCTION()
-		void EndGame(bool GameStatus);
 	
 	UFUNCTION()
-		void UpdateCurrentFood(int32 value);
+	void Pause();
 
+	UFUNCTION()
+	void EndGame(bool GameStatus);
+	
+	UFUNCTION()
+	void UpdateCurrentFood(int32 value);
+	
+private:
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> ScoreWidgetClass;
 
@@ -39,7 +40,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Widgets)
 	TSubclassOf<UUserWidget> GameStatusWidgetClass;
 	
-private:
 	UScoreMenuWidget* ScoreWidget;
 	UPauseMenuWidget* PauseWidget;
 	UOptionsMenuWidget* OptionsWidget;

@@ -2,84 +2,98 @@
 #include "HUD/OptionsMenuWidget.h"
 
 // Import extern class
-#include "GameFramework/InputSettings.h"
-#include "Components/InputKeySelector.h"
-#include "GameFramework/PlayerInput.h"
-#include "Components/Button.h"
+#include "Components/InputKeySelector.h" // For InputKeySelector
+#include "Components/Button.h" // For UButton
 
 // Constructor
 void UOptionsMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
-	if(UIBack)
+	if(UIBack && UIConfirm)
 	{
 		UIBack->OnClicked.AddDynamic(this,&UOptionsMenuWidget::Back);
-	}
-	if(UIConfirm)
-	{
 		UIConfirm->OnClicked.AddDynamic(this,&UOptionsMenuWidget::Confirm);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIBack or/and UIConfirm null"));
 	}
 
 	// Acquisition input settings
 	InputSettings = UInputSettings::GetInputSettings();
 
-	// Initialisation several arrays to change input settings
-	KeyChange.Init(false,6);
-	ActionArrayKeys.Init(FInputActionKeyMapping(),2);
-	ActionArrayKeysNext.Init(FInputActionKeyMapping(),2);
-	AxisArrayKeys.Init(FInputAxisKeyMapping(),4);
-	AxisArrayKeysNext.Init(FInputAxisKeyMapping(),4);
+	if (InputSettings)
+	{
+		// Initialisation several arrays to change input settings
+		KeyChange.Init(false,6);
+		ActionArrayKeys.Init(FInputActionKeyMapping(),2);
+		ActionArrayKeysNext.Init(FInputActionKeyMapping(),2);
+		AxisArrayKeys.Init(FInputAxisKeyMapping(),4);
+		AxisArrayKeysNext.Init(FInputAxisKeyMapping(),4);
 
-	// Acquisition input key
-	TArray <struct FInputActionKeyMapping> OutMappingsInteract;
-	InputSettings->GetActionMappingByName("Interact", OutMappingsInteract);
-	ActionArrayKeys[0] = OutMappingsInteract[0];
-	
-	TArray <struct FInputActionKeyMapping> OutMappingsInvokeMenu;
-	InputSettings->GetActionMappingByName("InvokeMenu", OutMappingsInvokeMenu);
-	ActionArrayKeys[1] = OutMappingsInvokeMenu[0];
+		// Acquisition input key
+		TArray <struct FInputActionKeyMapping> OutMappingsInteract;
+		InputSettings->GetActionMappingByName("Interact", OutMappingsInteract);
+		ActionArrayKeys[0] = OutMappingsInteract[0];
+		
+		TArray <struct FInputActionKeyMapping> OutMappingsInvokeMenu;
+		InputSettings->GetActionMappingByName("InvokeMenu", OutMappingsInvokeMenu);
+		ActionArrayKeys[1] = OutMappingsInvokeMenu[0];
 
-	TArray <struct FInputAxisKeyMapping> OutMappingsMoveForward;
-	InputSettings->GetAxisMappingByName("MoveForward", OutMappingsMoveForward);
-	AxisArrayKeys[1] = OutMappingsMoveForward[0];
-	AxisArrayKeys[0] = OutMappingsMoveForward[1];
+		TArray <struct FInputAxisKeyMapping> OutMappingsMoveForward;
+		InputSettings->GetAxisMappingByName("MoveForward", OutMappingsMoveForward);
+		AxisArrayKeys[1] = OutMappingsMoveForward[0];
+		AxisArrayKeys[0] = OutMappingsMoveForward[1];
 
-	TArray <struct FInputAxisKeyMapping> OutMappingsMoveRight;
-	InputSettings->GetAxisMappingByName("MoveRight", OutMappingsMoveRight);
-	AxisArrayKeys[3] = OutMappingsMoveRight[0];
-	AxisArrayKeys[2] = OutMappingsMoveRight[1];
+		TArray <struct FInputAxisKeyMapping> OutMappingsMoveRight;
+		InputSettings->GetAxisMappingByName("MoveRight", OutMappingsMoveRight);
+		AxisArrayKeys[3] = OutMappingsMoveRight[0];
+		AxisArrayKeys[2] = OutMappingsMoveRight[1];
 
-	// Initialisation event OnKeySelected and default value input key
-	if(UIActionInteract)
-	{
-		UIActionInteract->SetSelectedKey(ActionArrayKeys[0].Key);
-		UIActionInteract->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInteract);
-	}
-	if(UIActionInvokeMenu)
-	{
-		UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
-		UIActionInvokeMenu->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInvokeMenu);
-	}
-	if(UIAxisMoveForward)
-	{
-		UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
-		UIAxisMoveForward->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveForward);
-	}
-	if(UIAxisMoveBack)
-	{
-		UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
-		UIAxisMoveBack->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveBack);
-	}
-	if(UIAxisMoveLeft)
-	{
-		UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
-		UIAxisMoveLeft->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveLeft);
-	}
-	if(UIAxisMoveRight)
-	{
-		UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
-		UIAxisMoveRight->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveRight);
+		// Initialisation event OnKeySelected and default value input key
+		if(UIActionInteract)
+		{
+			UIActionInteract->SetSelectedKey(ActionArrayKeys[0].Key);
+			UIActionInteract->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInteract);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIActionInteract null"));
+		}
+		if(UIActionInvokeMenu)
+		{
+			UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
+			UIActionInvokeMenu->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyInvokeMenu);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIActionInvokeMenu null"));
+		}
+		if(UIAxisMoveForward)
+		{
+			UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
+			UIAxisMoveForward->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveForward);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIAxisMoveForward null"));
+		}
+		if(UIAxisMoveBack)
+		{
+			UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
+			UIAxisMoveBack->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveBack);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIAxisMoveBack null"));
+		}
+		if(UIAxisMoveLeft)
+		{
+			UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
+			UIAxisMoveLeft->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveLeft);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIAxisMoveLeft null"));
+		}
+		if(UIAxisMoveRight)
+		{
+			UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
+			UIAxisMoveRight->OnKeySelected.AddDynamic(this, &UOptionsMenuWidget::ChangeKeyMoveRight);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - UIAxisMoveRight null"));
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::NativeConstruct - InputSettings null"));
 	}
 }
 
@@ -134,7 +148,12 @@ void UOptionsMenuWidget::ChangeKeyMoveRight(FInputChord InputChord)
 // Acquisition pause widget
 void UOptionsMenuWidget::InitializePauseWidget(UWidget* pauseWidget)
 {
-	PauseWidget = pauseWidget;
+	if (pauseWidget)
+	{
+		PauseWidget = pauseWidget;
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::InitializePauseWidget - pauseWidget null"));
+	}
 }
 
 // Event OnCliked in UIBack
@@ -142,15 +161,25 @@ void UOptionsMenuWidget::Back()
 {
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);
-	PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	if (PauseWidget)
+	{
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::Back - PauseWidget null"));
+	}
 
-	// Reset current input settings to previous input settings
-	UIActionInteract->SetSelectedKey(ActionArrayKeys[0].Key);
-	UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
-	UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
-	UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
-	UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
-	UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
+	if (UIActionInteract && UIActionInvokeMenu && UIAxisMoveForward && UIAxisMoveBack && UIAxisMoveLeft && UIAxisMoveRight)
+	{
+		// Reset current input settings to previous input settings
+		UIActionInteract->SetSelectedKey(ActionArrayKeys[0].Key);
+		UIActionInvokeMenu->SetSelectedKey(ActionArrayKeys[1].Key);
+		UIAxisMoveForward->SetSelectedKey(AxisArrayKeys[0].Key);
+		UIAxisMoveBack->SetSelectedKey(AxisArrayKeys[1].Key);
+		UIAxisMoveLeft->SetSelectedKey(AxisArrayKeys[2].Key);
+		UIAxisMoveRight->SetSelectedKey(AxisArrayKeys[3].Key);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::Back - One or more UInputKeySelector is/are null"));
+	}
 	
 	ActionArrayKeysNext.Init(FInputActionKeyMapping(),2);
 	AxisArrayKeysNext.Init(FInputAxisKeyMapping(),4);
@@ -162,33 +191,43 @@ void UOptionsMenuWidget::Confirm()
 {
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);
-	PauseWidget->SetVisibility(ESlateVisibility::Visible);
-
-	// Update input settings with the new input settings ask by the user
-	int y = 0;
-	for (int i = 0; i < ActionArrayKeys.Num(); i++)
+	if (PauseWidget)
 	{
-		if (KeyChange[y])
-		{
-			InputSettings->RemoveActionMapping(ActionArrayKeys[i]);
-			InputSettings->AddActionMapping(ActionArrayKeysNext[i]);
-			ActionArrayKeys[i] = ActionArrayKeysNext[i];
-			KeyChange[y] = false;
-		}
-		y++;
-	}
-	for (int i = 0; i < AxisArrayKeys.Num(); i++)
-	{
-		if (KeyChange[y])
-		{
-			InputSettings->RemoveAxisMapping(AxisArrayKeys[i]);
-			InputSettings->AddAxisMapping(AxisArrayKeysNext[i]);
-			AxisArrayKeys[i] = AxisArrayKeysNext[i];
-			KeyChange[y] = false;
-		}
-		y++;
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::Confirm - PauseWidget null"));
 	}
 
-	// Applies the changes
-	InputSettings->ForceRebuildKeymaps();
+	if (InputSettings)
+	{
+		// Update input settings with the new input settings ask by the user
+		int y = 0;
+		for (int i = 0; i < ActionArrayKeys.Num(); i++)
+		{
+			if (KeyChange[y])
+			{
+				InputSettings->RemoveActionMapping(ActionArrayKeys[i]);
+				InputSettings->AddActionMapping(ActionArrayKeysNext[i]);
+				ActionArrayKeys[i] = ActionArrayKeysNext[i];
+				KeyChange[y] = false;
+			}
+			y++;
+		}
+		for (int i = 0; i < AxisArrayKeys.Num(); i++)
+		{
+			if (KeyChange[y])
+			{
+				InputSettings->RemoveAxisMapping(AxisArrayKeys[i]);
+				InputSettings->AddAxisMapping(AxisArrayKeysNext[i]);
+				AxisArrayKeys[i] = AxisArrayKeysNext[i];
+				KeyChange[y] = false;
+			}
+			y++;
+		}
+
+		// Applies the changes
+		InputSettings->ForceRebuildKeymaps();
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UOptionsMenuWidget::Confirm - InputSettings null"));
+	}
 }
