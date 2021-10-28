@@ -56,6 +56,8 @@ public:
 	int GetPlayerTeamId() const { return PlayerTeamId;}
 	
 	TArray<LinkSkeletalMeshAnimation> GetTeamSkeletalMeshes(int TeamId) const;
+	AFoodManager * FoodManager = nullptr;
+	AAIEnemyManager * EnemyManager = nullptr;
 	
 
 private:
@@ -90,8 +92,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TArray<int> Team2IdCharacter;
-
-	AFoodManager * FoodManager = nullptr;;
-	AAIEnemyManager * EnemyManager = nullptr;;
 
 };

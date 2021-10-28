@@ -26,7 +26,7 @@ void AAIEnemyManager::BeginPlay()
 
 	if(MainGameMode != nullptr)
 	{
-		MainGameMode->AIManager = this;
+		MainGameMode->EnemyManager = this;
 	}
 }
 

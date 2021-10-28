@@ -231,7 +231,7 @@ void AAIEnemyController::EndRotation() const
 }
 
 void AAIEnemyController::UnSpawn()
-{
+{	
 	AICharacter->UnSpawn();
 }
 
@@ -284,9 +284,5 @@ void AAIEnemyController::WillNeedNewDestination()
 	}
 }
 
-void AAIEnemyController::UnSpawn()
-{
-	
-	AIEnemyManager->UnSpawnAIAndPrepareRespawn(this);
-}
+
 

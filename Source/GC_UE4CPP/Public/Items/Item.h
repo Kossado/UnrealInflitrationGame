@@ -29,7 +29,6 @@ protected:
 	UStaticMeshComponent* StaticMesh;
 	
 	EItemState CurrentItemState;
-	virtual void SetItemProperties(EItemState State) ;
 
 public:	
 	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}

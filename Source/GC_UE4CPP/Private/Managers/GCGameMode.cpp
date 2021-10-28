@@ -96,7 +96,7 @@ void AGCGameMode::StartPlay()
 	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	FoodManager->Initialize();
-	AIManager->Initialize();
+	EnemyManager->Initialize();
 	UE_LOG(LogTemp, Error, TEXT("End Initialization"));
 }
 

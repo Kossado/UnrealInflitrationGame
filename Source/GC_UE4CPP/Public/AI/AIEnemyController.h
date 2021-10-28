@@ -56,7 +56,6 @@ public:
 	FORCEINLINE ASpotFood * GetCurrentSpotFoodTarget() const { return CurrentSpotFoodTarget; }
 	FORCEINLINE TArray<ASpotFood *> GetListAlreadyCheckedSpotFood() const { return ListSpotFoodAlreadyChecked; }
 
-	void UnSpawn();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
