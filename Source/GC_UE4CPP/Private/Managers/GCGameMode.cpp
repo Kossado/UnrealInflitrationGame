@@ -77,6 +77,11 @@ void AGCGameMode::SetCurrentGameState(EGameState CurrentGameState) const
 	GetGameState<AGCGameState>()->CurrentGameState = CurrentGameState;
 }
 
+void AGCGameMode::SetSkinPlayer(ESkinPlayer SkinPlayer) const
+{
+	GetGameState<AGCGameState>()->SkinPlayer = SkinPlayer;
+}
+
 void AGCGameMode::IncrementStoredFood()
 {
 	GetGameState<AGCGameState>()->StoredFood++;

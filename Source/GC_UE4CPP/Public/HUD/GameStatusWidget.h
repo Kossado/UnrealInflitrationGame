@@ -37,8 +37,8 @@ public:
 	class UButton* UIQuitMainMenu;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UEditableText* UITitreVictory;
+	class UTextBlock* UITitreVictory;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UEditableText* UITitreDefeat;
+	class UTextBlock* UITitreDefeat;
 };
