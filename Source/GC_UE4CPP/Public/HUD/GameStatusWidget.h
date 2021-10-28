@@ -8,10 +8,18 @@ UCLASS()
 class GC_UE4CPP_API UGameStatusWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void NativeConstruct() override;
 
+public:
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* UITitreVictory;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* UITitreDefeat;
+
+protected:
+	virtual void NativeConstruct() override;
+	
+private:
 	UFUNCTION()
 	void PlayAgain();
 
@@ -35,10 +43,4 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* UIQuitMainMenu;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* UITitreVictory;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* UITitreDefeat;
 };

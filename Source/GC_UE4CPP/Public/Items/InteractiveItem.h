@@ -15,8 +15,7 @@ class GC_UE4CPP_API AInteractiveItem : public AItem
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveItem();
-	
-	void DisableTrigger();
+	virtual void SetItemProperties(EItemState State) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,12 +23,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Trigger;
-	UPROPERTY(EditAnywhere, Category="Item")
-	TSubclassOf<AActor> ItemClass;
-	UPROPERTY(EditAnywhere, Category="Item")
-	FName ItemName;
 
-	virtual void SetItemProperties(EItemState State) override;
+	// Called to disable trigger collisions
+	void DisableTrigger();
+	// Called to enable trigger collisions
+	void EnableTrigger();
+
 	UFUNCTION()
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()

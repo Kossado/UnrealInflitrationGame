@@ -4,6 +4,8 @@
 #include "Food/FoodManager.h"
 
 #include "Food/SpotFood.h"
+#include "Kismet/GameplayStatics.h"
+#include "Managers/GCGameMode.h"
 
 // Sets default values
 AFoodManager::AFoodManager() : Super()
@@ -15,8 +17,18 @@ AFoodManager::AFoodManager() : Super()
 // Called when the game starts or when spawned
 void AFoodManager::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 
+	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	if(MainGameMode != nullptr)
+	{
+		MainGameMode->FoodManager = this;
+	}
+}
+
+void AFoodManager::Initialize()
+{
 	for(ASpotFood * SpotFood : ListSpotFood)
 	{
 		SpotFood->Initialize(this);
@@ -130,8 +142,12 @@ void AFoodManager::DestroyFood(AFood * FoodToDestroy)
 		return;
 	}
 
-	ListExistingFood.Remove(FoodToDestroy);
-	GetWorld()->RemoveActor(FoodToDestroy->GetOwner(), true);
+	if(ListExistingFood.Contains(FoodToDestroy))
+	{
+		ListExistingFood.Remove(FoodToDestroy);
+	}
+	FoodToDestroy->DestroyItem();
+	//GetWorld()->RemoveActor(FoodToDestroy, true);
 }
 
 
@@ -145,7 +161,9 @@ AFood * AFoodManager::SpawnFood(FTransform SpawnTranform)
 	if(BP_Food != nullptr)
 	{
 		FActorSpawnParameters SpawnParams;
-		AFood * FoodCreated = GetWorld()->SpawnActor<AFood>(BP_Food, SpawnTranform, SpawnParams);
+		AFood * FoodCreated = GetWorld()->SpawnActor<AFood>(BP_Food, GetTransform(), SpawnParams);
+		FoodCreated->SetActorLocation(SpawnTranform.GetLocation());
+		FoodCreated->SetActorRotation(SpawnTranform.GetRotation());
 
 		if(FoodCreated==nullptr)
 		{

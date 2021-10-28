@@ -11,7 +11,7 @@ struct FFadeObjStruct
 {
 	GENERATED_USTRUCT_BODY()
 
-		UPROPERTY()
+	UPROPERTY()
 	UPrimitiveComponent* PrimitiveComp;
 
 	UPROPERTY()
@@ -46,13 +46,7 @@ struct FFadeObjStruct
 		FadeCurrent = NewFade;
 		bToHide = bNewHide;
 	}
-
-	//For Destroy
-	void Destroy()
-	{
-		PrimitiveComp = nullptr;
-	}
-
+	
 	//Constructor
 	FFadeObjStruct()
 	{
@@ -82,15 +76,14 @@ protected:
 
 	// Enable or disable fade object worker
 	UFUNCTION(BlueprintCallable, Category = "Fade Objects")
-		void SetEnable(bool bEnable);
+	void SetEnable(bool bEnable);
 
 	// Pause or unpause fade object worker
 	UFUNCTION(BlueprintCallable, Category = "Fade Objects")
-		void SetActivate(bool bActivate);
+	void SetActivate(bool bActivate);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fade Objects")
-		TArray<AActor*> ActorsIgnore;
-
+	TArray<AActor*> ActorsIgnore;
 
 private:
 
@@ -117,11 +110,11 @@ private:
 
 	// Enable or disable fade object worker
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-	bool bIsEnabled = true;
+	bool bEnabled = true;
 
 	// Pause or unpause fade object worker
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
-	bool bIsActivate = true;
+	bool bActivated = true;
 
 	// Timer interval
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
@@ -142,18 +135,9 @@ private:
 	float CapsuleRadius = 34.0f;
 	
 	UPROPERTY()
-	ACharacter* Character;
+	ACharacter* Character = nullptr;
 	
 	// Instance fade
 	UPROPERTY(EditAnywhere, Category = "Fade Objects")
 	float FadeValue = 0.25f;
-	
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-
-	
-		
 };

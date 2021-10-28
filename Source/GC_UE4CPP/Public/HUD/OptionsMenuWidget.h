@@ -11,10 +11,12 @@ class GC_UE4CPP_API UOptionsMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override;
-
 	void InitializePauseWidget(UWidget*);
 
+protected:
+	virtual void NativeConstruct() override;
+
+private:
 	UFUNCTION()
 	void Back();
 
@@ -70,7 +72,6 @@ public:
 	
 	TArray<struct FInputActionKeyMapping> ActionArrayKeys;
 	TArray<struct FInputActionKeyMapping> ActionArrayKeysNext;
-	
 
 	TArray<struct FInputAxisKeyMapping> AxisArrayKeys;
 	TArray<struct FInputAxisKeyMapping> AxisArrayKeysNext;

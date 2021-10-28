@@ -11,73 +11,56 @@
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	MainGameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	GameMode = Cast<AGCGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	Character = Cast<AGCCharacter>(TryGetPawnOwner());
-	bCarryItem = false;
-	bGameInProgress = true;
 }
 
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-	if(Character == nullptr)
+	if(Character != nullptr && GameMode != nullptr)
 	{
-		Character = Cast<AGCCharacter>(TryGetPawnOwner());// Double check - Useless ?
-	}
-	if(Character)
-	{
-		FVector Velocity = Character->GetVelocity();
-		Velocity.Z = 0;
-		Speed = Velocity.Size();
-		if(Character->IsA(AKnightCharacter::StaticClass()) && MainGameMode)
-		{
-			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
-			{
-				bVictory = true;
-				bGameInProgress = false;
-			}else if(MainGameMode->GetCurrentGameState() == EGS_DEFEAT)
-			{
-				bVictory = false;
-				bGameInProgress = false;
-			}
-		}
-		if(Character->IsA(AAIEnemyCharacter::StaticClass()) && MainGameMode)
-		{
-			if(MainGameMode->GetCurrentGameState() == EGS_VICTORY)
-			{
-				bVictory = false;
-				bGameInProgress = false;
-			}else if(MainGameMode->GetCurrentGameState() == EGS_DEFEAT)
-			{
-				bVictory = true;
-				bGameInProgress = false;
-			}
-		}
-		if(Character->HasItem())
-		{
-			bCarryItem = true;
-		}
-		else
-		{
-			bCarryItem = false;
-		}
-		if(Character->IsSitting())
-		{
-			bSit = true;
-		}else
-		{
-			bSit = false;
-		}
-
-		if(Character->IsRotating())
-		{
-			bRotate = true;
-		}
-
-		else
-		{
-			bRotate = false;
-		}
+		CheckWalkAnimation();
+		CheckWinOrDefeatAnimation();
+		bCarryItem = Character->HasItem() ? true : false;
+		bSit = Character->IsSitting() ? true : false;
+		bRotate = Character->IsRotating() ? true : false;
 		
+	}
+}
+
+void UCharacterAnimInstance::CheckWalkAnimation()
+{
+	// Update speed value based on the character velocity, if speed > 0 = walk animation
+	FVector Velocity = Character->GetVelocity();
+	Velocity.Z = 0;
+	Speed = Velocity.Size();
+}
+
+void UCharacterAnimInstance::CheckWinOrDefeatAnimation()
+{
+	if(Character->IsA(AKnightCharacter::StaticClass()))
+	{
+		if(GameMode->GetCurrentGameState() == EGS_VICTORY)
+		{
+			bVictory = true;
+			bGameInProgress = false;
+		}else if(GameMode->GetCurrentGameState() == EGS_DEFEAT)
+		{
+			bVictory = false;
+			bGameInProgress = false;
+		}
+	}
+	if(Character->IsA(AAIEnemyCharacter::StaticClass()))
+	{
+		if(GameMode->GetCurrentGameState() == EGS_VICTORY)
+		{
+			bVictory = false;
+			bGameInProgress = false;
+		}else if(GameMode->GetCurrentGameState() == EGS_DEFEAT)
+		{
+			bVictory = true;
+			bGameInProgress = false;
+		}
 	}
 }

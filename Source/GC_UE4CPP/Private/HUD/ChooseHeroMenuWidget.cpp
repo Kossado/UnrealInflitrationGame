@@ -1,41 +1,39 @@
+// Import intern class
 #include "HUD/ChooseHeroMenuWidget.h"
-
 #include "Managers/GCGameMode.h"
-#include "Components/Button.h"
-#include "Components/CheckBox.h"
-#include "Kismet/GameplayStatics.h"
 #include "Managers/GCGameInstance.h"
 
+// Import extern class
+#include "Components/Button.h" // For UButton
+#include "Components/CheckBox.h" // For UCheckBox
+#include "Kismet/GameplayStatics.h" // For UGameplayStatics
+
+// Constructor
 void UChooseHeroMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
-	if(UIBack)
+	if(UIBack && UIConfirm && UIPersonnageHero && UIPersonnageGobelinMale && UIPersonnageGobelinFemale)
 	{
 		UIBack->OnClicked.AddDynamic(this,&UChooseHeroMenuWidget::Back);
-	}
-	if(UIConfirm)
-	{
 		UIConfirm->OnClicked.AddDynamic(this,&UChooseHeroMenuWidget::Confirm);
-	}
-	if(UIPersonnageHero)
-	{
 		UIPersonnageHero->OnCheckStateChanged.AddDynamic(this,&UChooseHeroMenuWidget::CheckHero);
-	}
-	if(UIPersonnageGobelinMale)
-	{
 		UIPersonnageGobelinMale->OnCheckStateChanged.AddDynamic(this,&UChooseHeroMenuWidget::CheckGobelinMale);
-	}
-	if(UIPersonnageGobelinFemale)
-	{
 		UIPersonnageGobelinFemale->OnCheckStateChanged.AddDynamic(this,&UChooseHeroMenuWidget::CheckGobelinFemale);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::NativeConstruct - One or more UButton is/are null"));
 	}
 }
 
 // Acquisition principal menu widget
 void UChooseHeroMenuWidget::InitializePrincipalMenuWidget(UWidget* principalMenuWidget)
 {
-	PrincipalMenuWidget = principalMenuWidget;
+	if (principalMenuWidget)
+	{
+		PrincipalMenuWidget = principalMenuWidget;
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::InitializePrincipalMenuWidget - principalMenuWidget null"));
+	}
 }
 
 // Event OnCheckStateChanged in UIPersonnageHero
@@ -43,9 +41,14 @@ void UChooseHeroMenuWidget::CheckHero(bool IsCheck)
 {
 	if (IsCheck)
 	{
-		UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
-		UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
-		CurrentSkinPlayer = EGS_KNIGHT;
+		if (UIPersonnageGobelinMale && UIPersonnageGobelinFemale)
+		{
+			UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
+			UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
+			CurrentSkinPlayer = EGS_KNIGHT;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::CheckHero - UIPersonnageGobelinMale or/and UIPersonnageGobelinFemale null"));
+		}
 	}
 }
 
@@ -54,9 +57,14 @@ void UChooseHeroMenuWidget::CheckGobelinMale(bool IsCheck)
 {
 	if (IsCheck)
 	{
-		UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
-		UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
-		CurrentSkinPlayer = EGS_GOBELIN_MALE;
+		if (UIPersonnageHero && UIPersonnageGobelinFemale)
+		{
+			UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
+			UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
+			CurrentSkinPlayer = EGS_GOBELIN_MALE;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::CheckGobelinMale - UIPersonnageHero or/and UIPersonnageGobelinFemale null"));
+		}
 	}
 }
 
@@ -65,18 +73,40 @@ void UChooseHeroMenuWidget::CheckGobelinFemale(bool IsCheck)
 {
 	if (IsCheck)
 	{
-		UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
-		UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
-		CurrentSkinPlayer = EGS_GOBELIN_FEMALE;
+		if (UIPersonnageHero && UIPersonnageGobelinMale)
+		{
+			UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
+			UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
+			CurrentSkinPlayer = EGS_GOBELIN_FEMALE;
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::CheckGobelinFemale - UIPersonnageHero or/and UIPersonnageGobelinMale null"));
+		}
 	}
 }
 
 // Event OnCliked in UIBack
 void UChooseHeroMenuWidget::Back()
 {
+	// Update game instance (to use the choose of player in other level)
+	UGCGameInstance* GameInstance = Cast<UGCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance && UIPersonnageHero && UIPersonnageGobelinMale && UIPersonnageGobelinFemale)
+	{
+		CurrentSkinPlayer = EGS_NO_SKIN;
+		UIPersonnageHero->SetCheckedState(ECheckBoxState::Unchecked);
+		UIPersonnageGobelinMale->SetCheckedState(ECheckBoxState::Unchecked);
+		UIPersonnageGobelinFemale->SetCheckedState(ECheckBoxState::Unchecked);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Back - A object is null"));
+	}
+	
 	// Update widget visibility 
 	this->SetVisibility(ESlateVisibility::Hidden);
-	PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	if (PrincipalMenuWidget)
+	{
+		PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Back - PrincipalMenuWidget null"));
+	}
 }
 
 // Event OnCliked in UIConfirm
@@ -84,33 +114,38 @@ void UChooseHeroMenuWidget::Confirm()
 {
 	// Update game instance (to use the choose of player in other level)
 	UGCGameInstance* GameInstance = Cast<UGCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (CurrentSkinPlayer != EGS_NO_SKIN  && GameInstance)
+	if (GameInstance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
-
-		GameInstance->SetSkinPlayer(CurrentSkinPlayer);
-	} else {
-		if (!GameInstance)
+		if (CurrentSkinPlayer != EGS_NO_SKIN)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("GameInstance null"));
-		} else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No item selected"));
-		}
-		return; // Error of player : No item selected
-	}
-	
-	// Update widget visibility 
-	this->SetVisibility(ESlateVisibility::Hidden);
-	PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
+			GameInstance->SetSkinPlayer(CurrentSkinPlayer);
 
-	// Change input mode to game only
-	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+			// Update widget visibility 
+			this->SetVisibility(ESlateVisibility::Hidden);
+			if (PrincipalMenuWidget)
+			{
+				PrincipalMenuWidget->SetVisibility(ESlateVisibility::Visible);
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - PrincipalMenuWidget null"));
+			}
+
+			APlayerController* Player = GetWorld()->GetFirstPlayerController();
+			if (Player)
+			{
+				// Change input mode to game only
+				Player->SetInputMode(FInputModeGameOnly());
 		
-	// Disable mouse
-	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
+				// Disable mouse
+				Player->bShowMouseCursor = false;
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - Player null"));
+			}
 
-	// Open level map
-	UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
+			// Open level map
+			UGameplayStatics::OpenLevel(this, FName(FString("Level1Map")), false);
+		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UChooseHeroMenuWidget::Confirm - GameInstance null"));
+	}
 }
 

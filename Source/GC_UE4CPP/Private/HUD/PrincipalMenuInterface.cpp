@@ -13,13 +13,25 @@ void APrincipalMenuInterface::BeginPlay()
 		{
 			MainMenuWidget->AddToViewport();
 
-			// Change input mode to UI only
-			GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
+			APlayerController* Player = GetWorld()->GetFirstPlayerController();
+			if (Player)
+			{
+				// Change input mode to UI only
+				Player->SetInputMode(FInputModeUIOnly());
 
-			// Activate mouse
-			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+				// Activate mouse
+				Player->bShowMouseCursor = true;
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - Player null"));
+			}
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - MainMenuWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - MainMenuWidgetClass null"));
 	}
+	
+	// Create choose hero menu widget (hidden by default)
 	if (ChooseHeroMenuWidgetClass)
 	{
 		ChooseHeroMenuWidget = CreateWidget<UChooseHeroMenuWidget>(GetWorld(), ChooseHeroMenuWidgetClass);
@@ -27,15 +39,20 @@ void APrincipalMenuInterface::BeginPlay()
 		{
 			ChooseHeroMenuWidget->AddToViewport();
 			ChooseHeroMenuWidget->SetVisibility(ESlateVisibility::Hidden);
-
-			ChooseHeroMenuWidget->InitializePrincipalMenuWidget(MainMenuWidget);
+		} else {
+			UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - ChooseHeroMenuWidget null"));
 		}
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - ChooseHeroMenuWidgetClass null"));
 	}
+	
 	// Initialize to choose hero menu and principal menu
 	if (ChooseHeroMenuWidget && MainMenuWidget)
 	{
 		ChooseHeroMenuWidget->InitializePrincipalMenuWidget(MainMenuWidget);
 		MainMenuWidget->InitializeChooseHeroMenuWidget(ChooseHeroMenuWidget);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("APrincipalMenuInterface::BeginPlay - ChooseHeroMenuWidget or/and MainMenuWidget null"));
 	}
 }
 

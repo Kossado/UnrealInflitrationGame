@@ -20,6 +20,7 @@ class GC_UE4CPP_API AItem : public AActor
 	
 public:	
 	AItem();
+	virtual void SetItemProperties(EItemState State);
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,7 +29,6 @@ protected:
 	UStaticMeshComponent* StaticMesh;
 	
 	EItemState CurrentItemState;
-	virtual void SetItemProperties(EItemState State) ;
 
 public:	
 	FORCEINLINE UStaticMeshComponent* GetItemMesh() const {return StaticMesh;}

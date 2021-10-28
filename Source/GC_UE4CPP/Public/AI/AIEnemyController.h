@@ -47,8 +47,8 @@ public:
 	void BeginRotation() const;
 	void Rotate(FRotator NextRotation) const;
 	void EndRotation() const;
-
 	void HasHitPlayer() const;
+	void UnSpawn();
 	
 	UFUNCTION()
 	void SightPlayer(AActor* UpdateActor, FAIStimulus FaiStimulus);
@@ -56,7 +56,6 @@ public:
 	FORCEINLINE ASpotFood * GetCurrentSpotFoodTarget() const { return CurrentSpotFoodTarget; }
 	FORCEINLINE TArray<ASpotFood *> GetListAlreadyCheckedSpotFood() const { return ListSpotFoodAlreadyChecked; }
 
-	void UnSpawn();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -11,10 +11,12 @@ class GC_UE4CPP_API UPrincipalMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override;
-
 	void InitializeChooseHeroMenuWidget(UWidget*);
 
+protected:
+	virtual void NativeConstruct() override;
+
+private:
 	UFUNCTION()
 	void Play();
 

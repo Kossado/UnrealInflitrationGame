@@ -8,12 +8,14 @@ UCLASS()
 class GC_UE4CPP_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void NativeConstruct() override;
 
+public:
 	void InitializeOptionsWidget(UWidget*);
 
+protected:
+	virtual void NativeConstruct() override;
+	
+private:
 	UFUNCTION()
 	void Resume();
 

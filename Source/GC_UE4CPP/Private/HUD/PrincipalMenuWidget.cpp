@@ -2,39 +2,44 @@
 #include "HUD/PrincipalMenuWidget.h"
 
 // Import extern class
-#include "Components/Button.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Runtime/UMG/Public/UMG.h"
+#include "Components/Button.h" // For UButton
+#include "Kismet/KismetSystemLibrary.h" // For UKismetSystemLibrary
 
 // Constructor
 void UPrincipalMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	// Initialisation event OnClicked
-	if(UIPlay)
+	if(UIPlay && UIQuit)
 	{
 		UIPlay->OnClicked.AddDynamic(this,&UPrincipalMenuWidget::Play);
-	}
-	if(UIQuit)
-	{
 		UIQuit->OnClicked.AddDynamic(this,&UPrincipalMenuWidget::Quit);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPrincipalMenuWidget::NativeConstruct - UIPlay ou/et UIQuit null"));
 	}
 }
 
 // Acquisition choose hero menu widget
 void UPrincipalMenuWidget::InitializeChooseHeroMenuWidget(UWidget* chooseHeroMenuWidget)
 {
-	ChooseHeroMenuWidget = chooseHeroMenuWidget;
+	if (chooseHeroMenuWidget)
+	{
+		ChooseHeroMenuWidget = chooseHeroMenuWidget;
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPrincipalMenuWidget::InitializeChooseHeroMenuWidget - chooseHeroMenuWidget null"));
+	}
 }
 
 // Event OnCliked in UIPlay
 void UPrincipalMenuWidget::Play()
 {
-	if(UIPlay)
+	if(UIPlay && ChooseHeroMenuWidget)
 	{
 		// Update widget visibility 
 		this->SetVisibility(ESlateVisibility::Hidden);
 		ChooseHeroMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPrincipalMenuWidget::Play - UIPlay or/and ChooseHeroMenuWidget null"));
 	}
 }
 
@@ -45,5 +50,7 @@ void UPrincipalMenuWidget::Quit()
 	{
 		// Quit game
 		UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit,true);
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("UPrincipalMenuWidget::Quit - UIQuit null"));
 	}
 }

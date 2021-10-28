@@ -92,10 +92,12 @@ void AGCGameMode::StartPlay()
 		}
 	}
 	
-	
-	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	Super::StartPlay();
+	GetGameState<AGCGameState>()->CurrentGameState = EGS_PLAYING;
 	InGameInterface = Cast<AInGameInterface>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	FoodManager->Initialize();
+	EnemyManager->Initialize();
+	UE_LOG(LogTemp, Error, TEXT("End Initialization"));
 }
 
 TArray<LinkSkeletalMeshAnimation> AGCGameMode::GetTeamSkeletalMeshes(int TeamId) const
@@ -233,15 +235,19 @@ void AGCGameMode::IncrementStoredFood()
 {
 	GetGameState<AGCGameState>()->StoredFood++;
 	if(InGameInterface)
+	{
 		InGameInterface->UpdateCurrentFood(GetStoredFood());
+	}
 	CheckGameConditions();
 }
 
 void AGCGameMode::LaunchMenuPause()
 {
 	if(InGameInterface)
+	{
 		SetCurrentGameState(EGS_PAUSE);
 		InGameInterface->Pause();
+	}
 }
 
 void AGCGameMode::IncrementPickableFood()
@@ -284,7 +290,5 @@ void AGCGameMode::Defeat()
 
 void AGCGameMode::DisableCharacterInput()
 {
-	// Disable input
 	UGameplayStatics::GetPlayerCharacter(GetWorld(),0)->DisableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	
 }
